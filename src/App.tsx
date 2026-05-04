@@ -217,9 +217,9 @@ export default function App() {
         ...prev,
         user: {
           ...prev.user,
-          name: patch.name ?? prev.user.name,
+          fullName: patch.name ?? prev.user.fullName,
           phone: patch.phone ?? prev.user.phone,
-          telegram_chat_id: patch.telegramChatId ?? prev.user.telegram_chat_id,
+          telegramChatId: patch.telegramChatId ?? prev.user.telegramChatId,
         },
       } as typeof prev;
       writeStoredSession(updated, true);

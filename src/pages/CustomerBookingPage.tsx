@@ -258,6 +258,7 @@ export function CustomerBookingPage({
   trackedBookingId,
   onClearTrackedBooking,
   onLogout,
+  onOpenSettings,
 }: CustomerBookingPageProps) {
   const [step, setStep] = useState<BookingStep>(trackedBookingId ? "notification" : "barbers");
   const [selectedBarberId, setSelectedBarberId] = useState<string | null>(barbers[0]?.id ?? null);
