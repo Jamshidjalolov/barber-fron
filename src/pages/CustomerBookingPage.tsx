@@ -17,6 +17,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import { AnimatePresence, motion } from "framer-motion";
 import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { BarberAvailabilitySection, AvailabilitySlot } from "../components/customer/BarberAvailabilitySection";
@@ -62,6 +63,7 @@ interface CustomerBookingPageProps {
   trackedBookingId: string | null;
   onClearTrackedBooking: () => void;
   onLogout: () => void;
+  onOpenSettings?: () => void;
 }
 
 type BookingStep = "barbers" | "nearby" | "time" | "details" | "notification";
@@ -998,6 +1000,18 @@ export function CustomerBookingPage({
               transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
               sx={{ display: "flex", flexDirection: "column", flex: 1 }}
             >
+                  {onOpenSettings ? (
+                    <Box sx={{ position: "absolute", top: 12, right: 18, zIndex: 6 }}>
+                      <Button
+                        onClick={onOpenSettings}
+                        variant="outlined"
+                        startIcon={<SettingsRoundedIcon />}
+                        sx={{ textTransform: "none", borderRadius: "12px" }}
+                      >
+                        Sozlamalar
+                      </Button>
+                    </Box>
+                  ) : null}
               {step === "barbers" ? barberStepContent : null}
               {step === "nearby" ? (
                 <CustomerNearbyBarbersPage

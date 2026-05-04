@@ -53,6 +53,7 @@ import { BarberPanelPage } from "./pages/BarberPanelPage";
 import { BookingsPage } from "./pages/BookingsPage";
 import { CustomerBookingPage } from "./pages/CustomerBookingPage";
 import { CustomerRegisterPage } from "./pages/CustomerRegisterPage";
+import { CustomerSettingsPage } from "./pages/CustomerSettingsPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { DiscountsPage } from "./pages/DiscountsPage";
 import { UnifiedLoginPage } from "./pages/UnifiedLoginPage";
@@ -184,6 +185,7 @@ export default function App() {
   const [trackedCustomerBookingId, setTrackedCustomerBookingId] = useState<string | null>(null);
   const [booting, setBooting] = useState(true);
   const [syncing, setSyncing] = useState(false);
+  const [customerActivePage, setCustomerActivePage] = useState<"booking" | "settings">("booking");
   const [globalError, setGlobalError] = useState("");
   const [telegramBotUsername, setTelegramBotUsername] = useState<string | undefined>(DEFAULT_TELEGRAM_BOT_USERNAME);
   const [reminderMinutes, setReminderMinutes] = useState(10);
@@ -207,6 +209,23 @@ export default function App() {
 
     return mapAuthUserToCustomer(session.user);
   }, [session]);
+
+  const handleUpdateLocalCustomerProfile = (patch: Partial<CustomerAccount>) => {
+    setSession((prev) => {
+      if (!prev || prev.user.role !== "customer") return prev;
+      const updated = {
+        ...prev,
+        user: {
+          ...prev.user,
+          name: patch.name ?? prev.user.name,
+          phone: patch.phone ?? prev.user.phone,
+          telegram_chat_id: patch.telegramChatId ?? prev.user.telegram_chat_id,
+        },
+      } as typeof prev;
+      writeStoredSession(updated, true);
+      return updated;
+    });
+  };
 
   const currentBarber: BarberProfile | null = useMemo(() => {
     if (session?.user.role !== "barber") {
@@ -808,6 +827,18 @@ export default function App() {
   }
 
   if (appMode === "customer" && currentCustomer) {
+    if (customerActivePage === "settings") {
+      return renderWithNotice(
+        <CustomerSettingsPage
+          currentUser={currentCustomer}
+          telegramBotUsername={telegramBotUsername}
+          reminderMinutes={reminderMinutes}
+          onUpdateLocalProfile={handleUpdateLocalCustomerProfile}
+          onBack={() => setCustomerActivePage("booking")}
+        />
+      );
+    }
+
     return renderWithNotice(
       <CustomerBookingPage
         signedInCustomer={currentCustomer}
@@ -822,6 +853,7 @@ export default function App() {
         trackedBookingId={trackedCustomerBookingId}
         onClearTrackedBooking={() => setTrackedCustomerBookingId(null)}
         onLogout={() => switchToAuth("customer-login")}
+        onOpenSettings={() => setCustomerActivePage("settings")}
       />
     );
   }
