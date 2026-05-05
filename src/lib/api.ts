@@ -10,6 +10,7 @@ import {
   ApiAvailabilityBooking,
   BarberFormPayload,
   BarberSettingsPayload,
+  CustomerSettingsPayload,
   DiscountFormPayload,
 } from "../types";
 import { getSafeImageUrl } from "./media";
@@ -181,6 +182,19 @@ export function loginAdmin(username: string, password: string) {
 
 export function getMe(token: string) {
   return apiRequest<ApiAuthUser>("/auth/me", { token });
+}
+
+export function updateMe(token: string, payload: CustomerSettingsPayload) {
+  return apiRequest<ApiAuthUser>("/auth/me", {
+    method: "PATCH",
+    token,
+    body: JSON.stringify({
+      full_name: payload.fullName,
+      phone: payload.phone,
+      password: payload.password || undefined,
+      photo_url: getSafeImageUrl(payload.photoUrl) ?? null,
+    }),
+  });
 }
 
 export function uploadMedia(token: string, file: File) {

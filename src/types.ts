@@ -61,6 +61,13 @@ export interface CustomerProfile {
   note: string;
 }
 
+export interface CustomerSettingsPayload {
+  fullName: string;
+  phone: string;
+  password?: string;
+  photoUrl?: string;
+}
+
 export interface GeoCoordinates {
   latitude: number;
   longitude: number;

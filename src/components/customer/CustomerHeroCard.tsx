@@ -2,6 +2,7 @@ import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import NearMeRoundedIcon from "@mui/icons-material/NearMeRounded";
 import RadioButtonCheckedRoundedIcon from "@mui/icons-material/RadioButtonCheckedRounded";
+import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import { alpha, Avatar, Box, Button, Chip, IconButton, Stack, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import { BrandLogo } from "../common/BrandLogo";
@@ -9,6 +10,7 @@ import { BrandLogo } from "../common/BrandLogo";
 interface CustomerHeroCardProps {
   customerName?: string;
   onOpenMap?: () => void;
+  onOpenSettings?: () => void;
   onLogout?: () => void;
 }
 
@@ -29,6 +31,7 @@ function getInitials(name: string) {
 export function CustomerHeroCard({
   customerName,
   onOpenMap,
+  onOpenSettings,
   onLogout,
 }: CustomerHeroCardProps) {
   return (
@@ -125,6 +128,25 @@ export function CustomerHeroCard({
                   {customerName}
                 </Typography>
               </Stack>
+            ) : null}
+
+            {onOpenSettings ? (
+              <IconButton
+                onClick={onOpenSettings}
+                sx={{
+                  width: 34,
+                  height: 34,
+                  color: "#f8fafc",
+                  backgroundColor: alpha("#ffffff", 0.08),
+                  border: `1px solid ${alpha("#ffffff", 0.12)}`,
+                  "&:hover": {
+                    backgroundColor: alpha("#8b5cf6", 0.22),
+                    borderColor: alpha("#c4b5fd", 0.26),
+                  },
+                }}
+              >
+                <SettingsRoundedIcon sx={{ fontSize: "1.05rem" }} />
+              </IconButton>
             ) : null}
 
             {onLogout ? (

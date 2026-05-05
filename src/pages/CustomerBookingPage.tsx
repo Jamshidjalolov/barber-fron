@@ -17,7 +17,6 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import { AnimatePresence, motion } from "framer-motion";
 import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { BarberAvailabilitySection, AvailabilitySlot } from "../components/customer/BarberAvailabilitySection";
@@ -28,7 +27,6 @@ import { CustomerHeroCard } from "../components/customer/CustomerHeroCard";
 import { CustomerNearbyBarbersPage } from "../components/customer/CustomerNearbyBarbersPage";
 import { CustomerNotificationScreen } from "../components/customer/CustomerNotificationScreen";
 import { CustomerProfileCard } from "../components/customer/CustomerProfileCard";
-import { TelegramQRCode } from "../components/common/TelegramQRCode";
 import { LogoutConfirmDialog } from "../components/navigation/LogoutConfirmDialog";
 import {
   AvailabilityStatus,
@@ -49,8 +47,6 @@ interface CustomerBookingPageProps {
   serviceOptions: string[];
   bookings: BookingItem[];
   availabilityItems: BookingItem[];
-  telegramBotUsername?: string;
-  reminderMinutes: number;
   onCreateBooking: (payload: {
     barberId: string;
     customerName: string;
@@ -252,8 +248,6 @@ export function CustomerBookingPage({
   serviceOptions,
   bookings,
   availabilityItems,
-  telegramBotUsername,
-  reminderMinutes,
   onCreateBooking,
   trackedBookingId,
   onClearTrackedBooking,
@@ -619,6 +613,7 @@ export function CustomerBookingPage({
       <Stack spacing={2.35}>
         <CustomerHeroCard
           customerName={signedInCustomer?.name}
+          onOpenSettings={onOpenSettings}
           onOpenMap={() => {
             if (!customerCoords) {
               requestCurrentLocation();
@@ -892,24 +887,6 @@ export function CustomerBookingPage({
             }
             onSubmit={handleConfirmBooking}
           />
-
-          {signedInCustomer && telegramBotUsername ? (
-            <TelegramQRCode
-              botUsername={telegramBotUsername}
-              role="customer"
-              subjectId={signedInCustomer.id}
-              size={128}
-              compact
-              linked={Boolean(signedInCustomer.telegramConnected)}
-              chatId={signedInCustomer.telegramChatId ?? undefined}
-              title={signedInCustomer.telegramConnected ? "Telegram sozlamalari" : "Telegram botni ulash"}
-              description={
-                signedInCustomer.telegramConnected
-                  ? "Bron statuslari, eslatmalar va bot ichidagi bron qilish shu akkauntga ulangan."
-                  : `Start bosing. Bron va ${reminderMinutes} daqiqa oldingi eslatmalar Telegramga keladi.`
-              }
-            />
-          ) : null}
         </Stack>
 
         <Box sx={{ display: { xs: "none", lg: "block" } }}>
@@ -1001,18 +978,6 @@ export function CustomerBookingPage({
               transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
               sx={{ display: "flex", flexDirection: "column", flex: 1 }}
             >
-                  {onOpenSettings ? (
-                    <Box sx={{ position: "absolute", top: 12, right: 18, zIndex: 6 }}>
-                      <Button
-                        onClick={onOpenSettings}
-                        variant="outlined"
-                        startIcon={<SettingsRoundedIcon />}
-                        sx={{ textTransform: "none", borderRadius: "12px" }}
-                      >
-                        Sozlamalar
-                      </Button>
-                    </Box>
-                  ) : null}
               {step === "barbers" ? barberStepContent : null}
               {step === "nearby" ? (
                 <CustomerNearbyBarbersPage

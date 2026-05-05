@@ -18,6 +18,7 @@ import {
   loginBarber,
   loginCustomer,
   registerCustomer,
+  updateMe,
   uploadMedia,
   updateBarber,
   updateMyBarberSettings,
@@ -68,6 +69,7 @@ import {
   BookingItem,
   BookingStatus,
   CustomerAccount,
+  CustomerSettingsPayload,
   DiscountFormPayload,
   DiscountItem,
   PageKey,
@@ -210,21 +212,21 @@ export default function App() {
     return mapAuthUserToCustomer(session.user);
   }, [session]);
 
-  const handleUpdateLocalCustomerProfile = (patch: Partial<CustomerAccount>) => {
-    setSession((prev) => {
-      if (!prev || prev.user.role !== "customer") return prev;
-      const updated = {
-        ...prev,
-        user: {
-          ...prev.user,
-          fullName: patch.name ?? prev.user.fullName,
-          phone: patch.phone ?? prev.user.phone,
-          telegramChatId: patch.telegramChatId ?? prev.user.telegramChatId,
-        },
-      } as typeof prev;
-      writeStoredSession(updated, true);
-      return updated;
-    });
+  const handleUpdateCustomerSettings = async (payload: CustomerSettingsPayload) => {
+    if (!session || session.user.role !== "customer") {
+      throw new Error("Profilni o'zgartirish uchun foydalanuvchi sifatida kiring.");
+    }
+
+    const apiUser = await updateMe(session.accessToken, payload);
+    const nextUser = mapApiUserToAuthUser(apiUser);
+    const nextSession: AuthSession = {
+      ...session,
+      user: nextUser,
+    };
+
+    setSession(nextSession);
+    writeStoredSession(nextSession, true);
+    return mapAuthUserToCustomer(nextUser);
   };
 
   const currentBarber: BarberProfile | null = useMemo(() => {
@@ -833,7 +835,8 @@ export default function App() {
           currentUser={currentCustomer}
           telegramBotUsername={telegramBotUsername}
           reminderMinutes={reminderMinutes}
-          onUpdateLocalProfile={handleUpdateLocalCustomerProfile}
+          onSubmit={handleUpdateCustomerSettings}
+          onUploadMedia={handleUploadMedia}
           onBack={() => setCustomerActivePage("booking")}
         />
       );
@@ -847,8 +850,6 @@ export default function App() {
         serviceOptions={serviceOptions}
         bookings={bookings}
         availabilityItems={availabilityBookings}
-        telegramBotUsername={telegramBotUsername}
-        reminderMinutes={reminderMinutes}
         onCreateBooking={handleCreateBooking}
         trackedBookingId={trackedCustomerBookingId}
         onClearTrackedBooking={() => setTrackedCustomerBookingId(null)}
