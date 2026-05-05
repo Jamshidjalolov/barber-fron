@@ -90,6 +90,7 @@ const defaultServices = ["Soch olish", "Fade", "Soch + soqol", "Premium"];
 const HERO_IMAGE_URL = "https://images.unsplash.com/photo-1622287162716-f311baa1a2b8?auto=format&fit=crop&w=900&q=80";
 const SALON_IMAGE_URL = "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=600&q=80";
 const DEFAULT_TELEGRAM_BOT_USERNAME = "Barber_shop_001_bot";
+const STATUS_BAR_TOP_OFFSET = Platform.OS === "android" ? StatusBar.currentHeight ?? 0 : 0;
 
 const serviceIcons: Record<string, keyof typeof MaterialCommunityIcons.glyphMap> = {
   "Soch olish": "content-cut",
@@ -419,7 +420,7 @@ function AuthScreen({ onAuthenticated }: { onAuthenticated: (session: AuthSessio
 
   return (
     <SafeAreaView style={styles.safe}>
-      <StatusBar barStyle="light-content" backgroundColor={colors.paper} />
+      <StatusBar barStyle="light-content" backgroundColor={colors.paper} translucent={false} />
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={styles.flex}>
         <ScrollView contentContainerStyle={styles.authScroll} keyboardShouldPersistTaps="handled">
           <View style={styles.authRoleTabs}>
@@ -2170,7 +2171,7 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <StatusBar barStyle="light-content" backgroundColor={colors.paper} />
+      <StatusBar barStyle="light-content" backgroundColor={colors.paper} translucent={false} />
       <View style={styles.topBar}>
         {tab === "book" || bookingSuccess || showNotifications ? (
           <HeaderIcon
@@ -2313,15 +2314,18 @@ const styles = StyleSheet.create({
   safe: {
     backgroundColor: colors.paper,
     flex: 1,
+    paddingTop: STATUS_BAR_TOP_OFFSET,
   },
   flex: {
     flex: 1,
   },
   authScroll: {
+    backgroundColor: colors.paper,
     flexGrow: 1,
     justifyContent: "center",
-    padding: 20,
-    backgroundColor: colors.paper,
+    paddingBottom: 24,
+    paddingHorizontal: 20,
+    paddingTop: 20,
   },
   authRoleTabs: {
     flexDirection: "row",
