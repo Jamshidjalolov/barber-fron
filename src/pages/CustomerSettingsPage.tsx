@@ -21,6 +21,7 @@ import {
 import { ChangeEvent, useEffect, useState } from "react";
 import { TelegramQRCode } from "../components/common/TelegramQRCode";
 import { PageHeader } from "../components/common/PageHeader";
+import { PreferencesPanel, usePreferences } from "../lib/preferences";
 import { CustomerAccount, CustomerSettingsPayload } from "../types";
 
 interface CustomerSettingsPageProps {
@@ -40,6 +41,7 @@ export function CustomerSettingsPage({
   onUploadMedia,
   onBack,
 }: CustomerSettingsPageProps) {
+  const { locale, t } = usePreferences();
   const [fullName, setFullName] = useState(currentUser.name ?? "");
   const [phone, setPhone] = useState(currentUser.phone ?? "");
   const [password, setPassword] = useState("");
@@ -133,10 +135,14 @@ export function CustomerSettingsPage({
     >
       <Stack spacing={2.4} sx={{ width: "min(1080px, 100%)", mx: "auto" }}>
         <PageHeader
-          title="Sozlamalar"
-          subtitle="Umumiy profil, rasm, parol va Telegram bot ulanishi shu sahifada boshqariladi."
+          title={t("Sozlamalar")}
+          subtitle={
+            locale === "ru"
+              ? "Профиль, фото, пароль, язык и Telegram бот управляются здесь."
+              : "Umumiy profil, rasm, parol, til va Telegram bot ulanishi shu sahifada boshqariladi."
+          }
           icon={<SettingsRoundedIcon sx={{ fontSize: "1.2rem" }} />}
-          eyebrow="Foydalanuvchi paneli"
+          eyebrow={t("Foydalanuvchi paneli")}
           action={
             <Button
               variant="outlined"
@@ -149,7 +155,7 @@ export function CustomerSettingsPage({
                 fontWeight: 700,
               }}
             >
-              Bronlarga qaytish
+              {t("Bronlarga qaytish")}
             </Button>
           }
         />
@@ -184,10 +190,15 @@ export function CustomerSettingsPage({
             sx={{
               p: { xs: 1.35, md: 1.8 },
               borderRadius: "28px",
-              background:
-                "linear-gradient(135deg, rgba(18,18,31,0.9) 0%, rgba(8,10,20,0.76) 100%)",
-              border: `1px solid ${alpha("#c4b5fd", 0.16)}`,
-              boxShadow: "0 24px 70px rgba(0,0,0,0.3)",
+              background: (theme) =>
+                theme.palette.mode === "dark"
+                  ? "linear-gradient(135deg, rgba(18,18,31,0.9) 0%, rgba(8,10,20,0.76) 100%)"
+                  : "linear-gradient(135deg, rgba(255,255,255,0.96) 0%, rgba(248,250,252,0.9) 100%)",
+              border: (theme) => `1px solid ${alpha(theme.palette.primary.main, 0.16)}`,
+              boxShadow: (theme) =>
+                theme.palette.mode === "dark"
+                  ? "0 24px 70px rgba(0,0,0,0.3)"
+                  : "0 18px 50px rgba(15,23,42,0.08)",
               backdropFilter: "blur(22px)",
             }}
           >
@@ -209,9 +220,11 @@ export function CustomerSettingsPage({
                 </Avatar>
 
                 <Stack spacing={0.8} sx={{ minWidth: 0, flex: 1 }}>
-                  <Typography variant="h6">Umumiy profil</Typography>
+                  <Typography variant="h6">{t("Umumiy profil")}</Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Ism, telefon, profil rasmi va parolni yangilang. Bu ma'lumotlar bronlarda ham ishlatiladi.
+                    {locale === "ru"
+                      ? "Обновите имя, телефон, фото профиля и пароль. Эти данные используются в бронированиях."
+                      : "Ism, telefon, profil rasmi va parolni yangilang. Bu ma'lumotlar bronlarda ham ishlatiladi."}
                   </Typography>
                   <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
                     <Button
@@ -221,7 +234,7 @@ export function CustomerSettingsPage({
                       disabled={uploading || saving}
                       sx={{ borderRadius: "14px", textTransform: "none", fontWeight: 700 }}
                     >
-                      Rasm yuklash
+                      {t("Rasm yuklash")}
                       <input hidden type="file" accept="image/*" onChange={handlePhotoChange} />
                     </Button>
                     {photoUrl ? (
@@ -231,7 +244,7 @@ export function CustomerSettingsPage({
                         onClick={() => setPhotoUrl("")}
                         sx={{ borderRadius: "14px", textTransform: "none", color: "#c4b5fd" }}
                       >
-                        Rasmni olib tashlash
+                        {t("Rasmni olib tashlash")}
                       </Button>
                     ) : null}
                   </Stack>
@@ -248,7 +261,7 @@ export function CustomerSettingsPage({
                 }}
               >
                 <TextField
-                  label="To'liq ism"
+                  label={t("To'liq ism")}
                   value={fullName}
                   onChange={(event) => setFullName(event.target.value)}
                   InputProps={{
@@ -261,7 +274,7 @@ export function CustomerSettingsPage({
                 />
 
                 <TextField
-                  label="Telefon raqami"
+                  label={t("Telefon raqami")}
                   value={phone}
                   onChange={(event) => setPhone(event.target.value)}
                   InputProps={{
@@ -274,11 +287,11 @@ export function CustomerSettingsPage({
                 />
 
                 <TextField
-                  label="Yangi parol"
+                  label={t("Yangi parol")}
                   type="password"
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
-                  helperText="Bo'sh qoldirsangiz parol o'zgarmaydi."
+                  helperText={locale === "ru" ? "Оставьте пустым, если пароль менять не нужно." : "Bo'sh qoldirsangiz parol o'zgarmaydi."}
                   sx={{ gridColumn: { xs: "auto", md: "1 / -1" } }}
                   InputProps={{
                     startAdornment: (
@@ -302,7 +315,7 @@ export function CustomerSettingsPage({
                     fontWeight: 700,
                   }}
                 >
-                  Bekor qilish
+                  {t("Bekor qilish")}
                 </Button>
                 <Button
                   variant="contained"
@@ -318,23 +331,31 @@ export function CustomerSettingsPage({
                     boxShadow: `0 18px 36px ${alpha("#8b5cf6", 0.28)}`,
                   }}
                 >
-                  {saving ? "Saqlanmoqda..." : "Profilni saqlash"}
+                  {saving ? t("Saqlanmoqda...") : t("Profilni saqlash")}
                 </Button>
               </Stack>
             </Stack>
           </Box>
 
-          <Box
-            sx={{
-              p: { xs: 1.35, md: 1.65 },
-              borderRadius: "28px",
-              background:
-                "linear-gradient(135deg, rgba(16,24,39,0.9) 0%, rgba(8,10,20,0.76) 100%)",
-              border: `1px solid ${alpha("#22d3ee", 0.16)}`,
-              boxShadow: "0 24px 70px rgba(0,0,0,0.28)",
-            }}
-          >
-            <Stack spacing={1.35}>
+          <Stack spacing={1.35}>
+            <PreferencesPanel />
+
+            <Box
+              sx={{
+                p: { xs: 1.35, md: 1.65 },
+                borderRadius: "28px",
+                background: (theme) =>
+                  theme.palette.mode === "dark"
+                    ? "linear-gradient(135deg, rgba(16,24,39,0.9) 0%, rgba(8,10,20,0.76) 100%)"
+                    : "linear-gradient(135deg, rgba(255,255,255,0.96) 0%, rgba(248,250,252,0.9) 100%)",
+                border: `1px solid ${alpha("#22d3ee", 0.16)}`,
+                boxShadow: (theme) =>
+                  theme.palette.mode === "dark"
+                    ? "0 24px 70px rgba(0,0,0,0.28)"
+                    : "0 18px 50px rgba(15,23,42,0.08)",
+              }}
+            >
+              <Stack spacing={1.35}>
               <Stack direction="row" spacing={1} alignItems="center">
                 <Box
                   sx={{
@@ -378,8 +399,9 @@ export function CustomerSettingsPage({
                   Telegram bot username backend sozlamalaridan topilmadi.
                 </Alert>
               )}
-            </Stack>
-          </Box>
+              </Stack>
+            </Box>
+          </Stack>
         </Box>
       </Stack>
     </Box>

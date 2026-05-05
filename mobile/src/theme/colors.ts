@@ -1,4 +1,4 @@
-export const colors = {
+const darkColors = {
   ink: "#020405",
   text: "#f8fafc",
   muted: "#9ca3af",
@@ -19,6 +19,35 @@ export const colors = {
   haze: "#1b2026",
   darkPanel: "#0b0e11",
 };
+
+const lightColors = {
+  ink: "#f8fafc",
+  text: "#101827",
+  muted: "#64748b",
+  paper: "#f7f8fb",
+  surface: "#ffffff",
+  surfaceStrong: "#f1f5f9",
+  glass: "#ffffff",
+  line: "rgba(15,23,42,0.08)",
+  lineStrong: "rgba(15,23,42,0.14)",
+  gold: "#f8b400",
+  goldDark: "#d89200",
+  purple: "#7c3aed",
+  purpleDark: "#5b21b6",
+  cyan: "#0284c7",
+  green: "#16a34a",
+  red: "#dc2626",
+  blue: "#2563eb",
+  haze: "#e2e8f0",
+  darkPanel: "#ffffff",
+};
+
+export type MobileThemeMode = "dark" | "light";
+export const colors = { ...darkColors };
+
+export function applyMobileTheme(mode: MobileThemeMode) {
+  Object.assign(colors, mode === "light" ? lightColors : darkColors);
+}
 
 export const shadows = {
   soft: {

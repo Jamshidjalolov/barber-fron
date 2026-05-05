@@ -7,13 +7,24 @@ import "@fontsource/manrope/600.css";
 import "@fontsource/manrope/700.css";
 import "leaflet/dist/leaflet.css";
 import App from "./App";
-import { theme } from "./theme";
+import { PreferencesProvider, usePreferences } from "./lib/preferences";
+import { createAppTheme } from "./theme";
 
-ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
-    <ThemeProvider theme={theme}>
+function ThemedRoot() {
+  const { themeMode } = usePreferences();
+
+  return (
+    <ThemeProvider theme={createAppTheme(themeMode)}>
       <CssBaseline />
       <App />
     </ThemeProvider>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+  <React.StrictMode>
+    <PreferencesProvider>
+      <ThemedRoot />
+    </PreferencesProvider>
   </React.StrictMode>,
 );

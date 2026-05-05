@@ -18,6 +18,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
+import { usePreferences } from "../../lib/preferences";
 import { AdminUser, PageKey } from "../../types";
 import { BrandLogo } from "../common/BrandLogo";
 import { LogoutConfirmDialog } from "./LogoutConfirmDialog";
@@ -62,6 +63,7 @@ export function Sidebar({
   onPageChange,
 }: SidebarProps) {
   const [logoutOpen, setLogoutOpen] = useState(false);
+  const { t } = usePreferences();
 
   return (
     <>
@@ -122,7 +124,7 @@ export function Sidebar({
                   <Icon sx={{ fontSize: "1.15rem" }} />
                 </ListItemIcon>
                 <ListItemText
-                  primary={label}
+                  primary={t(label)}
                   primaryTypographyProps={{
                     fontWeight: 700,
                     color: "inherit",
@@ -261,7 +263,7 @@ export function Sidebar({
                   }}
                 />
                 <Typography sx={{ fontSize: "0.72rem", fontWeight: 700, color: "#86efac" }}>
-                  Online
+                  {t("Online")}
                 </Typography>
               </Stack>
             </Stack>

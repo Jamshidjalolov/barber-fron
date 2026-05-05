@@ -45,7 +45,7 @@ import {
   updateMyBarberSettings,
 } from "./src/api/client";
 import { Card, Field, LoadingCard, Pill, PrimaryButton, SectionTitle, Stat } from "./src/components/ui";
-import { colors, shadows } from "./src/theme/colors";
+import { applyMobileTheme, colors, MobileThemeMode, shadows } from "./src/theme/colors";
 import {
   ApiAvailabilityBooking,
   ApiBarber,
@@ -63,6 +63,7 @@ import { buildIsoFromLocal, buildTimeSlots, formatDateLabel, formatTime, getLoca
 
 type AuthMode = "login" | "register";
 type TabKey = "home" | "book" | "barbers" | "bookings" | "discounts" | "profile";
+type AppLocale = "uz" | "ru";
 type BookingSuccess = {
   barberName: string;
   serviceName: string;
@@ -91,6 +92,41 @@ const HERO_IMAGE_URL = "https://images.unsplash.com/photo-1622287162716-f311baa1
 const SALON_IMAGE_URL = "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=600&q=80";
 const DEFAULT_TELEGRAM_BOT_USERNAME = "Barber_shop_001_bot";
 const STATUS_BAR_TOP_OFFSET = Platform.OS === "android" ? StatusBar.currentHeight ?? 0 : 0;
+
+const ruText: Record<string, string> = {
+  "Bosh": "Главная",
+  "Bron": "Запись",
+  "Barber": "Барбер",
+  "Navbat": "Записи",
+  "Skidka": "Скидки",
+  "Profil": "Профиль",
+  "Admin": "Админ",
+  "Mijoz": "Клиент",
+  "Boshqaruv paneli": "Панель управления",
+  "Mening ish joyim": "Мое рабочее место",
+  "Bildirishnomalar": "Уведомления",
+  "Bron tasdiqlandi": "Запись подтверждена",
+  "Sozlamalar": "Настройки",
+  "Profil va sozlamalar": "Профиль и настройки",
+  "Ko'rinish": "Внешний вид",
+  "Kunduzgi rejim": "Дневной режим",
+  "Tungi rejim": "Ночной режим",
+  "Til": "Язык",
+  "O'zbekcha": "Узбекский",
+  "Ruscha": "Русский",
+  "Telegram bot": "Telegram бот",
+  "Sozlamalarni saqlash": "Сохранить настройки",
+  "Chiqish": "Выйти",
+  "Bekor qilish": "Отмена",
+  "Yangi skidka": "Новая скидка",
+  "Skidka yaratish": "Создать скидку",
+  "Skidkalar": "Скидки",
+  "Hozircha bildirishnoma yo'q.": "Пока нет уведомлений.",
+};
+
+function translate(locale: AppLocale, value: string) {
+  return locale === "ru" ? ruText[value] ?? value : value;
+}
 
 const serviceIcons: Record<string, keyof typeof MaterialCommunityIcons.glyphMap> = {
   "Soch olish": "content-cut",
@@ -843,15 +879,27 @@ export default function App() {
   const [searchText, setSearchText] = useState("");
   const [bookingSuccess, setBookingSuccess] = useState<BookingSuccess | null>(null);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [seenNotificationIds, setSeenNotificationIds] = useState<Set<string>>(() => new Set());
   const [logoutModalOpen, setLogoutModalOpen] = useState(false);
   const [barberModalOpen, setBarberModalOpen] = useState(false);
+  const [discountModalOpen, setDiscountModalOpen] = useState(false);
+  const [themeMode, setThemeMode] = useState<MobileThemeMode>("dark");
+  const [, setThemeRevision] = useState(0);
+  const [locale, setLocale] = useState<AppLocale>("uz");
   const [telegramBotUsername, setTelegramBotUsername] = useState<string | null>(DEFAULT_TELEGRAM_BOT_USERNAME);
   const [reminderMinutes, setReminderMinutes] = useState(10);
 
   const role = session?.user.role ?? "customer";
-  const visibleTabs = getTabs(role);
+  const t = useCallback((value: string) => translate(locale, value), [locale]);
+  const visibleTabs = getTabs(role).map((item) => ({ ...item, label: t(item.label) }));
   const loadedOnceRef = useRef(false);
   const selectedBarber = barbers.find((item) => item.id === selectedBarberId) ?? barbers[0];
+
+  useEffect(() => {
+    applyMobileTheme(themeMode);
+    rebuildMobileStyles();
+    setThemeRevision((current) => current + 1);
+  }, [themeMode]);
 
   const upcomingBookings = useMemo(
     () => [...bookings].filter((item) => item.status !== "completed" && item.status !== "rejected"),
@@ -922,6 +970,10 @@ export default function App() {
 
     return [...bookingNotifications, ...discountNotifications];
   }, [bookings, discounts, role]);
+  const unreadNotificationCount = useMemo(
+    () => notificationItems.filter((item) => !seenNotificationIds.has(item.id)).length,
+    [notificationItems, seenNotificationIds],
+  );
   const dateChoices = useMemo(() => Array.from({ length: 4 }, (_, index) => {
     const value = new Date();
     value.setDate(value.getDate() + index);
@@ -1219,6 +1271,7 @@ export default function App() {
         barberId: role === "admin" ? discountForm.barberId || selectedBarber?.id : null,
       });
       setDiscountForm(defaultDiscountForm());
+      setDiscountModalOpen(false);
       await loadData();
       Alert.alert("Skidka yaratildi", "Taklif panelda korinadi.");
     } catch (error) {
@@ -1858,13 +1911,8 @@ export default function App() {
     </View>
   );
 
-  const renderDiscounts = () => (
-    <View style={styles.stack}>
-      <SectionTitle eyebrow="Takliflar" title="Skidkalar" />
-      {initialLoading ? <LoadingCard label="Skidkalar yuklanmoqda..." /> : null}
-      {role !== "customer" ? (
-        <Card style={styles.formCard}>
-          <Text style={styles.cardTitle}>Yangi skidka</Text>
+  const renderDiscountForm = () => (
+    <View style={styles.modalForm}>
           {role === "admin" ? (
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.horizontalList}>
               {barbers.map((barber) => (
@@ -1910,8 +1958,20 @@ export default function App() {
               onChangeText={(value) => setDiscountForm((current) => ({ ...current, endsAt: value }))}
             />
           </View>
-          <PrimaryButton label="Skidka yaratish" onPress={saveDiscountForm} loading={busy} />
-        </Card>
+      <PrimaryButton label={t("Skidka yaratish")} onPress={saveDiscountForm} loading={busy} />
+    </View>
+  );
+
+  const renderDiscounts = () => (
+    <View style={styles.stack}>
+      <SectionTitle eyebrow="Takliflar" title={t("Skidkalar")} />
+      {initialLoading ? <LoadingCard label="Skidkalar yuklanmoqda..." /> : null}
+      {role !== "customer" ? (
+        <PrimaryButton
+          label={t("Yangi skidka")}
+          onPress={() => setDiscountModalOpen(true)}
+          tone="gold"
+        />
       ) : null}
       {discounts.map((discount) => (
         <Card key={discount.id} style={styles.discountCard}>
@@ -1937,9 +1997,65 @@ export default function App() {
     </View>
   );
 
+  const renderPreferencesPanel = () => (
+    <Card style={styles.preferenceCard}>
+      <View style={styles.rowBetween}>
+        <View style={styles.row}>
+          <View style={styles.preferenceIcon}>
+            <Ionicons name={themeMode === "dark" ? "moon" : "sunny"} size={22} color={colors.goldDark} />
+          </View>
+          <View>
+            <Text style={styles.cardTitle}>{t("Ko'rinish")}</Text>
+            <Text style={styles.muted}>{locale === "ru" ? "Тема и язык приложения" : "Ilova ko'rinishi va tili"}</Text>
+          </View>
+        </View>
+      </View>
+
+      <View style={styles.preferenceGroup}>
+        <Text style={styles.preferenceLabel}>{t("Ko'rinish")}</Text>
+        <View style={styles.segment}>
+          <Pressable
+            onPress={() => setThemeMode("light")}
+            style={[styles.segmentItem, themeMode === "light" && styles.segmentItemActive]}
+          >
+            <Text style={[styles.segmentText, themeMode === "light" && styles.segmentTextActive]}>
+              {t("Kunduzgi rejim")}
+            </Text>
+          </Pressable>
+          <Pressable
+            onPress={() => setThemeMode("dark")}
+            style={[styles.segmentItem, themeMode === "dark" && styles.segmentItemActive]}
+          >
+            <Text style={[styles.segmentText, themeMode === "dark" && styles.segmentTextActive]}>
+              {t("Tungi rejim")}
+            </Text>
+          </Pressable>
+        </View>
+      </View>
+
+      <View style={styles.preferenceGroup}>
+        <Text style={styles.preferenceLabel}>{t("Til")}</Text>
+        <View style={styles.segment}>
+          <Pressable
+            onPress={() => setLocale("uz")}
+            style={[styles.segmentItem, locale === "uz" && styles.segmentItemActive]}
+          >
+            <Text style={[styles.segmentText, locale === "uz" && styles.segmentTextActive]}>UZ</Text>
+          </Pressable>
+          <Pressable
+            onPress={() => setLocale("ru")}
+            style={[styles.segmentItem, locale === "ru" && styles.segmentItemActive]}
+          >
+            <Text style={[styles.segmentText, locale === "ru" && styles.segmentTextActive]}>RU</Text>
+          </Pressable>
+        </View>
+      </View>
+    </Card>
+  );
+
   const renderProfile = () => (
     <View style={styles.stack}>
-      <SectionTitle eyebrow={roleLabels[role]} title="Profil va sozlamalar" />
+      <SectionTitle eyebrow={t(roleLabels[role])} title={t("Profil va sozlamalar")} />
       <Card style={styles.profileCard}>
         <View style={styles.row}>
           {session.user.photoUrl ? (
@@ -1959,7 +2075,9 @@ export default function App() {
         </View>
       </Card>
 
-      <SectionHeaderRow title="Telegram bot" />
+      {renderPreferencesPanel()}
+
+      <SectionHeaderRow title={t("Telegram bot")} />
       <TelegramConnectCard
         botUsername={telegramBotUsername}
         role={role}
@@ -1968,7 +2086,7 @@ export default function App() {
       />
 
       <Card style={styles.formCard}>
-        <Text style={styles.cardTitle}>Sozlamalar</Text>
+        <Text style={styles.cardTitle}>{t("Sozlamalar")}</Text>
         <Field
           label="Ism familya"
           value={profileForm.fullName}
@@ -2171,7 +2289,7 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <StatusBar barStyle="light-content" backgroundColor={colors.paper} translucent={false} />
+      <StatusBar barStyle={themeMode === "light" ? "dark-content" : "light-content"} backgroundColor={colors.paper} translucent={false} />
       <View style={styles.topBar}>
         {tab === "book" || bookingSuccess || showNotifications ? (
           <HeaderIcon
@@ -2189,13 +2307,21 @@ export default function App() {
           />
         ) : <View style={styles.headerIcon} />}
         <View style={styles.topCenter}>
-          <Text style={[styles.topTitle, { color: roleAccent(role) }]}>{showNotifications ? "Bildirishnomalar" : bookingSuccess ? "Bron tasdiqlandi" : topTitleForRole(role)}</Text>
+          <Text style={[styles.topTitle, { color: roleAccent(role) }]}>{showNotifications ? t("Bildirishnomalar") : bookingSuccess ? t("Bron tasdiqlandi") : t(topTitleForRole(role))}</Text>
           {role === "customer" ? <Text style={styles.topLabel}>CLASSIC CUTS</Text> : null}
         </View>
         <HeaderIcon
           name={showNotifications ? "notifications" : "notifications-outline"}
-          onPress={() => setShowNotifications((value) => !value)}
-          badgeCount={showNotifications ? 0 : notificationItems.length}
+          onPress={() => {
+            setShowNotifications((value) => {
+              const next = !value;
+              if (next) {
+                setSeenNotificationIds(new Set(notificationItems.map((item) => item.id)));
+              }
+              return next;
+            });
+          }}
+          badgeCount={showNotifications ? 0 : unreadNotificationCount}
         />
       </View>
       <ScrollView
@@ -2286,6 +2412,19 @@ export default function App() {
           </View>
         </ScrollView>
       </AppModal>
+      <AppModal
+        visible={discountModalOpen}
+        title={t("Yangi skidka")}
+        subtitle={locale === "ru" ? "Создайте скидку для выбранного барбера." : "Tanlangan barber uchun chegirma yarating."}
+        onClose={() => {
+          setDiscountModalOpen(false);
+          setDiscountForm(defaultDiscountForm());
+        }}
+      >
+        <ScrollView style={styles.modalScroll} keyboardShouldPersistTaps="handled">
+          {renderDiscountForm()}
+        </ScrollView>
+      </AppModal>
       {!bookingSuccess ? <View style={styles.bottomNav}>
         {visibleTabs.map((item) => (
           <Pressable
@@ -2300,7 +2439,7 @@ export default function App() {
             <Ionicons
               name={iconForTab(item.key)}
               size={21}
-              color={tab === item.key ? colors.goldDark : "rgba(255,255,255,0.72)"}
+              color={tab === item.key ? colors.goldDark : colors.muted}
             />
             <Text style={[styles.navText, tab === item.key && styles.navTextActive]}>{item.label}</Text>
           </Pressable>
@@ -2310,7 +2449,14 @@ export default function App() {
   );
 }
 
-const styles = StyleSheet.create({
+let styles = createAppStyles();
+
+function rebuildMobileStyles() {
+  styles = createAppStyles();
+}
+
+function createAppStyles() {
+  return StyleSheet.create({
   safe: {
     backgroundColor: colors.paper,
     flex: 1,
@@ -3268,6 +3414,27 @@ const styles = StyleSheet.create({
   profileCard: {
     gap: 12,
   },
+  preferenceCard: {
+    gap: 14,
+  },
+  preferenceIcon: {
+    alignItems: "center",
+    backgroundColor: "rgba(215,170,85,0.12)",
+    borderColor: "rgba(215,170,85,0.22)",
+    borderRadius: 14,
+    borderWidth: 1,
+    height: 46,
+    justifyContent: "center",
+    width: 46,
+  },
+  preferenceGroup: {
+    gap: 8,
+  },
+  preferenceLabel: {
+    color: colors.text,
+    fontSize: 13,
+    fontWeight: "900",
+  },
   analyticsCard: {
     gap: 16,
   },
@@ -3567,4 +3734,5 @@ const styles = StyleSheet.create({
   pressed: {
     opacity: 0.82,
   },
-});
+  });
+}

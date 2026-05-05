@@ -23,6 +23,7 @@ import {
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { ChangeEvent, FormEvent, ReactNode, useEffect, useState } from "react";
+import { PreferencesPanel } from "../../lib/preferences";
 import { BarberProfile, BarberSettingsPayload } from "../../types";
 import { TelegramQRCode } from "../common/TelegramQRCode";
 import { BarberLocationPickerMap } from "../maps/BarberLocationPickerMap";
@@ -276,6 +277,8 @@ export function BarberSettingsDialog({
 
       <DialogContent sx={{ px: { xs: 2.2, md: 2.6 }, py: { xs: 2, md: 2.3 } }}>
         <Stack spacing={1.6}>
+          <PreferencesPanel />
+
           {telegramBotUsername && barber.userId ? (
             <Panel
               icon={<ScheduleRoundedIcon sx={{ fontSize: "1rem" }} />}
