@@ -2046,6 +2046,39 @@ export default function App() {
 
   const renderBarbers = () => (
     <View style={styles.stack}>
+      {/* Map preview for barbers (mobile only) */}
+      <Card style={{ marginBottom: 12 }}>
+        {Platform.OS === "web" ? (
+          <Text style={{ color: colors.muted }}>Xarita faqat mobil ilovada ishlaydi.</Text>
+        ) : (
+          <View style={{ height: 220, borderRadius: 12, overflow: "hidden" }}>
+            {MapView ? (
+              <MapView
+                style={{ flex: 1 }}
+                initialRegion={{
+                  latitude: customerCoords?.latitude ?? (barbers[0]?.latitude ?? 41.2995),
+                  longitude: customerCoords?.longitude ?? (barbers[0]?.longitude ?? 69.2401),
+                  latitudeDelta: 0.08,
+                  longitudeDelta: 0.08,
+                }}
+              >
+                {barbers
+                  .filter((b) => typeof b.latitude === "number" && typeof b.longitude === "number")
+                  .map((b) => (
+                    <Marker
+                      key={b.id}
+                      coordinate={{ latitude: b.latitude ?? 0, longitude: b.longitude ?? 0 }}
+                      title={b.full_name}
+                      description={b.address ?? undefined}
+                    />
+                  ))}
+              </MapView>
+            ) : (
+              <Text style={{ color: colors.muted }}>Xarita yuklanmadi.</Text>
+            )}
+          </View>
+        )}
+      </Card>
       <SectionTitle eyebrow={role === "admin" ? "Admin boshqaruv" : "Jamoa"} title={role === "admin" ? "Barber panel" : "Barberlar"} />
       {initialLoading ? <LoadingCard label="Barberlar yuklanmoqda..." /> : null}
       {role === "admin" ? (
