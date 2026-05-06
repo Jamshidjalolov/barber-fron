@@ -283,7 +283,6 @@ function getTabs(role: ApiRole): Array<{ key: TabKey; label: string }> {
       { key: "home", label: "Bosh" },
       { key: "book", label: "Bron" },
       { key: "bookings", label: "Navbat" },
-      { key: "discounts", label: "Skidka" },
       { key: "profile", label: "Profil" },
     ];
   }
@@ -291,7 +290,6 @@ function getTabs(role: ApiRole): Array<{ key: TabKey; label: string }> {
     return [
       { key: "home", label: "Bosh" },
       { key: "bookings", label: "Navbat" },
-      { key: "discounts", label: "Skidka" },
       { key: "profile", label: "Profil" },
     ];
   }
@@ -299,7 +297,6 @@ function getTabs(role: ApiRole): Array<{ key: TabKey; label: string }> {
     { key: "home", label: "Bosh" },
     { key: "barbers", label: "Barber" },
     { key: "bookings", label: "Navbat" },
-    { key: "discounts", label: "Skidka" },
     { key: "profile", label: "Admin" },
   ];
 }
@@ -2633,9 +2630,7 @@ export default function App() {
         ? renderBarbers()
         : tab === "bookings"
           ? renderBookings()
-          : tab === "discounts"
-            ? renderDiscounts()
-            : renderProfile();
+          : renderProfile();
 
   return (
     <PreferencesContext.Provider value={{ locale, t, themeMode }}>
