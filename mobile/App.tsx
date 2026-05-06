@@ -1017,6 +1017,7 @@ export default function App() {
   const [seenNotificationIds, setSeenNotificationIds] = useState<Set<string>>(() => new Set());
   const [logoutModalOpen, setLogoutModalOpen] = useState(false);
   const [barberModalOpen, setBarberModalOpen] = useState(false);
+  const [mapModalOpen, setMapModalOpen] = useState(false);
   const [discountModalOpen, setDiscountModalOpen] = useState(false);
   const [themeMode, setThemeMode] = useState<MobileThemeMode>("light");
   const [, setThemeRevision] = useState(0);
@@ -1753,13 +1754,39 @@ export default function App() {
 
       <Field label="Izoh" value={note} onChangeText={setNote} placeholder="Masalan, fade qisqaroq" />
 
-      <Card style={styles.locationRow}>
-        <View style={styles.grow}>
-          <Text style={styles.panelCardTitle}>Manzil</Text>
-          <Text style={styles.muted}>{selectedBarber ? selectedBarber.address || barberStudioTitle(selectedBarber) : "Barber tanlang"}</Text>
-        </View>
-        <Ionicons name="chevron-forward" size={21} color={colors.muted} />
-      </Card>
+      <Pressable onPress={() => setMapModalOpen(true)}>
+        <Card style={styles.locationRow}>
+          <View style={styles.grow}>
+            <Text style={styles.panelCardTitle}>Manzil</Text>
+            <Text style={styles.muted}>{selectedBarber ? selectedBarber.address || barberStudioTitle(selectedBarber) : "Barber tanlang"}</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={21} color={colors.muted} />
+        </Card>
+      </Pressable>
+
+      <Modal
+        visible={mapModalOpen}
+        animationType="slide"
+        onRequestClose={() => setMapModalOpen(false)}
+      >
+        <SafeAreaView style={{ flex: 1, backgroundColor: colors.surface }}>
+          <View style={{ flex: 1 }}>
+            <View style={{ padding: 12, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+              <Text style={{ fontSize: 18, fontWeight: "800" }}>{selectedBarber ? "Manzil" : "Xarita"}</Text>
+              <Pressable onPress={() => setMapModalOpen(false)}>
+                <Ionicons name="close" size={28} color={colors.muted} />
+              </Pressable>
+            </View>
+            <View style={{ flex: 1, padding: 12 }}>
+              <LocationPickerMap
+                latitude={selectedBarber?.latitude ?? null}
+                longitude={selectedBarber?.longitude ?? null}
+                onChange={() => undefined}
+              />
+            </View>
+          </View>
+        </SafeAreaView>
+      </Modal>
 
       <View style={styles.totalBar}>
         <View>
