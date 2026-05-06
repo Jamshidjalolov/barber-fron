@@ -64,9 +64,16 @@ import { buildIsoFromLocal, buildTimeSlots, formatDateLabel, formatTime, getLoca
 let MapView: any = null;
 let Marker: any = null;
 if (Platform.OS !== "web") {
-  const Maps = require("react-native-maps");
-  MapView = Maps.default;
-  Marker = Maps.Marker;
+  try {
+    const Maps = require("react-native-maps");
+    MapView = (Maps && (Maps.default ?? Maps)) || null;
+    Marker = Maps.Marker ?? (Maps.default && Maps.default.Marker) ?? null;
+  } catch (e) {
+    // react-native-maps may not be available in some environments
+    // keep MapView as null and show a fallback message in UI
+    // eslint-disable-next-line no-console
+    console.warn("react-native-maps not available:", e);
+  }
 }
 
 function LocationPickerMap({ latitude, longitude, onChange }: { latitude?: number | null, longitude?: number | null, onChange: (lat: number, lng: number) => void }) {
