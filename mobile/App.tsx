@@ -18,6 +18,7 @@ import {
   Text,
   TextInput,
   View,
+  useWindowDimensions,
 } from "react-native";
 
 import {
@@ -158,6 +159,10 @@ const ruText: Record<string, string> = {
   "Barber": "Барбер",
   "Navbat": "Записи",
   "Skidka": "Скидки",
+  "SMS ochilmadi": "Не удалось открыть SMS",
+  "Bu qurilmada SMS ilovasi topilmadi.": "На этом устройстве не найдено приложение для SMS.",
+  "Taklif panelda korinadi.": "Будет отображено в панели предложений.",
+  "Bu qurilmada masofani aniqlash uchun geolokatsiya ishlamadi.": "На этом устройстве не удалось определить местоположение.",
   "Profil": "Профиль",
   "Admin": "Админ",
   "Mijoz": "Клиент",
@@ -215,6 +220,46 @@ const ruText: Record<string, string> = {
   "Bronni tasdiqlash": "Подтвердить бронь",
   "So'm": "сум",
   "Narx bor": "Есть цена",
+  "Vaqt band": "Время занято",
+  "Bu vaqt band yoki o'tib ketgan. Boshqa vaqt tanlang.": "Это время занято или прошло. Выберите другое время.",
+  "Vaqt xato": "Неверное время",
+  "Sana YYYY-MM-DD va vaqt HH:MM formatida bolsin.": "Дата должна быть в формате YYYY-MM-DD и время в формате HH:MM.",
+  "Mijoz malumoti kerak": "Требуются данные клиента",
+  "Ism va telefon raqamni kiriting.": "Введите имя и номер телефона.",
+  "Bron yaratilmadi": "Бронь не создана",
+  "Qayta urinib koring.": "Попробуйте снова.",
+  "Status ozgarmadi": "Статус не изменён",
+  "Navbat ochirilsinmi?": "Удалить запись?",
+  "Ochmadi": "Не удалось открыть",
+  "Malumot yetarli emas": "Недостаточно данных",
+  "Ism, username va mutaxassislikni kiriting.": "Введите имя, имя пользователя и специализацию.",
+  "Parol kerak": "Требуется пароль",
+  "Skidka yaratildi": "Скидка создана",
+  "Skidka yaratilmadi": "Скидка не создана",
+  "Lokatsiya yo'q": "Нет местоположения",
+  "Brauzer yoki qurilma geolokatsiyani qo'llamayapti.": "Браузер или устройство не поддерживает геолокацию.",
+  "Lokatsiya olindi": "Местоположение получено",
+  "Lokatsiya olinmadi": "Не удалось получить местоположение",
+  "Masofa hisoblanmadi": "Не удалось вычислить расстояние",
+  "Ruxsat kerak": "Требуется разрешение",
+  "Rasm yoki videoni tanlash uchun galereyaga ruxsat bering.": "Разрешите доступ к галерее для выбора фото или видео.",
+  "Yuklandi": "Загружено",
+  "Yuklanmadi": "Не загружено",
+  "Ism kerak": "Требуется имя",
+  "Ism familyani kiriting.": "Введите имя и фамилию.",
+  "Telefon kerak": "Требуется телефон",
+  "Telefon raqamingizni kiriting.": "Введите номер телефона.",
+  "Username kerak": "Требуется имя пользователя",
+  "Parol qisqa": "Пароль слишком короткий",
+  "Parol kamida 4 ta belgidan iborat bo'lsin.": "Пароль должен быть не менее 4 символов.",
+  "Hozir bron qilish": "Записаться сейчас",
+  "Rad etish": "Отклонить",
+  "Ochirish": "Удалить",
+  "SMS": "SMS",
+  "Daromadni ko'rish": "Просмотреть доход",
+  "Profilni saqlash": "Сохранить профиль",
+  "Skidkani ochirish": "Удалить скидку",
+  "Skidka": "Скидки",
 };
 
 function translate(locale: AppLocale, value: string) {
@@ -450,7 +495,7 @@ async function openSms(phone: string, body: string) {
   const url = `sms:${phone}${separator}body=${encodeURIComponent(body)}`;
   const supported = await Linking.canOpenURL(url);
   if (!supported) {
-    Alert.alert("SMS ochilmadi", "Bu qurilmada SMS ilovasi topilmadi.");
+    Alert.alert(t("SMS ochilmadi"), t("Bu qurilmada SMS ilovasi topilmadi."));
     return;
   }
   await Linking.openURL(url);
@@ -964,16 +1009,16 @@ function BookingCard({
       {role !== "customer" && action ? (
         <View style={styles.actionRow}>
           <PrimaryButton label={action.label} onPress={() => onAdvance?.(booking)} tone="gold" />
-          <PrimaryButton label="SMS" onPress={() => sendBookingSms(booking)} tone="ghost" />
+          <PrimaryButton label={t("SMS")} onPress={() => sendBookingSms(booking)} tone="ghost" />
           {booking.status === "pending" || booking.status === "accepted" ? (
-            <PrimaryButton label="Rad etish" onPress={() => onReject?.(booking)} tone="ghost" />
+            <PrimaryButton label={t("Rad etish")} onPress={() => onReject?.(booking)} tone="ghost" />
           ) : null}
-          {role === "admin" ? <PrimaryButton label="Ochirish" onPress={() => onDelete?.(booking)} tone="ghost" /> : null}
+          {role === "admin" ? <PrimaryButton label={t("Ochirish")} onPress={() => onDelete?.(booking)} tone="ghost" /> : null}
         </View>
       ) : role === "admin" ? (
         <View style={styles.actionRow}>
-          <PrimaryButton label="SMS" onPress={() => sendBookingSms(booking)} tone="ghost" />
-          <PrimaryButton label="Ochirish" onPress={() => onDelete?.(booking)} tone="ghost" />
+          <PrimaryButton label={t("SMS")} onPress={() => sendBookingSms(booking)} tone="ghost" />
+          <PrimaryButton label={t("Ochirish")} onPress={() => onDelete?.(booking)} tone="ghost" />
         </View>
       ) : null}
     </Card>
@@ -1027,6 +1072,11 @@ export default function App() {
 
   const role = session?.user.role ?? "customer";
   const t = useCallback((value: string) => translate(locale, value), [locale]);
+  const { width: windowWidth } = useWindowDimensions();
+  const chipCols = 4;
+  const chipGap = 10; // matches styles.timeGrid gap
+  const horizontalPadding = 24; // approximate container horizontal padding
+  const chipWidth = Math.floor((windowWidth - horizontalPadding - chipGap * (chipCols - 1)) / chipCols);
   const visibleTabs = getTabs(role).map((item) => ({ ...item, label: t(item.label) }));
   const loadedOnceRef = useRef(false);
   const selectedBarber = barbers.find((item) => item.id === selectedBarberId) ?? barbers[0];
@@ -1181,7 +1231,7 @@ export default function App() {
         }
       }
     } catch (error) {
-      Alert.alert("Xato", error instanceof Error ? error.message : "Malumot yuklanmadi.");
+      Alert.alert(t("Xato"), error instanceof Error ? error.message : t("Malumot yuklanmadi."));
     } finally {
       setRefreshing(false);
       loadedOnceRef.current = true;
@@ -1247,18 +1297,18 @@ export default function App() {
     if (busy) return;
     if (!session || !selectedBarber) return;
     if (bookedSlots.has(bookingTime) || isPastLocalSlot(bookingDate, bookingTime)) {
-      Alert.alert("Vaqt band", "Bu vaqt band yoki o'tib ketgan. Boshqa vaqt tanlang.");
+      Alert.alert(t("Vaqt band"), t("Bu vaqt band yoki o'tib ketgan. Boshqa vaqt tanlang."));
       return;
     }
     const scheduledFor = buildIsoFromLocal(bookingDate, bookingTime);
     if (!scheduledFor) {
-      Alert.alert("Vaqt xato", "Sana YYYY-MM-DD va vaqt HH:MM formatida bolsin.");
+      Alert.alert(t("Vaqt xato"), t("Sana YYYY-MM-DD va vaqt HH:MM formatida bolsin."));
       return;
     }
     const customerName = role === "admin" ? adminCustomerName.trim() : session.user.fullName;
     const customerPhone = role === "admin" ? adminCustomerPhone.trim() : session.user.phone ?? "";
     if (!customerName || !customerPhone) {
-      Alert.alert("Mijoz malumoti kerak", "Ism va telefon raqamni kiriting.");
+      Alert.alert(t("Mijoz malumoti kerak"), t("Ism va telefon raqamni kiriting."));
       return;
     }
     setBusy(true);
@@ -1283,7 +1333,7 @@ export default function App() {
       setAdminCustomerPhone("");
       await loadData();
     } catch (error) {
-      Alert.alert("Bron yaratilmadi", error instanceof Error ? error.message : "Qayta urinib koring.");
+      Alert.alert(t("Bron yaratilmadi"), error instanceof Error ? error.message : t("Qayta urinib koring."));
     } finally {
       setBusy(false);
     }
@@ -1299,7 +1349,7 @@ export default function App() {
       await updateBookingStatus(session.accessToken, booking.id, action.status);
       await loadData();
     } catch (error) {
-      Alert.alert("Status ozgarmadi", error instanceof Error ? error.message : "Qayta urinib koring.");
+      Alert.alert(t("Status ozgarmadi"), error instanceof Error ? error.message : t("Qayta urinib koring."));
     } finally {
       setBusy(false);
     }
@@ -1313,7 +1363,7 @@ export default function App() {
       await updateBookingStatus(session.accessToken, booking.id, "rejected", "Mobil ilovadan rad etildi");
       await loadData();
     } catch (error) {
-      Alert.alert("Status ozgarmadi", error instanceof Error ? error.message : "Qayta urinib koring.");
+      Alert.alert(t("Status ozgarmadi"), error instanceof Error ? error.message : t("Qayta urinib koring."));
     } finally {
       setBusy(false);
     }
@@ -1322,10 +1372,10 @@ export default function App() {
   async function handleDeleteBooking(booking: ApiBooking) {
     if (busy) return;
     if (!session || role !== "admin") return;
-    Alert.alert("Navbat ochirilsinmi?", `${booking.customer_name} - ${booking.service_name}`, [
-      { text: "Bekor qilish", style: "cancel" },
+    Alert.alert(t("Navbat ochirilsinmi?"), `${booking.customer_name} - ${booking.service_name}`, [
+      { text: t("Bekor qilish"), style: "cancel" },
       {
-        text: "Ochirish",
+        text: t("Ochirish"),
         style: "destructive",
         onPress: async () => {
           setBusy(true);
@@ -1333,7 +1383,7 @@ export default function App() {
             await deleteBooking(session.accessToken, booking.id);
             await loadData();
           } catch (error) {
-            Alert.alert("Ochmadi", error instanceof Error ? error.message : "Qayta urinib koring.");
+            Alert.alert(t("Ochmadi"), error instanceof Error ? error.message : t("Qayta urinib koring."));
           } finally {
             setBusy(false);
           }
@@ -1346,11 +1396,11 @@ export default function App() {
     if (busy) return;
     if (!session || role !== "admin") return;
     if (!barberForm.fullName.trim() || !barberForm.username.trim() || !barberForm.specialty.trim()) {
-      Alert.alert("Malumot yetarli emas", "Ism, username va mutaxassislikni kiriting.");
+      Alert.alert(t("Malumot yetarli emas"), t("Ism, username va mutaxassislikni kiriting."));
       return;
     }
     if (!editingBarberId && !barberForm.password?.trim()) {
-      Alert.alert("Parol kerak", "Yangi barber uchun parol kiriting.");
+      Alert.alert(t("Parol kerak"), t("Yangi barber uchun parol kiriting."));
       return;
     }
     setBusy(true);
@@ -1364,9 +1414,9 @@ export default function App() {
       setBarberForm(defaultBarberForm());
       setBarberModalOpen(false);
       await loadData();
-      Alert.alert("Tayyor", "Barber malumoti saqlandi.");
+      Alert.alert(t("Tayyor"), t("Barber malumoti saqlandi."));
     } catch (error) {
-      Alert.alert("Saqlanmadi", error instanceof Error ? error.message : "Qayta urinib koring.");
+      Alert.alert(t("Saqlanmadi"), error instanceof Error ? error.message : t("Qayta urinib koring."));
     } finally {
       setBusy(false);
     }
@@ -1375,10 +1425,10 @@ export default function App() {
   async function removeBarber(barber: ApiBarber) {
     if (busy) return;
     if (!session || role !== "admin") return;
-    Alert.alert("Barber ochirilsinmi?", barber.full_name, [
-      { text: "Bekor qilish", style: "cancel" },
+    Alert.alert(t("Barber ochirilsinmi?"), barber.full_name, [
+      { text: t("Bekor qilish"), style: "cancel" },
       {
-        text: "Ochirish",
+        text: t("Ochirish"),
         style: "destructive",
         onPress: async () => {
           setBusy(true);
@@ -1386,7 +1436,7 @@ export default function App() {
             await deleteBarber(session.accessToken, barber.id);
             await loadData();
           } catch (error) {
-            Alert.alert("Ochmadi", error instanceof Error ? error.message : "Qayta urinib koring.");
+            Alert.alert(t("Ochmadi"), error instanceof Error ? error.message : t("Qayta urinib koring."));
           } finally {
             setBusy(false);
           }
@@ -1402,9 +1452,9 @@ export default function App() {
     try {
       await updateMyBarberSettings(session.accessToken, barberForm);
       await loadData();
-      Alert.alert("Saqlandi", "Profil va narxlar yangilandi.");
+      Alert.alert(t("Saqlandi"), t("Profil va narxlar yangilandi."));
     } catch (error) {
-      Alert.alert("Saqlanmadi", error instanceof Error ? error.message : "Qayta urinib koring.");
+      Alert.alert(t("Saqlanmadi"), error instanceof Error ? error.message : t("Qayta urinib koring."));
     } finally {
       setBusy(false);
     }
@@ -1414,7 +1464,7 @@ export default function App() {
     if (busy) return;
     if (!session || (role !== "admin" && role !== "barber")) return;
     if (!discountForm.title.trim()) {
-      Alert.alert("Sarlavha kerak", "Skidka nomini kiriting.");
+      Alert.alert(t("Sarlavha kerak"), t("Skidka nomini kiriting."));
       return;
     }
     setBusy(true);
@@ -1426,9 +1476,9 @@ export default function App() {
       setDiscountForm(defaultDiscountForm());
       setDiscountModalOpen(false);
       await loadData();
-      Alert.alert("Skidka yaratildi", "Taklif panelda korinadi.");
+      Alert.alert(t("Skidka yaratildi"), t("Taklif panelda korinadi."));
     } catch (error) {
-      Alert.alert("Skidka yaratilmadi", error instanceof Error ? error.message : "Qayta urinib koring.");
+      Alert.alert(t("Skidka yaratilmadi"), error instanceof Error ? error.message : t("Qayta urinib koring."));
     } finally {
       setBusy(false);
     }
@@ -1442,7 +1492,7 @@ export default function App() {
       await deleteDiscount(session.accessToken, discount.id);
       await loadData();
     } catch (error) {
-      Alert.alert("Ochmadi", error instanceof Error ? error.message : "Qayta urinib koring.");
+      Alert.alert(t("Ochmadi"), error instanceof Error ? error.message : t("Qayta urinib koring."));
     } finally {
       setBusy(false);
     }
@@ -1463,7 +1513,7 @@ export default function App() {
     }).navigator?.geolocation;
 
     if (!geo) {
-      Alert.alert("Lokatsiya yo'q", "Brauzer yoki qurilma geolokatsiyani qo'llamayapti.");
+      Alert.alert(t("Lokatsiya yo'q"), t("Brauzer yoki qurilma geolokatsiyani qo'llamayapti."));
       return;
     }
 
@@ -1484,9 +1534,9 @@ export default function App() {
         latitude: coords.latitude,
         longitude: coords.longitude,
       }));
-      Alert.alert("Lokatsiya olindi", `${coords.latitude}, ${coords.longitude}`);
+      Alert.alert(t("Lokatsiya olindi"), `${coords.latitude}, ${coords.longitude}`);
     } catch (error) {
-      Alert.alert("Lokatsiya olinmadi", error instanceof Error ? error.message : "Qayta urinib koring.");
+      Alert.alert(t("Lokatsiya olinmadi"), error instanceof Error ? error.message : t("Qayta urinib koring."));
     } finally {
       setBusy(false);
     }
@@ -1507,7 +1557,7 @@ export default function App() {
     }).navigator?.geolocation;
 
     if (!geo) {
-      Alert.alert("Lokatsiya yo'q", "Bu qurilmada masofani aniqlash uchun geolokatsiya ishlamadi.");
+      Alert.alert(t("Lokatsiya yo'q"), t("Bu qurilmada masofani aniqlash uchun geolokatsiya ishlamadi."));
       return;
     }
 
@@ -1525,7 +1575,7 @@ export default function App() {
       });
       setCustomerCoords(coords);
     } catch (error) {
-      Alert.alert("Masofa hisoblanmadi", error instanceof Error ? error.message : "Qayta urinib ko'ring.");
+      Alert.alert(t("Masofa hisoblanmadi"), error instanceof Error ? error.message : t("Qayta urinib koring."));
     } finally {
       setBusy(false);
     }
@@ -1540,7 +1590,7 @@ export default function App() {
 
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted) {
-      Alert.alert("Ruxsat kerak", "Rasm yoki videoni tanlash uchun galereyaga ruxsat bering.");
+      Alert.alert(t("Ruxsat kerak"), t("Rasm yoki videoni tanlash uchun galereyaga ruxsat bering."));
       return;
     }
 
@@ -1564,9 +1614,9 @@ export default function App() {
     try {
       const uploaded = await uploadMedia(session.accessToken, file);
       applyUrl(uploaded.url);
-      Alert.alert("Yuklandi", "Fayl muvaffaqiyatli yuklandi.");
+      Alert.alert(t("Yuklandi"), t("Fayl muvaffaqiyatli yuklandi."));
     } catch (error) {
-      Alert.alert("Yuklanmadi", error instanceof Error ? error.message : "Qayta urinib koring.");
+      Alert.alert(t("Yuklanmadi"), error instanceof Error ? error.message : t("Qayta urinib koring."));
     } finally {
       setBusy(false);
     }
@@ -1576,19 +1626,19 @@ export default function App() {
     if (busy) return;
     if (!session) return;
     if (!profileForm.fullName.trim()) {
-      Alert.alert("Ism kerak", "Ism familyani kiriting.");
+      Alert.alert(t("Ism kerak"), t("Ism familyani kiriting."));
       return;
     }
     if (role === "customer" && !profileForm.phone?.trim()) {
-      Alert.alert("Telefon kerak", "Telefon raqamingizni kiriting.");
+      Alert.alert(t("Telefon kerak"), t("Telefon raqamingizni kiriting."));
       return;
     }
     if (role !== "customer" && !profileForm.username?.trim()) {
-      Alert.alert("Username kerak", "Kirish username'ini kiriting.");
+      Alert.alert(t("Username kerak"), t("Kirish username'ini kiriting."));
       return;
     }
     if (profileForm.password && profileForm.password.length < 4) {
-      Alert.alert("Parol qisqa", "Parol kamida 4 ta belgidan iborat bo'lsin.");
+      Alert.alert(t("Parol qisqa"), t("Parol kamida 4 ta belgidan iborat bo'lsin."));
       return;
     }
 
@@ -1606,9 +1656,9 @@ export default function App() {
       if (updatedUser.role === "barber") {
         await loadData();
       }
-      Alert.alert("Saqlandi", "Profil ma'lumotlari yangilandi.");
+      Alert.alert(t("Saqlandi"), t("Profil ma'lumotlari yangilandi."));
     } catch (error) {
-      Alert.alert("Saqlanmadi", error instanceof Error ? error.message : "Qayta urinib koring.");
+      Alert.alert(t("Saqlanmadi"), error instanceof Error ? error.message : t("Qayta urinib koring."));
     } finally {
       setBusy(false);
     }
@@ -1722,7 +1772,7 @@ export default function App() {
                 onPress={() => {
                   if (!disabled) setBookingTime(slot);
                 }}
-                style={({ pressed }) => [styles.timeChip, disabled && styles.timeChipBooked, selected && styles.timeChipActive, pressed && !disabled && styles.pressed]}
+                style={({ pressed }) => [styles.timeChip, { width: chipWidth }, disabled && styles.timeChipBooked, selected && styles.timeChipActive, pressed && !disabled && styles.pressed]}
               >
                 <Text style={[styles.timeChipText, selected && styles.timeChipTextActive, disabled && styles.timeChipTextBooked]}>
                   {booked ? `${slot} band` : expired ? `${slot} o'tdi` : slot}
@@ -1793,12 +1843,20 @@ export default function App() {
           <Text style={styles.totalLabel}>Jami</Text>
           <Text style={styles.totalValue}>{selectedBarber ? priceForService(selectedBarber, selectedService).toLocaleString() : 0} so'm</Text>
         </View>
-        <PrimaryButton
-          label={role === "admin" ? "Bron yaratish" : "Bronni tasdiqlash"}
-          onPress={submitBooking}
-          loading={busy}
-          disabled={!selectedBarber || bookedSlots.has(bookingTime) || isPastLocalSlot(bookingDate, bookingTime)}
-        />
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <PrimaryButton
+            label={t("Skidka")}
+            tone="ghost"
+            onPress={() => setDiscountModalOpen(true)}
+            style={{ marginRight: 8 }}
+          />
+          <PrimaryButton
+            label={role === "admin" ? t("Bron yaratish") : t("Bronni tasdiqlash")}
+            onPress={submitBooking}
+            loading={busy}
+            disabled={!selectedBarber || bookedSlots.has(bookingTime) || isPastLocalSlot(bookingDate, bookingTime)}
+          />
+        </View>
       </View>
     </View>
   );
@@ -1897,7 +1955,7 @@ export default function App() {
         <View style={styles.customerHeroContent}>
           <Text style={styles.heroBrand}>BARBERSHOP</Text>
           <Text style={styles.customerHeroTitle}>Stay Sharp,{`\n`}Look Sharp.</Text>
-          <PrimaryButton label="Hozir bron qilish" onPress={() => setTab("book")} tone="gold" />
+          <PrimaryButton label={t("Hozir bron qilish")} onPress={() => setTab("book")} tone="gold" />
         </View>
       </ImageBackground>
 
@@ -2033,7 +2091,7 @@ export default function App() {
           <MetricCard label="Bajarilgan" value={completedToday} accent={colors.green} />
           <MetricCard label="Daromad" value={`${Math.round(revenue / 1000)}K`} accent={colors.gold} />
         </View>
-        <PrimaryButton label="Daromadni ko'rish" onPress={() => setTab("profile")} tone="gold" />
+        <PrimaryButton label={t("Daromadni ko'rish")} onPress={() => setTab("profile")} tone="gold" />
       </Card>
     </View>
   );
@@ -2147,7 +2205,7 @@ export default function App() {
                   setBarberModalOpen(true);
                 }}
               />
-              <PrimaryButton label="Ochirish" tone="ghost" onPress={() => removeBarber(barber)} />
+              <PrimaryButton label={t("Ochirish")} tone="ghost" onPress={() => removeBarber(barber)} />
             </View>
           ) : null}
           onPress={() => {
@@ -2276,7 +2334,7 @@ export default function App() {
           </View>
           {discount.description ? <Text style={styles.noteText}>{discount.description}</Text> : null}
           {role !== "customer" ? (
-            <PrimaryButton label="Skidkani ochirish" tone="ghost" onPress={() => removeDiscount(discount)} />
+            <PrimaryButton label={t("Skidkani ochirish")} tone="ghost" onPress={() => removeDiscount(discount)} />
           ) : null}
         </Card>
       ))}
@@ -2422,7 +2480,7 @@ export default function App() {
           placeholder="O'zgartirmasangiz bo'sh qoldiring"
           secureTextEntry
         />
-        <PrimaryButton label="Sozlamalarni saqlash" onPress={saveAccountSettings} loading={busy} />
+        <PrimaryButton label={t("Sozlamalarni saqlash")} onPress={saveAccountSettings} loading={busy} />
       </Card>
 
       {role === "barber" ? (
@@ -2479,7 +2537,7 @@ export default function App() {
             onChangeText={(value) => setBarberForm((current) => ({ ...current, address: value }))}
             placeholder="Salon manzili"
           />
-          <PrimaryButton label="Lokatsiyani olish" tone="ghost" onPress={fillBarberLocation} loading={busy} />
+          <PrimaryButton label={t("Lokatsiyani olish")} tone="ghost" onPress={fillBarberLocation} loading={busy} />
           <View style={styles.twoColumn}>
             <Field
               label="Latitude"
@@ -2516,7 +2574,7 @@ export default function App() {
               />
             ))}
           </View>
-          <PrimaryButton label="Profilni saqlash" onPress={saveProfileSettings} loading={busy} />
+          <PrimaryButton label={t("Profilni saqlash")} onPress={saveProfileSettings} loading={busy} />
         </Card>
       ) : null}
 
@@ -2631,7 +2689,7 @@ export default function App() {
         onClose={() => setLogoutModalOpen(false)}
       >
         <View style={styles.modalActions}>
-          <PrimaryButton label="Bekor qilish" tone="ghost" onPress={() => setLogoutModalOpen(false)} />
+          <PrimaryButton label={t("Bekor qilish")} tone="ghost" onPress={() => setLogoutModalOpen(false)} />
           <PrimaryButton
             label="Chiqish"
             tone="gold"
@@ -2670,7 +2728,7 @@ export default function App() {
               <Field label="Reyting" value={String(barberForm.rating)} onChangeText={(value) => setBarberForm((current) => ({ ...current, rating: toNumber(value, current.rating) }))} keyboardType="decimal-pad" />
             </View>
             <Field label="Manzil" value={barberForm.address} onChangeText={(value) => setBarberForm((current) => ({ ...current, address: value }))} placeholder="Salon manzili" />
-            <PrimaryButton label="Lokatsiyani olish" tone="ghost" onPress={fillBarberLocation} loading={busy} />
+            <PrimaryButton label={t("Lokatsiyani olish")} tone="ghost" onPress={fillBarberLocation} loading={busy} />
             <View style={styles.twoColumn}>
               <Field label="Latitude" value={barberForm.latitude == null ? "" : String(barberForm.latitude)} onChangeText={(value) => setBarberForm((current) => ({ ...current, latitude: value ? Number(value) : null }))} keyboardType="decimal-pad" />
               <Field label="Longitude" value={barberForm.longitude == null ? "" : String(barberForm.longitude)} onChangeText={(value) => setBarberForm((current) => ({ ...current, longitude: value ? Number(value) : null }))} keyboardType="decimal-pad" />
@@ -3440,7 +3498,6 @@ function createAppStyles() {
     borderWidth: 1,
     minHeight: 42,
     justifyContent: "center",
-    width: "22.8%",
   },
   timeChipActive: {
     backgroundColor: "rgba(215,170,85,0.1)",

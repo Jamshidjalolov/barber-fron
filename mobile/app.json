@@ -9,11 +9,20 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "config": {
+        "googleMapsApiKey": ""
+      }
     },
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#111111"
+      }
+      ,
+      "config": {
+        "googleMaps": {
+          "apiKey": ""
+        }
       }
     },
     "extra": {
