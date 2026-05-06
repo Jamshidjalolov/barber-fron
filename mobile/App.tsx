@@ -78,8 +78,24 @@ if (Platform.OS !== "web") {
 }
 
 function LocationPickerMap({ latitude, longitude, onChange }: { latitude?: number | null, longitude?: number | null, onChange: (lat: number, lng: number) => void }) {
-  if (Platform.OS === "web") {
-    return <Text style={{ color: colors.muted, marginVertical: 10 }}>Xarita faqat mobil ilovada ishlaydi.</Text>;
+  const hasNativeMap = MapView != null;
+  if (!hasNativeMap || Platform.OS === "web") {
+    // Fallback: show coordinates and provide a button to open external maps app
+    const openExternal = () => {
+      const lat = latitude ?? 41.2995;
+      const lng = longitude ?? 69.2401;
+      const url = Platform.OS === "ios" ? `maps://maps.apple.com/?q=${lat},${lng}` : `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+      Linking.openURL(url).catch(() => {
+        Alert.alert(t("Ochmadi"), t("Ochmadi"));
+      });
+    };
+    return (
+      <View style={{ padding: 12, borderRadius: 12, marginVertical: 10, borderColor: colors.line, borderWidth: 1 }}>
+        <Text style={{ color: colors.muted, marginBottom: 8 }}>{latitude && longitude ? `${latitude.toFixed(5)}, ${longitude.toFixed(5)}` : t("Manzil")}</Text>
+        <PrimaryButton label={t("Manzil")} tone="ghost" onPress={openExternal} />
+        <Text style={{ color: colors.muted, marginTop: 8 }}>{locale === "ru" ? "Карта недоступна в Expo Go. Откройте внешнее приложение." : "Expo Go'da xarita ishlamaydi. Tashqi ilovada oching."}</Text>
+      </View>
+    );
   }
   const initialRegion = {
     latitude: latitude || 41.2995,
@@ -2768,15 +2784,15 @@ export default function App() {
       </AppModal>
       <AppModal
         visible={discountModalOpen}
-        title={t("Yangi skidka")}
-        subtitle={locale === "ru" ? "Создайте скидку для выбранного барбера." : "Tanlangan barber uchun chegirma yarating."}
+        title={role === "customer" ? t("Skidkalar") : t("Yangi skidka")}
+        subtitle={role === "customer" ? (locale === "ru" ? "Доступные скидки для вас." : "Siz uchun mavjud chegirmalar.") : (locale === "ru" ? "Создайте скидку для выбранного барбера." : "Tanlangan barber uchun chegirma yarating.")}
         onClose={() => {
           setDiscountModalOpen(false);
           setDiscountForm(defaultDiscountForm());
         }}
       >
         <ScrollView style={styles.modalScroll} keyboardShouldPersistTaps="handled">
-          {renderDiscountForm()}
+          {role === "customer" ? renderDiscounts() : renderDiscountForm()}
         </ScrollView>
       </AppModal>
       {!bookingSuccess ? <View style={styles.bottomNav}>
