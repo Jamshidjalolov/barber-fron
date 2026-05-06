@@ -77,7 +77,22 @@ if (Platform.OS !== "web") {
   }
 }
 
+export const PreferencesContext = React.createContext<{
+  locale: "uz" | "ru";
+  t: (value: string) => string;
+  themeMode: "dark" | "light";
+}>({
+  locale: "uz",
+  t: (value) => value,
+  themeMode: "light",
+});
+
+export function usePreferences() {
+  return React.useContext(PreferencesContext);
+}
+
 function LocationPickerMap({ latitude, longitude, onChange }: { latitude?: number | null, longitude?: number | null, onChange: (lat: number, lng: number) => void }) {
+  const { t, locale } = usePreferences();
   const hasNativeMap = MapView != null;
   if (!hasNativeMap || Platform.OS === "web") {
     // Fallback: show coordinates and provide a button to open external maps app
