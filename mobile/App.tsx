@@ -2834,6 +2834,7 @@ export default function App() {
           </Pressable>
         ))}
       </View> : null}
+      </View>
     </SafeAreaView>
     </PreferencesContext.Provider>
   );
