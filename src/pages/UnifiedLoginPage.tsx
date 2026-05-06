@@ -22,6 +22,7 @@ import {
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { AuthShell } from "../components/auth/AuthShell";
 import { ApiRole } from "../types";
+import { usePreferences } from "../lib/preferences";
 
 interface UnifiedLoginPageProps {
   selectedRole: ApiRole;
@@ -71,14 +72,26 @@ export function UnifiedLoginPage({
     setError("");
   }, [selectedRole]);
 
+  const { t } = usePreferences();
+
+  const roleItems: Array<{
+    role: ApiRole;
+    label: string;
+    icon: typeof PersonRoundedIcon;
+  }> = [
+    { role: "customer", label: t("Foydalanuvchi"), icon: PersonRoundedIcon },
+    { role: "barber", label: t("Barber"), icon: ContentCutRoundedIcon },
+    { role: "admin", label: t("Admin"), icon: AdminPanelSettingsRoundedIcon },
+  ];
+
   const currentMeta = useMemo(() => {
     if (selectedRole === "customer") {
       return {
-        eyebrow: "Kirish",
-        title: "Kirish",
-        description: "Rolni tanlang va kiriting.",
-        loginLabel: "Telefon raqam",
-        loginPlaceholder: "Telefon raqam",
+        eyebrow: t("Kirish"),
+        title: t("Kirish"),
+        description: t("Rolni tanlang va kiriting."),
+        loginLabel: t("Telefon raqam"),
+        loginPlaceholder: t("Telefon raqam"),
         loginValue: customerValues.phone,
         passwordValue: customerValues.password,
       };
@@ -86,9 +99,9 @@ export function UnifiedLoginPage({
 
     if (selectedRole === "barber") {
       return {
-        eyebrow: "Kirish",
-        title: "Kirish",
-        description: "Rolni tanlang va kiriting.",
+        eyebrow: t("Kirish"),
+        title: t("Kirish"),
+        description: t("Rolni tanlang va kiriting."),
         loginLabel: "Login",
         loginPlaceholder: "Login",
         loginValue: barberValues.username,
@@ -97,22 +110,22 @@ export function UnifiedLoginPage({
     }
 
     return {
-      eyebrow: "Kirish",
-      title: "Kirish",
-      description: "Rolni tanlang va kiriting.",
+      eyebrow: t("Kirish"),
+      title: t("Kirish"),
+      description: t("Rolni tanlang va kiriting."),
       loginLabel: "Login",
-      loginPlaceholder: "Email yoki login",
+      loginPlaceholder: t("Email yoki login"),
       loginValue: adminValues.username,
       passwordValue: adminValues.password,
     };
-  }, [adminValues.password, adminValues.username, barberValues.password, barberValues.username, customerValues.password, customerValues.phone, selectedRole]);
+  }, [adminValues.password, adminValues.username, barberValues.password, barberValues.username, customerValues.password, customerValues.phone, selectedRole, t]);
 
   const autofillSx = {
     "& input:-webkit-autofill, & input:-webkit-autofill:hover, & input:-webkit-autofill:focus": {
-      WebkitTextFillColor: "#f8fafc",
-      WebkitBoxShadow: "0 0 0 100px #121326 inset",
+      WebkitTextFillColor: (theme: any) => theme.palette.mode === "light" ? "#111827" : "#f8fafc",
+      WebkitBoxShadow: (theme: any) => theme.palette.mode === "light" ? "0 0 0 100px #f4f6f8 inset" : "0 0 0 100px #121326 inset",
       transition: "background-color 9999s ease-out 0s",
-      caretColor: "#f8fafc",
+      caretColor: (theme: any) => theme.palette.mode === "light" ? "#111827" : "#f8fafc",
       borderRadius: "14px",
     },
   };
@@ -135,7 +148,7 @@ export function UnifiedLoginPage({
 
       await onAdminLogin(adminValues.username, adminValues.password, rememberMe);
     } catch (nextError) {
-      setError(nextError instanceof Error ? nextError.message : "Kirishda xato yuz berdi.");
+      setError(nextError instanceof Error ? nextError.message : t("Kirishda xato yuz berdi."));
     } finally {
       setSubmitting(false);
     }
@@ -156,11 +169,12 @@ export function UnifiedLoginPage({
         sx={{
           p: { xs: 1.25, md: 1.5 },
           borderRadius: "22px",
-          background:
-            "linear-gradient(180deg, rgba(18,18,31,0.86) 0%, rgba(10,11,22,0.78) 100%)",
-          border: `1px solid ${alpha("#c4b5fd", 0.14)}`,
-          boxShadow: "0 18px 44px rgba(0,0,0,0.28)",
-          backdropFilter: "blur(18px)",
+          background: (theme) => theme.palette.mode === "light" 
+            ? "#ffffff"
+            : "linear-gradient(180deg, rgba(18,18,31,0.86) 0%, rgba(10,11,22,0.78) 100%)",
+          border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#e5e7eb", 1)}` : `1px solid ${alpha("#c4b5fd", 0.14)}`,
+          boxShadow: (theme) => theme.palette.mode === "light" ? "0px 8px 24px rgba(0, 0, 0, 0.06)" : "0 18px 44px rgba(0,0,0,0.28)",
+          backdropFilter: (theme) => theme.palette.mode === "light" ? "none" : "blur(18px)",
         }}
       >
         <Stack spacing={1.1}>
@@ -178,11 +192,11 @@ export function UnifiedLoginPage({
                   sx={{
                     height: 36,
                     borderRadius: "999px",
-                    color: selected ? "#fff" : "#aab2c8",
+                    color: selected ? "#fff" : (theme) => theme.palette.mode === "light" ? "#6b7280" : "#aab2c8",
                     background: selected
-                      ? "linear-gradient(135deg, rgba(139,92,246,1) 0%, rgba(34,211,238,0.88) 100%)"
-                      : alpha("#ffffff", 0.06),
-                    border: `1px solid ${selected ? alpha("#67e8f9", 0.34) : alpha("#c4b5fd", 0.12)}`,
+                      ? (theme) => theme.palette.mode === "light" ? "linear-gradient(135deg, #fbbd05 0%, #f2a900 100%)" : "linear-gradient(135deg, rgba(139,92,246,1) 0%, rgba(34,211,238,0.88) 100%)"
+                      : (theme) => alpha(theme.palette.mode === "light" ? "#000000" : "#ffffff", 0.06),
+                    border: (theme) => `1px solid ${selected ? alpha(theme.palette.mode === "light" ? "#fbbd05" : "#67e8f9", 0.34) : alpha(theme.palette.mode === "light" ? "#000000" : "#c4b5fd", 0.12)}`,
                     "& .MuiChip-icon": {
                       color: selected ? "#fff" : "#8d96ad",
                     },
@@ -237,11 +251,11 @@ export function UnifiedLoginPage({
                 "& .MuiOutlinedInput-root": {
                   minHeight: 54,
                   borderRadius: "17px",
-                  backgroundColor: alpha("#101224", 0.92),
-                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)",
+                  backgroundColor: (theme) => theme.palette.mode === "light" ? "#f9fafb" : alpha("#101224", 0.92),
+                  boxShadow: (theme) => theme.palette.mode === "light" ? "none" : "inset 0 1px 0 rgba(255,255,255,0.05)",
                 },
                 "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: alpha("#c4b5fd", 0.14),
+                  borderColor: (theme) => theme.palette.mode === "light" ? alpha("#e5e7eb", 1) : alpha("#c4b5fd", 0.14),
                 },
                 "& .MuiInputBase-input": {
                   py: 1.45,
@@ -252,13 +266,13 @@ export function UnifiedLoginPage({
 
           <Box>
             <Typography variant="subtitle2" sx={{ mb: 0.45, fontSize: "0.88rem" }}>
-              Parol
+              {t("Parol")}
             </Typography>
             <TextField
               fullWidth
               type={showPassword ? "text" : "password"}
               autoComplete="current-password"
-              placeholder="Parolni kiriting"
+              placeholder={t("Parolni kiriting")}
               value={currentMeta.passwordValue}
               onChange={(event) => {
                 const value = event.target.value;
@@ -304,11 +318,11 @@ export function UnifiedLoginPage({
                 "& .MuiOutlinedInput-root": {
                   minHeight: 54,
                   borderRadius: "17px",
-                  backgroundColor: alpha("#101224", 0.92),
-                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)",
+                  backgroundColor: (theme) => theme.palette.mode === "light" ? "#f9fafb" : alpha("#101224", 0.92),
+                  boxShadow: (theme) => theme.palette.mode === "light" ? "none" : "inset 0 1px 0 rgba(255,255,255,0.05)",
                 },
                 "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: alpha("#c4b5fd", 0.14),
+                  borderColor: (theme) => theme.palette.mode === "light" ? alpha("#e5e7eb", 1) : alpha("#c4b5fd", 0.14),
                 },
                 "& .MuiInputBase-input": {
                   py: 1.45,
@@ -325,7 +339,7 @@ export function UnifiedLoginPage({
                 sx={{ color: alpha("#c4b5fd", 0.62) }}
               />
             }
-            label="Eslab qolish"
+            label={t("Eslab qolish")}
             sx={{
               mx: 0,
               width: "fit-content",
@@ -355,7 +369,7 @@ export function UnifiedLoginPage({
               boxShadow: "0 14px 26px rgba(17,17,17,0.12)",
             }}
           >
-            {submitting ? "Kutib turing..." : "Kirish"}
+            {submitting ? t("Kutib turing...") : t("Kirish")}
           </Button>
 
           {selectedRole === "customer" ? (
@@ -366,7 +380,7 @@ export function UnifiedLoginPage({
               onClick={onOpenRegister}
               sx={{ borderRadius: "14px", textTransform: "none", fontWeight: 700 }}
             >
-              Ro'yxatdan o'tish
+              {t("Ro'yxatdan o'tish")}
             </Button>
           ) : null}
         </Stack>

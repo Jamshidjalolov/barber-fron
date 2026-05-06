@@ -16,6 +16,7 @@ import {
   Snackbar,
   Stack,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { AnimatePresence, motion } from "framer-motion";
 import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
@@ -270,6 +271,9 @@ export function CustomerBookingPage({
   const [customerCoords, setCustomerCoords] = useState<GeoCoordinates | null>(null);
   const [selectionSource, setSelectionSource] = useState<SelectionSource>("barbers");
   const [bookedSlotPreview, setBookedSlotPreview] = useState<BookingItem | null>(null);
+
+  const theme = useTheme();
+  const isLight = theme.palette.mode === "light";
 
   const activeTrackedBookingId = localTrackedBookingId ?? trackedBookingId;
 
@@ -642,6 +646,7 @@ export function CustomerBookingPage({
         <DesktopAsideCard
           title="Qisqacha"
           description="Yaqin barber va bo'sh vaqt"
+          isLight={isLight}
         >
           <Box
             sx={{
@@ -654,21 +659,25 @@ export function CustomerBookingPage({
               icon={<GroupsRoundedIcon sx={{ fontSize: "1rem" }} />}
               label="Barberlar"
               value={`${rankedBarbers.length} ta`}
+              isLight={isLight}
             />
             <InfoMetric
               icon={<CheckCircleRoundedIcon sx={{ fontSize: "1rem" }} />}
               label="Bo'sh vaqtlar"
               value={`${slotSummary.available} ta`}
+              isLight={isLight}
             />
             <InfoMetric
               icon={<ContentCutRoundedIcon sx={{ fontSize: "1rem" }} />}
               label="Faol skidka"
               value={visibleDiscounts.length ? `${visibleDiscounts.length} ta` : "yo'q"}
+              isLight={isLight}
             />
             <InfoMetric
               icon={<AccessTimeRoundedIcon sx={{ fontSize: "1rem" }} />}
               label="Ish vaqti"
               value={selectedWorkHoursLabel}
+              isLight={isLight}
             />
           </Box>
 
@@ -682,8 +691,8 @@ export function CustomerBookingPage({
                 sx={{
                   p: 0.85,
                   borderRadius: "16px",
-                  backgroundColor: alpha("#ffffff", 0.06),
-                  border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
+                  backgroundColor: isLight ? alpha("#000000", 0.03) : alpha("#ffffff", 0.06),
+                  border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.12)}`,
                 }}
               >
                 <Avatar
@@ -717,8 +726,8 @@ export function CustomerBookingPage({
                   sx={{
                     height: 24,
                     borderRadius: "999px",
-                    backgroundColor: alpha("#111111", 0.05),
-                    "& .MuiChip-label": { px: 0.9, fontWeight: 700, fontSize: "0.7rem" },
+                    backgroundColor: isLight ? alpha("#000000", 0.05) : alpha("#111111", 0.05),
+                    "& .MuiChip-label": { px: 0.9, fontWeight: 700, fontSize: "0.7rem", color: isLight ? "#1e293b" : "inherit" },
                   }}
                 />
               </Stack>
@@ -766,6 +775,7 @@ export function CustomerBookingPage({
         <DesktopAsideCard
           title="Tanlangan barber"
           description="Qulay vaqtni tanlang"
+          isLight={isLight}
         >
           <Stack
             direction="row"
@@ -774,8 +784,8 @@ export function CustomerBookingPage({
             sx={{
               p: 1.1,
               borderRadius: "18px",
-              backgroundColor: alpha("#ffffff", 0.06),
-              border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
+              backgroundColor: isLight ? alpha("#000000", 0.03) : alpha("#ffffff", 0.06),
+              border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.12)}`,
             }}
           >
             <Avatar
@@ -806,16 +816,19 @@ export function CustomerBookingPage({
               icon={<CalendarMonthRoundedIcon sx={{ fontSize: "1rem" }} />}
               label="Sana"
               value={selectedDateLabel}
+              isLight={isLight}
             />
             <InfoMetric
               icon={<AccessTimeRoundedIcon sx={{ fontSize: "1rem" }} />}
               label="Ish vaqti"
               value={selectedWorkHoursLabel}
+              isLight={isLight}
             />
             <InfoMetric
               icon={<CheckCircleRoundedIcon sx={{ fontSize: "1rem" }} />}
               label="Bo'sh slot"
               value={`${slotSummary.available} ta`}
+              isLight={isLight}
             />
           </Stack>
 
@@ -825,14 +838,14 @@ export function CustomerBookingPage({
                 mt: 1.1,
                 p: 0.95,
                 borderRadius: "16px",
-                backgroundColor: alpha("#34d399", 0.1),
-                border: `1px solid ${alpha("#34d399", 0.16)}`,
+                backgroundColor: isLight ? alpha("#10b981", 0.1) : alpha("#34d399", 0.1),
+                border: isLight ? `1px solid ${alpha("#10b981", 0.16)}` : `1px solid ${alpha("#34d399", 0.16)}`,
               }}
             >
-              <Typography variant="subtitle2" sx={{ color: "#86efac", mb: 0.3 }}>
+              <Typography variant="subtitle2" sx={{ color: isLight ? "#047857" : "#86efac", mb: 0.3 }}>
                 Shu barberdagi skidka
               </Typography>
-              <Typography variant="body2" sx={{ color: "#bbf7d0", fontWeight: 700 }}>
+              <Typography variant="body2" sx={{ color: isLight ? "#065f46" : "#bbf7d0", fontWeight: 700 }}>
                 {selectedBarberDiscount.percent}% | {selectedBarberDiscount.startTime} - {selectedBarberDiscount.endTime}
               </Typography>
               <Typography variant="body2" color="text.secondary" sx={{ mt: 0.25 }}>
@@ -893,27 +906,32 @@ export function CustomerBookingPage({
           <DesktopAsideCard
             title="Navbat tafsiloti"
             description="Tasdiqlashdan oldin tekshirib oling"
+            isLight={isLight}
           >
             <Stack spacing={0.9}>
               <InfoMetric
                 icon={<ContentCutRoundedIcon sx={{ fontSize: "1rem" }} />}
                 label="Barber"
                 value={selectedBarber.name}
+                isLight={isLight}
               />
               <InfoMetric
                 icon={<CalendarMonthRoundedIcon sx={{ fontSize: "1rem" }} />}
                 label="Sana"
                 value={selectedDateLabel}
+                isLight={isLight}
               />
               <InfoMetric
                 icon={<AccessTimeRoundedIcon sx={{ fontSize: "1rem" }} />}
                 label="Vaqt"
                 value={selectedTimeLabel}
+                isLight={isLight}
               />
               <InfoMetric
                 icon={<CheckCircleRoundedIcon sx={{ fontSize: "1rem" }} />}
                 label="Yakuniy narx"
                 value={formatMoney(selectedFinalPrice)}
+                isLight={isLight}
               />
             </Stack>
 
@@ -923,11 +941,11 @@ export function CustomerBookingPage({
                   mt: 1.05,
                   p: 0.95,
                   borderRadius: "16px",
-                  backgroundColor: alpha("#f6c85f", 0.1),
-                  border: `1px solid ${alpha("#f6c85f", 0.18)}`,
+                  backgroundColor: isLight ? alpha("#f59e0b", 0.1) : alpha("#f6c85f", 0.1),
+                  border: isLight ? `1px solid ${alpha("#f59e0b", 0.18)}` : `1px solid ${alpha("#f6c85f", 0.18)}`,
                 }}
               >
-                <Typography variant="subtitle2" sx={{ color: "#fde68a", mb: 0.3 }}>
+                <Typography variant="subtitle2" sx={{ color: isLight ? "#d97706" : "#fde68a", mb: 0.3 }}>
                   Shu barberdagi skidka
                 </Typography>
                 <Typography variant="body2" sx={{ fontWeight: 700 }}>
@@ -947,8 +965,9 @@ export function CustomerBookingPage({
           minHeight: "100vh",
           px: { xs: 0, sm: 2.5, lg: 3 },
           py: { xs: 0, sm: 2.5, lg: 3 },
-          background:
-            "radial-gradient(circle at 16% 8%, rgba(139,92,246,0.28), transparent 30%), radial-gradient(circle at 88% 4%, rgba(34,211,238,0.14), transparent 28%), linear-gradient(135deg, #05050a 0%, #10071d 52%, #06111e 100%)",
+          background: isLight
+            ? "radial-gradient(circle at 16% 8%, rgba(139,92,246,0.1), transparent 30%), radial-gradient(circle at 88% 4%, rgba(34,211,238,0.06), transparent 28%), #f1f5f9"
+            : "radial-gradient(circle at 16% 8%, rgba(139,92,246,0.28), transparent 30%), radial-gradient(circle at 88% 4%, rgba(34,211,238,0.14), transparent 28%), linear-gradient(135deg, #05050a 0%, #10071d 52%, #06111e 100%)",
         }}
       >
         <Box
@@ -959,10 +978,11 @@ export function CustomerBookingPage({
             px: { xs: 2, sm: 2.6, lg: 3.2 },
             py: { xs: 2.4, sm: 2.9, lg: 3.2 },
             borderRadius: { xs: 0, sm: "34px" },
-            background:
-              "linear-gradient(180deg, rgba(10,11,22,0.78) 0%, rgba(6,7,14,0.72) 100%)",
-            border: { xs: "none", sm: `1px solid ${alpha("#c4b5fd", 0.13)}` },
-            boxShadow: { xs: "none", sm: "0 34px 100px rgba(0,0,0,0.42)" },
+            background: isLight
+              ? "linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(248,250,252,0.85) 100%)"
+              : "linear-gradient(180deg, rgba(10,11,22,0.78) 0%, rgba(6,7,14,0.72) 100%)",
+            border: { xs: "none", sm: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.13)}` },
+            boxShadow: { xs: "none", sm: isLight ? "0 24px 60px rgba(0,0,0,0.08)" : "0 34px 100px rgba(0,0,0,0.42)" },
             backdropFilter: "blur(24px)",
             display: "flex",
             flexDirection: "column",
@@ -1086,20 +1106,23 @@ function DesktopAsideCard({
   title,
   description,
   children,
+  isLight,
 }: {
   title: string;
   description?: string;
   children: ReactNode;
+  isLight: boolean;
 }) {
   return (
     <Box
       sx={{
         p: 1.3,
         borderRadius: "22px",
-        border: `1px solid ${alpha("#c4b5fd", 0.14)}`,
-        background:
-          "linear-gradient(180deg, rgba(19,20,34,0.84) 0%, rgba(10,11,22,0.72) 100%)",
-        boxShadow: "0 20px 48px rgba(0,0,0,0.26)",
+        border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.14)}`,
+        background: isLight
+          ? "linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.95) 100%)"
+          : "linear-gradient(180deg, rgba(19,20,34,0.84) 0%, rgba(10,11,22,0.72) 100%)",
+        boxShadow: isLight ? "0 12px 30px rgba(0,0,0,0.04)" : "0 20px 48px rgba(0,0,0,0.26)",
         backdropFilter: "blur(18px)",
         position: "sticky",
         top: 24,
@@ -1122,10 +1145,12 @@ function InfoMetric({
   icon,
   label,
   value,
+  isLight,
 }: {
   icon: ReactNode;
   label: string;
   value: string;
+  isLight: boolean;
 }) {
   return (
     <Stack
@@ -1135,8 +1160,8 @@ function InfoMetric({
       sx={{
         p: 0.85,
         borderRadius: "14px",
-        backgroundColor: alpha("#ffffff", 0.06),
-        border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
+        backgroundColor: isLight ? alpha("#000000", 0.03) : alpha("#ffffff", 0.06),
+        border: isLight ? `1px solid ${alpha("#000000", 0.06)}` : `1px solid ${alpha("#c4b5fd", 0.12)}`,
       }}
     >
       <Box
@@ -1146,8 +1171,8 @@ function InfoMetric({
           borderRadius: "10px",
           display: "grid",
           placeItems: "center",
-          color: "#67e8f9",
-          backgroundColor: alpha("#22d3ee", 0.12),
+          color: isLight ? "#0369a1" : "#67e8f9",
+          backgroundColor: isLight ? alpha("#0ea5e9", 0.12) : alpha("#22d3ee", 0.12),
           flexShrink: 0,
         }}
       >

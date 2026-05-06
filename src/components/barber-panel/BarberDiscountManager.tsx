@@ -16,6 +16,7 @@ import {
   Stack,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { FormEvent, ReactNode, useMemo, useState } from "react";
 import { DiscountFormPayload, DiscountItem } from "../../types";
@@ -44,6 +45,8 @@ export function BarberDiscountManager({
   onCreate,
   onDelete,
 }: BarberDiscountManagerProps) {
+  const theme = useTheme();
+  const isLight = theme.palette.mode === "light";
   const [title, setTitle] = useState("Bugungi skidka");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState(getTodayIso());
@@ -145,9 +148,10 @@ export function BarberDiscountManager({
         sx: {
           borderRadius: "30px",
           width: "min(1080px, calc(100% - 24px))",
-          background:
-            "linear-gradient(180deg, rgba(18,18,31,0.96) 0%, rgba(9,10,20,0.94) 100%)",
-          border: `1px solid ${alpha("#c4b5fd", 0.16)}`,
+          background: isLight
+            ? "linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(249,250,251,0.9) 100%)"
+            : "linear-gradient(180deg, rgba(18,18,31,0.96) 0%, rgba(9,10,20,0.94) 100%)",
+          border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.16)}`,
         },
       }}
     >
@@ -196,8 +200,8 @@ export function BarberDiscountManager({
                   width: 42,
                   height: 42,
                   borderRadius: "14px",
-                  border: `1px solid ${alpha("#c4b5fd", 0.14)}`,
-                  backgroundColor: alpha("#ffffff", 0.06),
+                  border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.14)}`,
+                  backgroundColor: isLight ? alpha("#000000", 0.04) : alpha("#ffffff", 0.06),
                 }}
               >
                 <CloseRoundedIcon fontSize="small" />
@@ -218,10 +222,11 @@ export function BarberDiscountManager({
               sx={{
                   p: 1.5,
                   borderRadius: "24px",
-                  background:
-                    "linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.04) 100%)",
-                  border: `1px solid ${alpha("#c4b5fd", 0.14)}`,
-                  boxShadow: "0 16px 34px rgba(0,0,0,0.2)",
+                  background: isLight
+                    ? "linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(249,250,251,0.5) 100%)"
+                    : "linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.04) 100%)",
+                  border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.14)}`,
+                  boxShadow: isLight ? "0 8px 24px rgba(0,0,0,0.04)" : "0 16px 34px rgba(0,0,0,0.2)",
                 }}
             >
               <Stack spacing={1.25}>
@@ -313,7 +318,8 @@ export function BarberDiscountManager({
                       px: 2.1,
                       borderRadius: "16px",
                       textTransform: "none",
-                      borderColor: alpha("#c4b5fd", 0.18),
+                      borderColor: isLight ? alpha("#000000", 0.18) : alpha("#c4b5fd", 0.18),
+                      color: isLight ? "#0f172a" : undefined,
                     }}
                   >
                     Tozalash
@@ -326,9 +332,10 @@ export function BarberDiscountManager({
               sx={{
                 p: 1.3,
                 borderRadius: "24px",
-                background:
-                  "linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.04) 100%)",
-                border: `1px solid ${alpha("#c4b5fd", 0.14)}`,
+                background: isLight
+                  ? "linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(249,250,251,0.5) 100%)"
+                  : "linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.04) 100%)",
+                border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.14)}`,
               }}
             >
               <Stack spacing={1}>
@@ -343,8 +350,8 @@ export function BarberDiscountManager({
                       sx={{
                         p: 1.2,
                         borderRadius: "20px",
-                        border: `1px solid ${alpha("#c4b5fd", 0.14)}`,
-                        backgroundColor: alpha("#ffffff", 0.06),
+                        border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.14)}`,
+                        backgroundColor: isLight ? alpha("#000000", 0.02) : alpha("#ffffff", 0.06),
                       }}
                     >
                       <Stack
@@ -418,9 +425,9 @@ export function BarberDiscountManager({
                     sx={{
                       p: 1.4,
                       borderRadius: "20px",
-                      border: `1px dashed ${alpha("#c4b5fd", 0.22)}`,
+                      border: isLight ? `1px dashed ${alpha("#000000", 0.12)}` : `1px dashed ${alpha("#c4b5fd", 0.22)}`,
                       color: "text.primary",
-                      backgroundColor: alpha("#ffffff", 0.04),
+                      backgroundColor: isLight ? alpha("#000000", 0.02) : alpha("#ffffff", 0.04),
                     }}
                   >
                     Hozircha skidka yo'q. Yangi skidka qo'ysangiz foydalanuvchi va botga xabar boradi.
@@ -488,6 +495,8 @@ function Field({
 }
 
 function MetaPill({ icon, label }: { icon: ReactNode; label: string }) {
+  const theme = useTheme();
+  const isLight = theme.palette.mode === "light";
   return (
     <Stack
       direction="row"
@@ -497,9 +506,9 @@ function MetaPill({ icon, label }: { icon: ReactNode; label: string }) {
         px: 1,
         py: 0.75,
         borderRadius: "999px",
-        backgroundColor: alpha("#ffffff", 0.06),
-        color: "#cbd5e1",
-        border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
+        backgroundColor: isLight ? alpha("#000000", 0.04) : alpha("#ffffff", 0.06),
+        color: isLight ? "#475569" : "#cbd5e1",
+        border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.12)}`,
       }}
     >
       {icon}

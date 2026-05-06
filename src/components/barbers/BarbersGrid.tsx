@@ -128,9 +128,10 @@ export function BarbersGrid({
               px: { xs: 1.05, sm: 1.3, md: 1.55 },
               py: { xs: 1.1, md: 1.35 },
               borderRadius: "20px",
-              border: `1px solid ${alpha("#c4b5fd", 0.14)}`,
-              background:
-                "linear-gradient(180deg, rgba(20,20,34,0.86) 0%, rgba(11,12,24,0.72) 100%)",
+              border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#e5e7eb", 1)}` : `1px solid ${alpha("#c4b5fd", 0.14)}`,
+              background: (theme) => theme.palette.mode === "light"
+                ? "#ffffff"
+                : "linear-gradient(180deg, rgba(20,20,34,0.86) 0%, rgba(11,12,24,0.72) 100%)",
               overflow: "hidden",
               position: "relative",
               boxShadow: "0 20px 48px rgba(0,0,0,0.24)",
@@ -243,7 +244,7 @@ export function BarbersGrid({
                       variant="body1"
                       sx={{
                         mb: 0.65,
-                        color: "#aab2c8",
+                        color: (theme) => theme.palette.mode === "light" ? "text.secondary" : "#aab2c8",
                         fontSize: { xs: "0.84rem", md: "0.9rem" },
                       }}
                     >
@@ -276,10 +277,11 @@ export function BarbersGrid({
                     elevation={0}
                     sx={{
                       borderRadius: "15px",
-                      border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
-                      background:
-                        "linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.04) 100%)",
-                      boxShadow: "0 12px 24px rgba(0,0,0,0.16)",
+                      border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#000000", 0.06)}` : `1px solid ${alpha("#c4b5fd", 0.12)}`,
+                      background: (theme) => theme.palette.mode === "light"
+                        ? alpha("#000000", 0.02)
+                        : "linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.04) 100%)",
+                      boxShadow: (theme) => theme.palette.mode === "light" ? "0 4px 12px rgba(0,0,0,0.03)" : "0 12px 24px rgba(0,0,0,0.16)",
                     }}
                   >
                     <CardContent sx={{ p: 0.95, "&:last-child": { pb: 0.95 } }}>
@@ -365,9 +367,10 @@ export function BarbersGrid({
                       width: "100%",
                       p: 0.82,
                       borderRadius: "14px",
-                      background:
-                        "linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.04) 100%)",
-                      color: "#f8fafc",
+                      background: (theme) => theme.palette.mode === "light"
+                        ? alpha("#000000", 0.02)
+                        : "linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.04) 100%)",
+                      color: (theme) => theme.palette.mode === "light" ? "text.primary" : "#f8fafc",
                       position: "relative",
                       overflow: "hidden",
                       border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
@@ -400,7 +403,7 @@ export function BarbersGrid({
                     </Typography>
                     <Typography
                       variant="body1"
-                      sx={{ color: "#cbd5e1", fontSize: "0.72rem", lineHeight: 1.36 }}
+                      sx={{ color: (theme) => theme.palette.mode === "light" ? "text.secondary" : "#cbd5e1", fontSize: "0.72rem", lineHeight: 1.36 }}
                     >
                       {barber.bio ?? "Bio hozircha kiritilmagan."}
                     </Typography>
@@ -411,10 +414,11 @@ export function BarbersGrid({
                       width: "100%",
                       p: 0.88,
                       borderRadius: "14px",
-                      background:
-                        "linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.04) 100%)",
-                      border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
-                      boxShadow: "0 10px 22px rgba(0,0,0,0.16)",
+                      background: (theme) => theme.palette.mode === "light"
+                        ? alpha("#000000", 0.02)
+                        : "linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.04) 100%)",
+                      border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#000000", 0.06)}` : `1px solid ${alpha("#c4b5fd", 0.12)}`,
+                      boxShadow: (theme) => theme.palette.mode === "light" ? "0 4px 12px rgba(0,0,0,0.03)" : "0 10px 22px rgba(0,0,0,0.16)",
                     }}
                   >
                     <Stack direction="row" spacing={0.7} alignItems="center" sx={{ mb: 0.55 }}>
@@ -456,9 +460,10 @@ export function BarbersGrid({
                         sx={{
                           p: 0.7,
                           borderRadius: "11px",
-                          border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
-                          background:
-                            "linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.035) 100%)",
+                          border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.12)}`,
+                          background: (theme) => theme.palette.mode === "light"
+                            ? alpha("#000000", 0.02)
+                            : "linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.035) 100%)",
                         }}
                       >
                         <Typography
@@ -478,7 +483,7 @@ export function BarbersGrid({
                           variant="body2"
                           sx={{
                             fontFamily: '"Consolas", "Courier New", monospace',
-                            color: "#f8fafc",
+                            color: (theme) => theme.palette.mode === "light" ? "text.primary" : "#f8fafc",
                             fontSize: "0.76rem",
                           }}
                         >
@@ -490,9 +495,10 @@ export function BarbersGrid({
                         sx={{
                           p: 0.7,
                           borderRadius: "11px",
-                          background:
-                            "linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.035) 100%)",
-                          border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
+                          background: (theme) => theme.palette.mode === "light"
+                            ? alpha("#000000", 0.02)
+                            : "linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.035) 100%)",
+                          border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.12)}`,
                         }}
                       >
                         <Typography
@@ -512,7 +518,7 @@ export function BarbersGrid({
                           variant="body2"
                           sx={{
                             fontFamily: '"Consolas", "Courier New", monospace',
-                            color: barber.password ? "#f8fafc" : "#fde68a",
+                            color: barber.password ? ((theme) => theme.palette.mode === "light" ? "text.primary" : "#f8fafc") : "#fde68a",
                             fontSize: "0.76rem",
                           }}
                         >

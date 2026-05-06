@@ -69,11 +69,12 @@ function StatTile({
       sx={{
         p: 1.35,
         borderRadius: "18px",
-        border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
-        background:
-          "linear-gradient(180deg, rgba(20,20,34,0.84) 0%, rgba(11,12,24,0.72) 100%)",
-        boxShadow: "0 16px 34px rgba(0,0,0,0.18)",
-        backdropFilter: "blur(16px)",
+        border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#e5e7eb", 1)}` : `1px solid ${alpha("#c4b5fd", 0.12)}`,
+        background: (theme) => theme.palette.mode === "light"
+          ? "#ffffff"
+          : "linear-gradient(180deg, rgba(20,20,34,0.84) 0%, rgba(11,12,24,0.72) 100%)",
+        boxShadow: (theme) => theme.palette.mode === "light" ? "0 4px 12px rgba(0,0,0,0.04)" : "0 16px 34px rgba(0,0,0,0.18)",
+        backdropFilter: (theme) => theme.palette.mode === "light" ? "none" : "blur(16px)",
       }}
     >
       <Stack direction="row" spacing={0.95} alignItems="center">
@@ -92,7 +93,7 @@ function StatTile({
           {icon}
         </Box>
         <Box>
-          <Typography variant="caption" sx={{ color: "#8d95a8" }}>
+          <Typography variant="caption" sx={{ color: (theme) => theme.palette.mode === "light" ? "text.secondary" : "#8d95a8" }}>
             {label}
           </Typography>
           <Typography variant="subtitle1" sx={{ mt: 0.15 }}>
@@ -195,11 +196,12 @@ export function DiscountsPage({ items, onDeleteDiscount }: DiscountsPageProps) {
                 sx={{
                   p: 1.35,
                   borderRadius: "22px",
-                  background:
-                    "linear-gradient(180deg, rgba(20,20,34,0.84) 0%, rgba(11,12,24,0.72) 100%)",
-                  border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
-                  boxShadow: "0 18px 42px rgba(0,0,0,0.22)",
-                  backdropFilter: "blur(16px)",
+                  background: (theme) => theme.palette.mode === "light"
+                    ? "#ffffff"
+                    : "linear-gradient(180deg, rgba(20,20,34,0.84) 0%, rgba(11,12,24,0.72) 100%)",
+                  border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#e5e7eb", 1)}` : `1px solid ${alpha("#c4b5fd", 0.12)}`,
+                  boxShadow: (theme) => theme.palette.mode === "light" ? "0 4px 12px rgba(0,0,0,0.04)" : "0 18px 42px rgba(0,0,0,0.22)",
+                  backdropFilter: (theme) => theme.palette.mode === "light" ? "none" : "blur(16px)",
                 }}
               >
                 <Stack spacing={1.15}>

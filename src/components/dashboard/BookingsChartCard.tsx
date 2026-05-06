@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { BarberBookingSummary } from "../../types";
 import { SectionCard } from "../common/SectionCard";
+import { usePreferences } from "../../lib/preferences";
 
 const barberColors = ["#8b5cf6", "#22d3ee", "#34d399", "#f6c85f"];
 
@@ -22,7 +23,8 @@ interface BookingsChartCardProps {
 }
 
 export function BookingsChartCard({ items }: BookingsChartCardProps) {
-  const safeItems = items.length ? items : [{ name: "Hozircha yo'q", completed: 0, pending: 0 }];
+  const { t } = usePreferences();
+  const safeItems = items.length ? items : [{ name: t("Hozircha yo'q"), completed: 0, pending: 0 }];
   const maxValue = Math.max(1, ...safeItems.flatMap((item) => [item.completed, item.pending]));
   const totalCompleted = safeItems.reduce((sum, item) => sum + item.completed, 0);
   const totalPending = safeItems.reduce((sum, item) => sum + item.pending, 0);
@@ -41,29 +43,29 @@ export function BookingsChartCard({ items }: BookingsChartCardProps) {
         >
           <Stack spacing={0.38}>
             <Typography variant="h5" sx={{ fontSize: { xs: "1.08rem", md: "1.18rem" } }}>
-              Bugungi navbatlar
+              {t("Bugungi navbatlar")}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.84rem" }}>
-              Har bir barberning bugungi navbatlari
+              {t("Har bir barberning bugungi navbatlari")}
             </Typography>
           </Stack>
 
           <Stack direction="row" spacing={0.8} flexWrap="wrap" useFlexGap>
             <Chip
               icon={<QueryStatsRoundedIcon />}
-              label={`${totalCompleted + totalPending} ta jami`}
+              label={`${totalCompleted + totalPending} ${t("ta jami")}`}
               size="small"
               sx={{
                 height: 30,
                 borderRadius: "999px",
-                backgroundColor: alpha("#ffffff", 0.06),
-                border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
+                backgroundColor: (theme) => theme.palette.mode === "light" ? alpha("#000000", 0.04) : alpha("#ffffff", 0.06),
+                border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#e5e7eb", 1)}` : `1px solid ${alpha("#c4b5fd", 0.12)}`,
                 "& .MuiChip-label": { px: 1.1, fontWeight: 700 },
               }}
             />
             <Chip
               icon={<TrendingUpRoundedIcon />}
-              label={`${bestBarber.name} oldinda`}
+              label={`${bestBarber.name} ${t("oldinda")}`}
               size="small"
               sx={{
                 height: 30,
@@ -88,11 +90,12 @@ export function BookingsChartCard({ items }: BookingsChartCardProps) {
                 elevation={0}
                 sx={{
                 borderRadius: "16px",
-                  border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
-                  background:
-                    "linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.035) 100%)",
-                  boxShadow: "0 14px 30px rgba(0,0,0,0.16)",
-                  backdropFilter: "blur(14px)",
+                  border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#e5e7eb", 1)}` : `1px solid ${alpha("#c4b5fd", 0.12)}`,
+                  background: (theme) => theme.palette.mode === "light"
+                    ? "linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(249,250,251,0.5) 100%)"
+                    : "linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.035) 100%)",
+                  boxShadow: (theme) => theme.palette.mode === "light" ? "0 4px 12px rgba(0,0,0,0.02)" : "0 14px 30px rgba(0,0,0,0.16)",
+                  backdropFilter: (theme) => theme.palette.mode === "light" ? "none" : "blur(14px)",
                 }}
               >
                 <CardContent sx={{ p: 1.2, "&:last-child": { pb: 1.2 } }}>
@@ -126,26 +129,26 @@ export function BookingsChartCard({ items }: BookingsChartCardProps) {
                             variant="caption"
                             sx={{ color: "text.secondary", fontSize: "0.76rem" }}
                           >
-                            {total} ta navbat
+                            {total} {t("ta navbat")}
                           </Typography>
                         </Box>
                       </Stack>
 
                       <Stack direction="row" spacing={0.55} flexWrap="wrap" useFlexGap>
                         <Chip
-                          label={`${item.completed} tugagan`}
+                          label={`${item.completed} ${t("tugagan")}`}
                           size="small"
                           sx={{
                             height: 26,
                             borderRadius: "999px",
                             backgroundColor: alpha("#3aa66f", 0.12),
-                            color: "#86efac",
+                            color: (theme) => theme.palette.mode === "light" ? "#15803d" : "#86efac",
                             border: `1px solid ${alpha("#34d399", 0.16)}`,
                             "& .MuiChip-label": { px: 0.95, fontWeight: 700, fontSize: "0.75rem" },
                           }}
                         />
                         <Chip
-                          label={`${item.pending} kutilmoqda`}
+                          label={`${item.pending} ${t("kutilmoqda")}`}
                           size="small"
                           sx={{
                             height: 26,
@@ -163,10 +166,10 @@ export function BookingsChartCard({ items }: BookingsChartCardProps) {
                       <Box>
                         <Stack direction="row" justifyContent="space-between" sx={{ mb: 0.4 }}>
                           <Typography variant="caption" color="text.secondary">
-                            Tugagan navbatlar
+                            {t("Tugagan navbatlar")}
                           </Typography>
                           <Typography variant="caption" color="text.secondary">
-                            {item.completed} ta
+                            {item.completed} {t("ta")}
                           </Typography>
                         </Stack>
                         <LinearProgress
@@ -188,10 +191,10 @@ export function BookingsChartCard({ items }: BookingsChartCardProps) {
                       <Box>
                         <Stack direction="row" justifyContent="space-between" sx={{ mb: 0.4 }}>
                           <Typography variant="caption" color="text.secondary">
-                            Kutilayotgan navbatlar
+                            {t("Kutilayotgan navbatlar")}
                           </Typography>
                           <Typography variant="caption" color="text.secondary">
-                            {item.pending} ta
+                            {item.pending} {t("ta")}
                           </Typography>
                         </Stack>
                         <LinearProgress
@@ -220,7 +223,7 @@ export function BookingsChartCard({ items }: BookingsChartCardProps) {
         <Stack direction="row" spacing={0.75} alignItems="center">
           <ScheduleRoundedIcon sx={{ fontSize: "0.95rem", color: "#f6c85f" }} />
           <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.82rem" }}>
-            Bugun eng ko&apos;p navbatni {bestBarber.name} tugatgan.
+            {t("Bugun eng ko'p navbatni")} {bestBarber.name} {t("tugatgan.")}
           </Typography>
         </Stack>
       </Stack>

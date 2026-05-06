@@ -8,18 +8,22 @@ const panel = "#11111d";
 
 export function createAppTheme(mode: "dark" | "light" = "dark") {
   const isLight = mode === "light";
-  const backgroundDefault = isLight ? "#f7f8fb" : ink;
-  const backgroundPaper = isLight ? alpha("#ffffff", 0.92) : alpha(panel, 0.82);
-  const textPrimary = isLight ? "#0f172a" : "#f8fafc";
-  const textSecondary = isLight ? "#64748b" : "#aab2c8";
+  const backgroundDefault = isLight ? "#f4f6f8" : ink;
+  const backgroundPaper = isLight ? "#ffffff" : alpha(panel, 0.82);
+  const textPrimary = isLight ? "#111827" : "#f8fafc";
+  const textSecondary = isLight ? "#6b7280" : "#aab2c8";
+
+  const primaryMain = isLight ? "#fbbd05" : neonPurple;
+  const primaryLight = isLight ? "#fcd04b" : "#c4b5fd";
+  const primaryDark = isLight ? "#d9a100" : "#5b21b6";
 
   return createTheme({
   palette: {
     mode,
     primary: {
-      main: neonPurple,
-      light: "#c4b5fd",
-      dark: "#5b21b6",
+      main: primaryMain,
+      light: primaryLight,
+      dark: primaryDark,
       contrastText: "#ffffff",
     },
     secondary: {
@@ -94,7 +98,7 @@ export function createAppTheme(mode: "dark" | "light" = "dark") {
         body: {
           backgroundColor: backgroundDefault,
           backgroundImage: isLight
-            ? "radial-gradient(circle at 12% -8%, rgba(246,200,95,0.24), transparent 30%), radial-gradient(circle at 94% 4%, rgba(59,130,246,0.16), transparent 28%), linear-gradient(135deg, #f8fafc 0%, #f7f2e8 46%, #eef6ff 100%)"
+            ? "none"
             : "radial-gradient(circle at 12% -8%, rgba(139,92,246,0.32), transparent 32%), radial-gradient(circle at 92% 6%, rgba(34,211,238,0.18), transparent 30%), radial-gradient(circle at 50% 112%, rgba(246,200,95,0.14), transparent 35%), linear-gradient(135deg, #05050a 0%, #0b0714 36%, #12091f 62%, #07111d 100%)",
           backgroundAttachment: "fixed",
           minHeight: "100vh",
@@ -115,12 +119,13 @@ export function createAppTheme(mode: "dark" | "light" = "dark") {
       styleOverrides: {
         root: {
           color: textPrimary,
-          boxShadow: isLight ? "0 18px 50px rgba(15,23,42,0.08)" : "0 24px 70px rgba(0, 0, 0, 0.38)",
+          backgroundColor: isLight ? "#ffffff" : undefined,
+          boxShadow: isLight ? "0px 8px 24px rgba(0, 0, 0, 0.04)" : "0 24px 70px rgba(0, 0, 0, 0.38)",
           backgroundImage: isLight
-            ? "linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(248,250,252,0.88) 100%)"
+            ? "none"
             : "linear-gradient(180deg, rgba(19,19,32,0.88) 0%, rgba(12,12,22,0.78) 100%)",
-          border: `1px solid ${isLight ? alpha("#94a3b8", 0.2) : alpha("#c4b5fd", 0.13)}`,
-          backdropFilter: "blur(22px)",
+          border: isLight ? "none" : `1px solid ${alpha("#c4b5fd", 0.13)}`,
+          backdropFilter: isLight ? "none" : "blur(22px)",
         },
       },
     },
@@ -128,22 +133,24 @@ export function createAppTheme(mode: "dark" | "light" = "dark") {
       styleOverrides: {
         root: {
           color: textPrimary,
+          backgroundColor: isLight ? "#ffffff" : undefined,
           backgroundImage: isLight
-            ? "linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.9) 100%)"
+            ? "none"
             : "linear-gradient(180deg, rgba(19,19,32,0.86) 0%, rgba(12,12,22,0.76) 100%)",
-          border: `1px solid ${isLight ? alpha("#94a3b8", 0.18) : alpha("#c4b5fd", 0.12)}`,
-          backdropFilter: "blur(18px)",
+          border: isLight ? "none" : `1px solid ${alpha("#c4b5fd", 0.12)}`,
+          boxShadow: isLight ? "0px 8px 24px rgba(0, 0, 0, 0.04)" : undefined,
+          backdropFilter: isLight ? "none" : "blur(18px)",
         },
       },
     },
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          borderRight: `1px solid ${isLight ? alpha("#94a3b8", 0.2) : alpha("#c4b5fd", 0.13)}`,
+          borderRight: isLight ? `1px solid ${alpha("#e5e7eb", 1)}` : `1px solid ${alpha("#c4b5fd", 0.13)}`,
           background: isLight
-            ? "linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.96) 100%)"
+            ? "#ffffff"
             : "linear-gradient(180deg, rgba(8,8,16,0.98) 0%, rgba(17,10,31,0.96) 54%, rgba(6,12,22,0.98) 100%)",
-          boxShadow: isLight ? "18px 0 60px rgba(15,23,42,0.08)" : "18px 0 60px rgba(0,0,0,0.28)",
+          boxShadow: isLight ? "4px 0 24px rgba(0,0,0,0.02)" : "18px 0 60px rgba(0,0,0,0.28)",
         },
       },
     },
@@ -176,14 +183,14 @@ export function createAppTheme(mode: "dark" | "light" = "dark") {
     MuiDialogTitle: {
       styleOverrides: {
         root: {
-          color: "#f8fafc",
+          color: isLight ? textPrimary : "#f8fafc",
         },
       },
     },
     MuiDialogContent: {
       styleOverrides: {
         root: {
-          color: "#f8fafc",
+          color: isLight ? textPrimary : "#f8fafc",
         },
       },
     },
@@ -197,11 +204,11 @@ export function createAppTheme(mode: "dark" | "light" = "dark") {
     MuiAppBar: {
       styleOverrides: {
         root: {
-          color: "#f8fafc",
-          backgroundColor: alpha("#080814", 0.78),
-          backgroundImage:
-            "linear-gradient(180deg, rgba(10,10,20,0.88) 0%, rgba(10,10,20,0.66) 100%)",
-          borderBottom: `1px solid ${alpha("#c4b5fd", 0.13)}`,
+          color: isLight ? textPrimary : "#f8fafc",
+          backgroundColor: isLight ? "#ffffff" : alpha("#080814", 0.78),
+          backgroundImage: isLight ? "none" : "linear-gradient(180deg, rgba(10,10,20,0.88) 0%, rgba(10,10,20,0.66) 100%)",
+          borderBottom: isLight ? `1px solid ${alpha("#e5e7eb", 1)}` : `1px solid ${alpha("#c4b5fd", 0.13)}`,
+          boxShadow: isLight ? "none" : undefined,
         },
       },
     },
@@ -249,15 +256,17 @@ export function createAppTheme(mode: "dark" | "light" = "dark") {
           fontWeight: 800,
         },
         contained: {
-          background:
-            "linear-gradient(135deg, rgba(139,92,246,1) 0%, rgba(34,211,238,0.92) 100%)",
-          boxShadow: `0 18px 34px ${alpha(neonPurple, 0.3)}`,
+          background: isLight 
+            ? "linear-gradient(135deg, #fbbd05 0%, #f2a900 100%)" 
+            : "linear-gradient(135deg, rgba(139,92,246,1) 0%, rgba(34,211,238,0.92) 100%)",
+          boxShadow: isLight ? `0 8px 24px ${alpha("#fbbd05", 0.35)}` : `0 18px 34px ${alpha(neonPurple, 0.3)}`,
+          color: "#ffffff",
           "&:hover": {
-            boxShadow: `0 22px 42px ${alpha(neonCyan, 0.24)}`,
+            boxShadow: isLight ? `0 12px 28px ${alpha("#fbbd05", 0.45)}` : `0 22px 42px ${alpha(neonCyan, 0.24)}`,
           },
           "&.Mui-disabled": {
-            color: alpha("#ffffff", 0.62),
-            background: alpha("#1e293b", 0.72),
+            color: alpha(isLight ? "#000000" : "#ffffff", 0.62),
+            background: isLight ? alpha("#9ca3af", 0.3) : alpha("#1e293b", 0.72),
           },
         },
         outlined: {
@@ -289,10 +298,11 @@ export function createAppTheme(mode: "dark" | "light" = "dark") {
     MuiIconButton: {
       styleOverrides: {
         root: {
-          color: "#e5e7eb",
+          color: isLight ? textSecondary : "#e5e7eb",
           transition: "transform 160ms ease, background-color 160ms ease, border-color 160ms ease",
           "&:hover": {
             transform: "translateY(-1px)",
+            backgroundColor: isLight ? alpha("#000000", 0.04) : undefined,
           },
         },
       },

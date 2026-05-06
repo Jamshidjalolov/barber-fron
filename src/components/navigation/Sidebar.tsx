@@ -18,6 +18,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
+import { useTheme } from "@mui/material/styles";
 import { usePreferences } from "../../lib/preferences";
 import { AdminUser, PageKey } from "../../types";
 import { BrandLogo } from "../common/BrandLogo";
@@ -64,6 +65,7 @@ export function Sidebar({
 }: SidebarProps) {
   const [logoutOpen, setLogoutOpen] = useState(false);
   const { t } = usePreferences();
+  const theme = useTheme();
 
   return (
     <>
@@ -72,11 +74,12 @@ export function Sidebar({
           height: "100%",
           p: { xs: 2, md: 2.2 },
           gap: 3.2,
-          background:
-            "radial-gradient(circle at 14% 4%, rgba(139,92,246,0.2), transparent 28%), radial-gradient(circle at 88% 20%, rgba(34,211,238,0.12), transparent 26%)",
+          background: (theme) => theme.palette.mode === "light"
+            ? "none"
+            : "radial-gradient(circle at 14% 4%, rgba(139,92,246,0.2), transparent 28%), radial-gradient(circle at 88% 20%, rgba(34,211,238,0.12), transparent 26%)",
         }}
       >
-        <BrandLogo badgeSize={48} tone="light" />
+        <BrandLogo badgeSize={48} tone={theme.palette.mode === "light" ? "dark" : "light"} />
 
         <List
           sx={{
@@ -84,9 +87,9 @@ export function Sidebar({
             display: "grid",
             gap: 0.75,
             borderRadius: "20px",
-            backgroundColor: alpha("#ffffff", 0.05),
-            border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
-            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)",
+            backgroundColor: (theme) => theme.palette.mode === "light" ? alpha("#000000", 0.02) : alpha("#ffffff", 0.05),
+            border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#000000", 0.05)}` : `1px solid ${alpha("#c4b5fd", 0.12)}`,
+            boxShadow: (theme) => theme.palette.mode === "light" ? "none" : "inset 0 1px 0 rgba(255,255,255,0.05)",
           }}
         >
           {navigationItems.map(({ key, label, icon: Icon }) => {
@@ -101,19 +104,21 @@ export function Sidebar({
                   minHeight: 48,
                   borderRadius: "14px",
                   px: 1.6,
-                  color: selected ? "#fff" : "text.secondary",
+                  color: selected ? (theme) => theme.palette.mode === "light" ? "#fff" : "#fff" : "text.secondary",
                   background: selected
-                    ? "linear-gradient(135deg, rgba(139,92,246,1) 0%, rgba(34,211,238,0.86) 100%)"
+                    ? (theme) => theme.palette.mode === "light" ? "linear-gradient(135deg, #fbbd05 0%, #f2a900 100%)" : "linear-gradient(135deg, rgba(139,92,246,1) 0%, rgba(34,211,238,0.86) 100%)"
                     : "transparent",
                   "&.Mui-selected": {
-                    background:
-                      "linear-gradient(135deg, rgba(139,92,246,1) 0%, rgba(34,211,238,0.86) 100%)",
+                    background: (theme) => theme.palette.mode === "light"
+                      ? "linear-gradient(135deg, #fbbd05 0%, #f2a900 100%)"
+                      : "linear-gradient(135deg, rgba(139,92,246,1) 0%, rgba(34,211,238,0.86) 100%)",
                     color: "#fff",
-                    boxShadow: `0 16px 28px ${alpha("#8b5cf6", 0.28)}`,
+                    boxShadow: (theme) => theme.palette.mode === "light" ? `0 8px 24px ${alpha("#fbbd05", 0.35)}` : `0 16px 28px ${alpha("#8b5cf6", 0.28)}`,
                   },
                   "&.Mui-selected:hover": {
-                    background:
-                      "linear-gradient(135deg, rgba(139,92,246,1) 0%, rgba(34,211,238,0.86) 100%)",
+                    background: (theme) => theme.palette.mode === "light"
+                      ? "linear-gradient(135deg, #fbbd05 0%, #f2a900 100%)"
+                      : "linear-gradient(135deg, rgba(139,92,246,1) 0%, rgba(34,211,238,0.86) 100%)",
                   },
                   "&:hover": {
                     backgroundColor: selected ? undefined : alpha("#ffffff", 0.07),
@@ -141,11 +146,12 @@ export function Sidebar({
             mt: "auto",
             p: 1,
             borderRadius: "18px",
-            background:
-              "linear-gradient(180deg, rgba(21,21,36,0.78) 0%, rgba(11,12,24,0.7) 100%)",
-            border: `1px solid ${alpha("#c4b5fd", 0.14)}`,
-            boxShadow: "0 18px 42px rgba(0, 0, 0, 0.24)",
-            backdropFilter: "blur(18px)",
+            background: (theme) => theme.palette.mode === "light"
+              ? "linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(248,250,252,0.8) 100%)"
+              : "linear-gradient(180deg, rgba(21,21,36,0.78) 0%, rgba(11,12,24,0.7) 100%)",
+            border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#e5e7eb", 1)}` : `1px solid ${alpha("#c4b5fd", 0.14)}`,
+            boxShadow: (theme) => theme.palette.mode === "light" ? "0 4px 12px rgba(0,0,0,0.04)" : "0 18px 42px rgba(0, 0, 0, 0.24)",
+            backdropFilter: (theme) => theme.palette.mode === "light" ? "none" : "blur(18px)",
           }}
         >
           <Stack spacing={0.85}>
@@ -156,8 +162,8 @@ export function Sidebar({
               sx={{
                 p: 0.75,
                 borderRadius: "14px",
-                backgroundColor: alpha("#ffffff", 0.06),
-                border: `1px solid ${alpha("#c4b5fd", 0.11)}`,
+                backgroundColor: (theme) => theme.palette.mode === "light" ? alpha("#000000", 0.04) : alpha("#ffffff", 0.06),
+                border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#e5e7eb", 1)}` : `1px solid ${alpha("#c4b5fd", 0.11)}`,
               }}
             >
               <Avatar
@@ -210,12 +216,13 @@ export function Sidebar({
                   width: 32,
                   height: 32,
                   borderRadius: "11px",
-                  backgroundColor: "#111111",
-                  color: "#fff",
-                  border: `1px solid ${alpha("#ffffff", 0.1)}`,
+                  backgroundColor: (theme) => theme.palette.mode === "light" ? alpha("#000000", 0.04) : "#111111",
+                  color: (theme) => theme.palette.mode === "light" ? "text.secondary" : "#fff",
+                  border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#000000", 0.1)}` : `1px solid ${alpha("#ffffff", 0.1)}`,
                   flexShrink: 0,
                   "&:hover": {
                     backgroundColor: alpha("#fb7185", 0.22),
+                    color: "#e11d48",
                   },
                 }}
               >
@@ -230,9 +237,9 @@ export function Sidebar({
                 sx={{
                   height: 25,
                   borderRadius: "10px",
-                  backgroundColor: alpha("#8b5cf6", 0.18),
-                  color: "#ddd6fe",
-                  border: `1px solid ${alpha("#c4b5fd", 0.16)}`,
+                  backgroundColor: (theme) => theme.palette.mode === "light" ? alpha("#8b5cf6", 0.1) : alpha("#8b5cf6", 0.18),
+                  color: (theme) => theme.palette.mode === "light" ? "#6d28d9" : "#ddd6fe",
+                  border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#8b5cf6", 0.2)}` : `1px solid ${alpha("#c4b5fd", 0.16)}`,
                   "& .MuiChip-label": {
                     px: 1.05,
                     fontSize: "0.7rem",

@@ -15,6 +15,7 @@ import {
   IconButton,
   Stack,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { ReactNode } from "react";
 import { BookingItem } from "../../types";
@@ -39,20 +40,20 @@ function formatMoney(value?: number) {
   return `${value.toLocaleString("uz-UZ")} so'm`;
 }
 
-function getStatusTone(status: BookingItem["status"]) {
+function getStatusTone(status: BookingItem["status"], isLight: boolean) {
   if (status === "Tugallandi") {
-    return { bg: alpha("#34d399", 0.12), color: "#86efac" };
+    return { bg: isLight ? alpha("#10b981", 0.12) : alpha("#34d399", 0.12), color: isLight ? "#047857" : "#86efac" };
   }
   if (status === "Rad etildi") {
-    return { bg: alpha("#fb7185", 0.12), color: "#fecdd3" };
+    return { bg: isLight ? alpha("#ef4444", 0.12) : alpha("#fb7185", 0.12), color: isLight ? "#b91c1c" : "#fecdd3" };
   }
   if (status === "Jarayonda") {
-    return { bg: alpha("#22d3ee", 0.12), color: "#67e8f9" };
+    return { bg: isLight ? alpha("#0ea5e9", 0.12) : alpha("#22d3ee", 0.12), color: isLight ? "#0369a1" : "#67e8f9" };
   }
   if (status === "Tasdiqlandi") {
-    return { bg: alpha("#34d399", 0.12), color: "#86efac" };
+    return { bg: isLight ? alpha("#10b981", 0.12) : alpha("#34d399", 0.12), color: isLight ? "#047857" : "#86efac" };
   }
-  return { bg: alpha("#f6c85f", 0.12), color: "#fde68a" };
+  return { bg: isLight ? alpha("#f59e0b", 0.12) : alpha("#f6c85f", 0.12), color: isLight ? "#b45309" : "#fde68a" };
 }
 
 function InfoRow({
@@ -64,6 +65,8 @@ function InfoRow({
   label: string;
   value: string;
 }) {
+  const theme = useTheme();
+  const isLight = theme.palette.mode === "light";
   return (
     <Stack
       direction="row"
@@ -72,8 +75,8 @@ function InfoRow({
       sx={{
         p: 1.05,
         borderRadius: "16px",
-        backgroundColor: alpha("#ffffff", 0.06),
-        border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
+        backgroundColor: isLight ? alpha("#000000", 0.03) : alpha("#ffffff", 0.06),
+        border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.12)}`,
       }}
     >
       <Box
@@ -83,8 +86,8 @@ function InfoRow({
           borderRadius: "12px",
           display: "grid",
           placeItems: "center",
-          color: "#67e8f9",
-          backgroundColor: alpha("#22d3ee", 0.12),
+          color: isLight ? "#0284c7" : "#67e8f9",
+          backgroundColor: isLight ? alpha("#0ea5e9", 0.12) : alpha("#22d3ee", 0.12),
           flexShrink: 0,
         }}
       >
@@ -111,7 +114,9 @@ export function BookingDetailsDialog({
     return null;
   }
 
-  const tone = getStatusTone(booking.status);
+  const theme = useTheme();
+  const isLight = theme.palette.mode === "light";
+  const tone = getStatusTone(booking.status, isLight);
 
   return (
     <Dialog
@@ -123,9 +128,10 @@ export function BookingDetailsDialog({
         sx: {
           borderRadius: "28px",
           overflow: "hidden",
-          background:
-            "linear-gradient(180deg, rgba(18,18,31,0.96) 0%, rgba(9,10,20,0.94) 100%)",
-          border: `1px solid ${alpha("#c4b5fd", 0.16)}`,
+          background: isLight
+            ? "linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(249,250,251,0.9) 100%)"
+            : "linear-gradient(180deg, rgba(18,18,31,0.96) 0%, rgba(9,10,20,0.94) 100%)",
+          border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.16)}`,
         },
       }}
     >
@@ -149,9 +155,10 @@ export function BookingDetailsDialog({
             sx={{
               p: 1.35,
               borderRadius: "22px",
-              background:
-                "linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.04) 100%)",
-              border: `1px solid ${alpha("#c4b5fd", 0.14)}`,
+              background: isLight
+                ? "linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(249,250,251,0.5) 100%)"
+                : "linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.04) 100%)",
+              border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.14)}`,
             }}
           >
             <Stack
@@ -222,11 +229,11 @@ export function BookingDetailsDialog({
                 px: 1.2,
                 py: 0.95,
                 borderRadius: "16px",
-                backgroundColor: alpha("#34d399", 0.1),
-                border: `1px solid ${alpha("#34d399", 0.16)}`,
+                backgroundColor: isLight ? alpha("#10b981", 0.1) : alpha("#34d399", 0.1),
+                border: isLight ? `1px solid ${alpha("#10b981", 0.16)}` : `1px solid ${alpha("#34d399", 0.16)}`,
               }}
             >
-              <Typography variant="body2" sx={{ color: "#86efac", fontWeight: 700 }}>
+              <Typography variant="body2" sx={{ color: isLight ? "#047857" : "#86efac", fontWeight: 700 }}>
                 Ushbu bron uchun {booking.appliedDiscountPercent}% skidka qo'llangan.
               </Typography>
             </Box>
@@ -238,14 +245,14 @@ export function BookingDetailsDialog({
                 px: 1.2,
                 py: 0.95,
                 borderRadius: "16px",
-                backgroundColor: alpha("#fb7185", 0.1),
-                border: `1px solid ${alpha("#fb7185", 0.16)}`,
+                backgroundColor: isLight ? alpha("#ef4444", 0.1) : alpha("#fb7185", 0.1),
+                border: isLight ? `1px solid ${alpha("#ef4444", 0.16)}` : `1px solid ${alpha("#fb7185", 0.16)}`,
               }}
             >
-              <Typography variant="caption" sx={{ color: "#fecdd3", fontWeight: 700 }}>
+              <Typography variant="caption" sx={{ color: isLight ? "#b91c1c" : "#fecdd3", fontWeight: 700 }}>
                 Rad etish sababi
               </Typography>
-              <Typography variant="body2" sx={{ color: "#ffe4e6", mt: 0.35 }}>
+              <Typography variant="body2" sx={{ color: isLight ? "#7f1d1d" : "#ffe4e6", mt: 0.35 }}>
                 {booking.rejectionReason}
               </Typography>
             </Box>

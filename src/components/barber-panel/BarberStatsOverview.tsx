@@ -3,7 +3,7 @@ import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import ContentCutRoundedIcon from "@mui/icons-material/ContentCutRounded";
 import TaskAltRoundedIcon from "@mui/icons-material/TaskAltRounded";
 import TrendingUpRoundedIcon from "@mui/icons-material/TrendingUpRounded";
-import { alpha, Box, Button, LinearProgress, Stack, Typography } from "@mui/material";
+import { alpha, Box, Button, LinearProgress, Stack, Typography, useTheme } from "@mui/material";
 import { motion } from "framer-motion";
 import { ReactNode } from "react";
 
@@ -24,6 +24,7 @@ export function BarberStatsOverview({
   progressValue,
   onOpenSchedule,
 }: BarberStatsOverviewProps) {
+  const theme = useTheme();
   return (
     <Stack spacing={1.5}>
       <Box
@@ -66,10 +67,11 @@ export function BarberStatsOverview({
         sx={{
           p: { xs: 1.5, md: 1.7 },
           borderRadius: "24px",
-          background:
-            "linear-gradient(180deg, rgba(19,20,34,0.86) 0%, rgba(10,11,22,0.72) 100%)",
-          border: `1px solid ${alpha("#c4b5fd", 0.14)}`,
-          boxShadow: "0 18px 42px rgba(0,0,0,0.22)",
+          background: theme.palette.mode === "light"
+            ? "linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(249,250,251,0.8) 100%)"
+            : "linear-gradient(180deg, rgba(19,20,34,0.86) 0%, rgba(10,11,22,0.72) 100%)",
+          border: theme.palette.mode === "light" ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.14)}`,
+          boxShadow: theme.palette.mode === "light" ? "0 12px 30px rgba(0,0,0,0.04)" : "0 18px 42px rgba(0,0,0,0.22)",
           backdropFilter: "blur(18px)",
         }}
       >
@@ -126,33 +128,38 @@ function MetricCard({
   label: string;
   tone: "dark" | "accepted" | "success" | "rejected";
 }) {
+  const theme = useTheme();
   const styles =
     tone === "dark"
       ? {
-          background:
-            "linear-gradient(135deg, rgba(139,92,246,0.98) 0%, rgba(34,211,238,0.78) 100%)",
+          background: theme.palette.mode === "light"
+            ? "linear-gradient(135deg, rgba(139,92,246,0.98) 0%, rgba(34,211,238,0.78) 100%)"
+            : "linear-gradient(135deg, rgba(139,92,246,0.98) 0%, rgba(34,211,238,0.78) 100%)",
           color: "#fff",
           borderColor: alpha("#67e8f9", 0.28),
         }
       : tone === "accepted"
         ? {
-            background:
-              "linear-gradient(180deg, rgba(18,25,45,0.9) 0%, rgba(12,18,31,0.78) 100%)",
-            color: "#dbeafe",
-            borderColor: alpha("#60a5fa", 0.18),
+            background: theme.palette.mode === "light"
+              ? "linear-gradient(180deg, rgba(219,234,254,0.8) 0%, rgba(239,246,255,0.6) 100%)"
+              : "linear-gradient(180deg, rgba(18,25,45,0.9) 0%, rgba(12,18,31,0.78) 100%)",
+            color: theme.palette.mode === "light" ? "#1e40af" : "#dbeafe",
+            borderColor: theme.palette.mode === "light" ? alpha("#3b82f6", 0.2) : alpha("#60a5fa", 0.18),
           }
       : tone === "success"
         ? {
-            background:
-              "linear-gradient(180deg, rgba(16,35,32,0.9) 0%, rgba(11,24,25,0.78) 100%)",
-            color: "#dcfce7",
-            borderColor: alpha("#34d399", 0.2),
+            background: theme.palette.mode === "light"
+              ? "linear-gradient(180deg, rgba(220,252,231,0.8) 0%, rgba(240,253,244,0.6) 100%)"
+              : "linear-gradient(180deg, rgba(16,35,32,0.9) 0%, rgba(11,24,25,0.78) 100%)",
+            color: theme.palette.mode === "light" ? "#166534" : "#dcfce7",
+            borderColor: theme.palette.mode === "light" ? alpha("#22c55e", 0.2) : alpha("#34d399", 0.2),
           }
         : {
-            background:
-              "linear-gradient(180deg, rgba(45,18,26,0.9) 0%, rgba(28,12,18,0.78) 100%)",
-            color: "#ffe4e6",
-            borderColor: alpha("#fb7185", 0.2),
+            background: theme.palette.mode === "light"
+              ? "linear-gradient(180deg, rgba(254,226,226,0.8) 0%, rgba(254,242,242,0.6) 100%)"
+              : "linear-gradient(180deg, rgba(45,18,26,0.9) 0%, rgba(28,12,18,0.78) 100%)",
+            color: theme.palette.mode === "light" ? "#991b1b" : "#ffe4e6",
+            borderColor: theme.palette.mode === "light" ? alpha("#ef4444", 0.2) : alpha("#fb7185", 0.2),
           };
 
   return (
@@ -169,7 +176,7 @@ function MetricCard({
         border: `1px solid ${styles.borderColor}`,
         color: styles.color,
         background: styles.background,
-        boxShadow: "0 18px 42px rgba(0,0,0,0.24)",
+        boxShadow: theme.palette.mode === "light" ? "0 12px 30px rgba(0,0,0,0.04)" : "0 18px 42px rgba(0,0,0,0.24)",
         backdropFilter: "blur(18px)",
       }}
     >
@@ -205,8 +212,8 @@ function MetricCard({
             tone === "dark"
               ? alpha("#ffffff", 0.75)
               : tone === "rejected"
-                ? "#fecdd3"
-                : "#aab2c8",
+                ? theme.palette.mode === "light" ? "#b91c1c" : "#fecdd3"
+                : theme.palette.mode === "light" ? "#475569" : "#aab2c8",
         }}
       >
         {label}

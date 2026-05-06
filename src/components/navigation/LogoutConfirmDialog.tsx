@@ -22,15 +22,24 @@ interface LogoutConfirmDialogProps {
   confirmLabel?: string;
 }
 
+import { usePreferences } from "../../lib/preferences";
+
 export function LogoutConfirmDialog({
   open,
   onClose,
   onConfirm,
-  title = "Tizimdan chiqish",
-  subtitle = "Sessiya yakunlanadi",
-  message = "Haqiqatan ham chiqmoqchimisiz? Tasdiqlasangiz, akkauntingizdan chiqasiz.",
-  confirmLabel = "Ha, chiqaman",
+  title,
+  subtitle,
+  message,
+  confirmLabel,
 }: LogoutConfirmDialogProps) {
+  const { t } = usePreferences();
+  
+  const safeTitle = title ?? t("Tizimdan chiqish");
+  const safeSubtitle = subtitle ?? t("Sessiya yakunlanadi");
+  const safeMessage = message ?? t("Haqiqatan ham chiqmoqchimisiz? Tasdiqlasangiz, akkauntingizdan chiqasiz.");
+  const safeConfirmLabel = confirmLabel ?? t("Ha, chiqaman");
+
   return (
     <Dialog
       open={open}
@@ -41,10 +50,11 @@ export function LogoutConfirmDialog({
         sx: {
           borderRadius: "28px",
           width: "min(520px, calc(100% - 24px))",
-          background:
-            "linear-gradient(180deg, rgba(18,18,31,0.96) 0%, rgba(9,10,20,0.94) 100%)",
-          border: `1px solid ${alpha("#c4b5fd", 0.16)}`,
-          boxShadow: "0 34px 100px rgba(0,0,0,0.58)",
+          background: (theme) => theme.palette.mode === "light"
+            ? "linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(248,250,252,0.95) 100%)"
+            : "linear-gradient(180deg, rgba(18,18,31,0.96) 0%, rgba(9,10,20,0.94) 100%)",
+          border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.16)}`,
+          boxShadow: (theme) => theme.palette.mode === "light" ? "0 24px 60px rgba(0,0,0,0.06)" : "0 34px 100px rgba(0,0,0,0.58)",
         },
       }}
     >
@@ -59,19 +69,19 @@ export function LogoutConfirmDialog({
                   display: "grid",
                   placeItems: "center",
                   borderRadius: "18px",
-                  backgroundColor: alpha("#f6c85f", 0.14),
-                  color: "#fde68a",
-                  border: `1px solid ${alpha("#f6c85f", 0.18)}`,
+                  backgroundColor: (theme) => theme.palette.mode === "light" ? alpha("#f59e0b", 0.1) : alpha("#f6c85f", 0.14),
+                  color: (theme) => theme.palette.mode === "light" ? "#d97706" : "#fde68a",
+                  border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#f59e0b", 0.2)}` : `1px solid ${alpha("#f6c85f", 0.18)}`,
                 }}
               >
                 <WarningAmberRoundedIcon />
               </Box>
               <Box>
                 <Typography variant="h6" sx={{ mb: 0.4 }}>
-                  {title}
+                  {safeTitle}
                 </Typography>
                 <Typography variant="body2" color="text.primary" sx={{ opacity: 0.9 }}>
-                  {subtitle}
+                  {safeSubtitle}
                 </Typography>
               </Box>
             </Stack>
@@ -82,8 +92,8 @@ export function LogoutConfirmDialog({
                 width: 42,
                 height: 42,
                 borderRadius: "14px",
-                border: `1px solid ${alpha("#c4b5fd", 0.14)}`,
-                backgroundColor: alpha("#ffffff", 0.06),
+                border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.14)}`,
+                backgroundColor: (theme) => theme.palette.mode === "light" ? alpha("#000000", 0.04) : alpha("#ffffff", 0.06),
               }}
             >
               <CloseRoundedIcon fontSize="small" />
@@ -94,15 +104,16 @@ export function LogoutConfirmDialog({
             sx={{
               p: 2,
               borderRadius: "20px",
-              background:
-                "linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.04) 100%)",
-              border: `1px solid ${alpha("#c4b5fd", 0.14)}`,
-              boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)",
-            }}
-          >
-            <Typography variant="body1" color="text.primary" sx={{ color: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.92)' : undefined }}>
-              {message}
-            </Typography>
+            background: (theme) => theme.palette.mode === "light"
+              ? "linear-gradient(180deg, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.01) 100%)"
+              : "linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.04) 100%)",
+            border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#000000", 0.06)}` : `1px solid ${alpha("#c4b5fd", 0.14)}`,
+            boxShadow: (theme) => theme.palette.mode === "light" ? "none" : "inset 0 1px 0 rgba(255,255,255,0.05)",
+          }}
+        >
+          <Typography variant="body1" sx={{ color: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.92)' : 'text.primary' }}>
+            {safeMessage}
+          </Typography>
           </Box>
 
           <Stack direction={{ xs: "column-reverse", sm: "row" }} spacing={1.5}>
@@ -114,11 +125,11 @@ export function LogoutConfirmDialog({
                 minHeight: 50,
                 borderRadius: "18px",
                 textTransform: "none",
-                borderColor: alpha("#c4b5fd", 0.18),
+                borderColor: (theme) => theme.palette.mode === "light" ? alpha("#000000", 0.12) : alpha("#c4b5fd", 0.18),
                 color: "text.secondary",
               }}
             >
-              Bekor qilish
+              {t("Bekor qilish")}
             </Button>
             <Button
               onClick={onConfirm}
@@ -133,7 +144,7 @@ export function LogoutConfirmDialog({
                 boxShadow: "none",
               }}
             >
-              {confirmLabel}
+              {safeConfirmLabel}
             </Button>
           </Stack>
         </Stack>

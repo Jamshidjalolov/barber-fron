@@ -2,15 +2,17 @@ import WorkspacePremiumRoundedIcon from "@mui/icons-material/WorkspacePremiumRou
 import { alpha, Avatar, Card, CardContent, LinearProgress, Stack, Typography } from "@mui/material";
 import { PerformanceItem } from "../../types";
 import { SectionCard } from "../common/SectionCard";
+import { usePreferences } from "../../lib/preferences";
 
 interface PerformanceCardProps {
   items: PerformanceItem[];
 }
 
 export function PerformanceCard({ items }: PerformanceCardProps) {
+  const { t } = usePreferences();
   const safeItems = items.length
     ? items
-    : [{ name: "Hozircha yo'q", initials: "H", avatarColor: "#6d7486", completed: 0, total: 0 }];
+    : [{ name: t("Hozircha yo'q"), initials: "H", avatarColor: "#6d7486", completed: 0, total: 0 }];
   const bestPerformer = [...safeItems].sort(
     (left, right) =>
       right.completed / Math.max(right.total, 1) - left.completed / Math.max(left.total, 1),
@@ -27,10 +29,10 @@ export function PerformanceCard({ items }: PerformanceCardProps) {
         >
           <Stack spacing={0.45}>
             <Typography variant="h6" sx={{ fontSize: { xs: "1rem", md: "1.08rem" } }}>
-              Barberlar holati
+              {t("Barberlar holati")}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.84rem" }}>
-              Kim nechta mijozga xizmat qildi
+              {t("Kim nechta mijozga xizmat qildi")}
             </Typography>
           </Stack>
 
@@ -49,7 +51,7 @@ export function PerformanceCard({ items }: PerformanceCardProps) {
           >
             <WorkspacePremiumRoundedIcon sx={{ fontSize: "0.92rem" }} />
             <Typography variant="caption" sx={{ fontWeight: 700 }}>
-              {bestPerformer.name} oldinda
+              {bestPerformer.name} {t("oldinda")}
             </Typography>
           </Stack>
         </Stack>
@@ -64,10 +66,12 @@ export function PerformanceCard({ items }: PerformanceCardProps) {
                 elevation={0}
                 sx={{
                   borderRadius: "16px",
-                  border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
-                  background:
-                    "linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.035) 100%)",
-                  backdropFilter: "blur(14px)",
+                  border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#e5e7eb", 1)}` : `1px solid ${alpha("#c4b5fd", 0.12)}`,
+                  background: (theme) => theme.palette.mode === "light"
+                    ? "linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(249,250,251,0.5) 100%)"
+                    : "linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.035) 100%)",
+                  backdropFilter: (theme) => theme.palette.mode === "light" ? "none" : "blur(14px)",
+                  boxShadow: (theme) => theme.palette.mode === "light" ? "0 4px 12px rgba(0,0,0,0.02)" : "none",
                 }}
               >
                 <CardContent sx={{ p: 1.15, "&:last-child": { pb: 1.15 } }}>
@@ -101,7 +105,7 @@ export function PerformanceCard({ items }: PerformanceCardProps) {
                             variant="caption"
                             sx={{ color: "text.secondary", fontSize: "0.76rem" }}
                           >
-                            {item.completed} ta xizmat tugadi
+                            {item.completed} {t("ta xizmat tugadi")}
                           </Typography>
                         </Stack>
                       </Stack>
@@ -128,13 +132,13 @@ export function PerformanceCard({ items }: PerformanceCardProps) {
                           px: 0.75,
                           py: 0.35,
                           borderRadius: "999px",
-                          backgroundColor: alpha("#ffffff", 0.06),
-                          border: `1px solid ${alpha("#c4b5fd", 0.1)}`,
+                          backgroundColor: (theme) => theme.palette.mode === "light" ? alpha("#000000", 0.04) : alpha("#ffffff", 0.06),
+                          border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.1)}`,
                           color: "text.secondary",
                           fontWeight: 700,
                         }}
                       >
-                        {item.completed} ta tugagan
+                        {item.completed} {t("ta tugagan")}
                       </Typography>
                       <Typography
                         variant="caption"
@@ -142,13 +146,13 @@ export function PerformanceCard({ items }: PerformanceCardProps) {
                           px: 0.75,
                           py: 0.35,
                           borderRadius: "999px",
-                          backgroundColor: alpha("#ffffff", 0.05),
-                          border: `1px solid ${alpha("#c4b5fd", 0.1)}`,
+                          backgroundColor: (theme) => theme.palette.mode === "light" ? alpha("#000000", 0.03) : alpha("#ffffff", 0.05),
+                          border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#000000", 0.06)}` : `1px solid ${alpha("#c4b5fd", 0.1)}`,
                           color: "text.secondary",
                           fontWeight: 700,
                         }}
                       >
-                        {item.total} ta jami
+                        {item.total} {t("ta jami")}
                       </Typography>
                     </Stack>
 

@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { alpha, useTheme } from "@mui/material/styles";
 import { BookingItem, BookingStatus } from "../../types";
+import { usePreferences } from "../../lib/preferences";
 
 interface BookingsTableProps {
   items: BookingItem[];
@@ -55,6 +56,7 @@ const statusLabelStyles: Record<BookingStatus, Record<string, string | number>> 
 export function BookingsTable({ items }: BookingsTableProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const { t } = usePreferences();
 
   if (isMobile) {
     return (
@@ -65,10 +67,12 @@ export function BookingsTable({ items }: BookingsTableProps) {
             sx={{
               p: 1.6,
               borderRadius: "18px",
-              background:
-                "linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.035) 100%)",
-              border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
-              backdropFilter: "blur(14px)",
+              background: (theme) => theme.palette.mode === "light"
+                ? "linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(249,250,251,0.5) 100%)"
+                : "linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.035) 100%)",
+              border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#e5e7eb", 1)}` : `1px solid ${alpha("#c4b5fd", 0.12)}`,
+              backdropFilter: (theme) => theme.palette.mode === "light" ? "none" : "blur(14px)",
+              boxShadow: (theme) => theme.palette.mode === "light" ? "0 4px 12px rgba(0,0,0,0.02)" : "none",
             }}
           >
             <Stack spacing={1.1}>
@@ -87,7 +91,7 @@ export function BookingsTable({ items }: BookingsTableProps) {
                   </Typography>
                 </Box>
                 <Chip
-                  label={item.status}
+                  label={t(item.status)}
                   color={statusColorMap[item.status]}
                   sx={statusLabelStyles[item.status]}
                 />
@@ -118,20 +122,20 @@ export function BookingsTable({ items }: BookingsTableProps) {
       sx={{
         overflowX: "auto",
         borderRadius: "16px",
-        border: `1px solid ${alpha("#c4b5fd", 0.1)}`,
-        backgroundColor: alpha("#ffffff", 0.03),
+        border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#e5e7eb", 1)}` : `1px solid ${alpha("#c4b5fd", 0.1)}`,
+        backgroundColor: (theme) => theme.palette.mode === "light" ? alpha("#000000", 0.02) : alpha("#ffffff", 0.03),
       }}
     >
       <Table sx={{ minWidth: 720 }}>
         <TableHead>
           <TableRow>
-            <TableCell>Buyurtma</TableCell>
-            <TableCell>Mijoz</TableCell>
-            <TableCell>Xizmat</TableCell>
-            <TableCell>Barber</TableCell>
-            <TableCell>Vaqt</TableCell>
-            <TableCell>Holat</TableCell>
-            <TableCell align="right">To'lov</TableCell>
+            <TableCell>{t("Buyurtma")}</TableCell>
+            <TableCell>{t("Mijoz")}</TableCell>
+            <TableCell>{t("Xizmat")}</TableCell>
+            <TableCell>{t("Barber")}</TableCell>
+            <TableCell>{t("Vaqt")}</TableCell>
+            <TableCell>{t("Holat")}</TableCell>
+            <TableCell align="right">{t("To'lov")}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -146,7 +150,7 @@ export function BookingsTable({ items }: BookingsTableProps) {
               <TableCell>{item.time}</TableCell>
               <TableCell>
                 <Chip
-                  label={item.status}
+                  label={t(item.status)}
                   color={statusColorMap[item.status]}
                   sx={statusLabelStyles[item.status]}
                 />

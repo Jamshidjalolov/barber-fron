@@ -2,7 +2,7 @@ import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import FiberManualRecordRoundedIcon from "@mui/icons-material/FiberManualRecordRounded";
-import { alpha, Avatar, Box, Button, Card, IconButton, Stack, Typography } from "@mui/material";
+import { alpha, Avatar, Box, Button, Card, IconButton, Stack, Typography, useTheme } from "@mui/material";
 import { motion } from "framer-motion";
 import { AvailabilityStatus, BarberProfile, BookingItem } from "../../types";
 
@@ -47,7 +47,7 @@ function LegendItem({
   );
 }
 
-function getSlotStyles(status: AvailabilityStatus, selected: boolean) {
+function getSlotStyles(status: AvailabilityStatus, selected: boolean, isLight: boolean) {
   if (selected) {
     return {
       background:
@@ -61,26 +61,26 @@ function getSlotStyles(status: AvailabilityStatus, selected: boolean) {
 
   if (status === "bo'sh") {
     return {
-      backgroundColor: alpha("#ffffff", 0.07),
-      color: "#f8fafc",
-      border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
+      backgroundColor: isLight ? alpha("#000000", 0.03) : alpha("#ffffff", 0.07),
+      color: isLight ? "#1e293b" : "#f8fafc",
+      border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.12)}`,
       textDecoration: "none",
     };
   }
 
   if (status === "ishlayapti") {
     return {
-      backgroundColor: alpha("#22d3ee", 0.12),
-      color: "#67e8f9",
-      border: `1px solid ${alpha("#22d3ee", 0.18)}`,
+      backgroundColor: isLight ? alpha("#0ea5e9", 0.1) : alpha("#22d3ee", 0.12),
+      color: isLight ? "#0369a1" : "#67e8f9",
+      border: isLight ? `1px solid ${alpha("#0ea5e9", 0.16)}` : `1px solid ${alpha("#22d3ee", 0.18)}`,
       textDecoration: "none",
     };
   }
 
   return {
-    backgroundColor: alpha("#ffffff", 0.035),
-    color: "#64748b",
-    border: `1px solid ${alpha("#c4b5fd", 0.08)}`,
+    backgroundColor: isLight ? alpha("#000000", 0.02) : alpha("#ffffff", 0.035),
+    color: isLight ? "#94a3b8" : "#64748b",
+    border: isLight ? `1px solid ${alpha("#000000", 0.04)}` : `1px solid ${alpha("#c4b5fd", 0.08)}`,
     textDecoration: "line-through",
   };
 }
@@ -109,6 +109,8 @@ export function BarberAvailabilitySection({
   onOpenBookedSlot,
   onContinue,
 }: BarberAvailabilitySectionProps) {
+  const theme = useTheme();
+  const isLight = theme.palette.mode === "light";
   return (
     <Stack
       component={motion.div}
@@ -123,9 +125,9 @@ export function BarberAvailabilitySection({
           sx={{
             mt: -0.25,
             ml: -0.4,
-            color: "#f8fafc",
-            backgroundColor: alpha("#ffffff", 0.06),
-            border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
+            color: isLight ? "#0f172a" : "#f8fafc",
+            backgroundColor: isLight ? alpha("#000000", 0.04) : alpha("#ffffff", 0.06),
+            border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.12)}`,
           }}
         >
           <ArrowBackRoundedIcon />
@@ -145,10 +147,11 @@ export function BarberAvailabilitySection({
         elevation={0}
         sx={{
           borderRadius: "22px",
-          border: `1px solid ${alpha("#c4b5fd", 0.14)}`,
-          background:
-            "linear-gradient(180deg, rgba(19,20,34,0.86) 0%, rgba(10,11,22,0.72) 100%)",
-          boxShadow: "0 18px 42px rgba(0,0,0,0.24)",
+          border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.14)}`,
+          background: isLight
+            ? "linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(249,250,251,0.95) 100%)"
+            : "linear-gradient(180deg, rgba(19,20,34,0.86) 0%, rgba(10,11,22,0.72) 100%)",
+          boxShadow: isLight ? "0 12px 30px rgba(0,0,0,0.04)" : "0 18px 42px rgba(0,0,0,0.24)",
           backdropFilter: "blur(18px)",
         }}
       >
@@ -204,8 +207,8 @@ export function BarberAvailabilitySection({
           sx={{
             width: 42,
             height: 42,
-            border: `1px solid ${alpha("#c4b5fd", 0.14)}`,
-            backgroundColor: alpha("#ffffff", 0.06),
+            border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.14)}`,
+            backgroundColor: isLight ? alpha("#000000", 0.04) : alpha("#ffffff", 0.06),
           }}
         >
           <ChevronLeftRoundedIcon />
@@ -226,8 +229,8 @@ export function BarberAvailabilitySection({
           sx={{
             width: 42,
             height: 42,
-            border: `1px solid ${alpha("#c4b5fd", 0.14)}`,
-            backgroundColor: alpha("#ffffff", 0.06),
+            border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.14)}`,
+            backgroundColor: isLight ? alpha("#000000", 0.04) : alpha("#ffffff", 0.06),
           }}
         >
           <ChevronRightRoundedIcon />
@@ -261,7 +264,7 @@ export function BarberAvailabilitySection({
           const selected = slot.time === selectedTime;
           const canSelect = slot.status === "bo'sh";
           const canPreview = Boolean(slot.booking) && !canSelect;
-          const styles = getSlotStyles(slot.status, selected);
+          const styles = getSlotStyles(slot.status, selected, isLight);
 
           return (
             <Button
@@ -292,8 +295,8 @@ export function BarberAvailabilitySection({
                         backgroundColor: selected
                           ? "rgba(139,92,246,0.92)"
                           : slot.status === "bo'sh"
-                            ? alpha("#ffffff", 0.12)
-                            : alpha("#ffffff", 0.08),
+                            ? isLight ? alpha("#000000", 0.06) : alpha("#ffffff", 0.12)
+                            : isLight ? alpha("#000000", 0.04) : alpha("#ffffff", 0.08),
                       }
                     : undefined,
               }}

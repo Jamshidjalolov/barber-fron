@@ -2,7 +2,7 @@ import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import FmdGoodRoundedIcon from "@mui/icons-material/FmdGoodRounded";
 import MyLocationRoundedIcon from "@mui/icons-material/MyLocationRounded";
 import NearMeRoundedIcon from "@mui/icons-material/NearMeRounded";
-import { alpha, Box, Button, Chip, Stack, Typography } from "@mui/material";
+import { alpha, Box, Button, Chip, Stack, Typography, useTheme } from "@mui/material";
 import { NearbyBarbersMap } from "../maps/NearbyBarbersMap";
 import { BarberProfile, GeoCoordinates } from "../../types";
 
@@ -29,6 +29,8 @@ export function CustomerNearbyBarbersPage({
   onChooseBarber,
   onChangeCustomerCoords,
 }: CustomerNearbyBarbersPageProps) {
+  const theme = useTheme();
+  const isLight = theme.palette.mode === "light";
   return (
     <Stack spacing={{ xs: 2.1, md: 2.35 }}>
       <Stack direction="row" spacing={0.7} alignItems="flex-start">
@@ -63,10 +65,11 @@ export function CustomerNearbyBarbersPage({
         sx={{
           p: { xs: 1.35, md: 1.6 },
           borderRadius: "26px",
-          border: `1px solid ${alpha("#c4b5fd", 0.14)}`,
-          background:
-            "linear-gradient(180deg, rgba(19,20,34,0.86) 0%, rgba(10,11,22,0.72) 100%)",
-          boxShadow: "0 20px 50px rgba(0,0,0,0.26)",
+          border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.14)}`,
+          background: isLight
+            ? "linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(249,250,251,0.95) 100%)"
+            : "linear-gradient(180deg, rgba(19,20,34,0.86) 0%, rgba(10,11,22,0.72) 100%)",
+          boxShadow: isLight ? "0 12px 30px rgba(0,0,0,0.04)" : "0 20px 50px rgba(0,0,0,0.26)",
           backdropFilter: "blur(18px)",
         }}
       >
@@ -116,9 +119,9 @@ export function CustomerNearbyBarbersPage({
                 label={`Mening joyim: ${customerCoords.latitude.toFixed(4)}, ${customerCoords.longitude.toFixed(4)}`}
                 sx={{
                   alignSelf: "flex-start",
-                  backgroundColor: alpha("#f6c85f", 0.12),
-                  color: "#fde68a",
-                  border: `1px solid ${alpha("#f6c85f", 0.16)}`,
+                  backgroundColor: isLight ? alpha("#f59e0b", 0.1) : alpha("#f6c85f", 0.12),
+                  color: isLight ? "#d97706" : "#fde68a",
+                  border: isLight ? `1px solid ${alpha("#f59e0b", 0.16)}` : `1px solid ${alpha("#f6c85f", 0.16)}`,
                   "& .MuiChip-label": { fontWeight: 700 },
                 }}
               />
@@ -132,11 +135,11 @@ export function CustomerNearbyBarbersPage({
                 sx={{
                   alignSelf: "flex-start",
                   cursor: "pointer",
-                  backgroundColor: alpha("#34d399", 0.12),
-                  color: "#86efac",
-                  border: `1px solid ${alpha("#34d399", 0.16)}`,
+                  backgroundColor: isLight ? alpha("#10b981", 0.1) : alpha("#34d399", 0.12),
+                  color: isLight ? "#047857" : "#86efac",
+                  border: isLight ? `1px solid ${alpha("#10b981", 0.16)}` : `1px solid ${alpha("#34d399", 0.16)}`,
                   "& .MuiChip-label": { fontWeight: 700 },
-                  "& .MuiChip-icon": { color: "#86efac" },
+                  "& .MuiChip-icon": { color: isLight ? "#047857" : "#86efac" },
                 }}
               />
             ) : null}
@@ -156,7 +159,7 @@ export function CustomerNearbyBarbersPage({
               sx={{
                 p: 1.6,
                 borderRadius: "18px",
-                border: `1px dashed ${alpha("#c4b5fd", 0.22)}`,
+                border: isLight ? `1px dashed ${alpha("#000000", 0.12)}` : `1px dashed ${alpha("#c4b5fd", 0.22)}`,
                 textAlign: "center",
               }}
             >
@@ -171,8 +174,8 @@ export function CustomerNearbyBarbersPage({
               sx={{
                 p: 1.15,
                 borderRadius: "20px",
-                backgroundColor: alpha("#ffffff", 0.06),
-                border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
+                backgroundColor: isLight ? alpha("#000000", 0.03) : alpha("#ffffff", 0.06),
+                border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.12)}`,
               }}
             >
               <Stack

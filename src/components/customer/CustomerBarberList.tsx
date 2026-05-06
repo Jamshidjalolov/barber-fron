@@ -4,7 +4,7 @@ import FmdGoodRoundedIcon from "@mui/icons-material/FmdGoodRounded";
 import LocalOfferRoundedIcon from "@mui/icons-material/LocalOfferRounded";
 import PersonOutlineRoundedIcon from "@mui/icons-material/PersonOutlineRounded";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
-import { alpha, Avatar, Box, Card, CardActionArea, Chip, Stack, Typography } from "@mui/material";
+import { alpha, Avatar, Box, Card, CardActionArea, Chip, Stack, Typography, useTheme } from "@mui/material";
 import { motion } from "framer-motion";
 import { isVideoUrl } from "../../lib/media";
 import { BarberProfile, DiscountItem } from "../../types";
@@ -16,6 +16,8 @@ interface CustomerBarberListProps {
 }
 
 export function CustomerBarberList({ items, discounts, onSelect }: CustomerBarberListProps) {
+  const theme = useTheme();
+  const isLight = theme.palette.mode === "light";
   return (
     <Box
       sx={{
@@ -43,14 +45,15 @@ export function CustomerBarberList({ items, discounts, onSelect }: CustomerBarbe
             elevation={0}
             sx={{
               borderRadius: "24px",
-              border: `1px solid ${alpha("#c4b5fd", 0.14)}`,
-              boxShadow: "0 18px 42px rgba(0,0,0,0.24)",
-              background:
-                "linear-gradient(180deg, rgba(19,20,34,0.86) 0%, rgba(10,11,22,0.72) 100%)",
+              border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.14)}`,
+              boxShadow: isLight ? "0 8px 24px rgba(0,0,0,0.04)" : "0 18px 42px rgba(0,0,0,0.24)",
+              background: isLight
+                ? "linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(249,250,251,0.9) 100%)"
+                : "linear-gradient(180deg, rgba(19,20,34,0.86) 0%, rgba(10,11,22,0.72) 100%)",
               backdropFilter: "blur(18px)",
               transition: "box-shadow 160ms ease",
               "&:hover": {
-                boxShadow: `0 26px 54px ${alpha("#8b5cf6", 0.18)}`,
+                boxShadow: isLight ? "0 12px 32px rgba(0,0,0,0.08)" : `0 26px 54px ${alpha("#8b5cf6", 0.18)}`,
               },
             }}
           >
@@ -114,9 +117,9 @@ export function CustomerBarberList({ items, discounts, onSelect }: CustomerBarbe
                       sx={{
                         height: 26,
                         borderRadius: "999px",
-                        backgroundColor: alpha("#ffffff", 0.07),
-                        color: "#dbeafe",
-                        border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
+                        backgroundColor: isLight ? alpha("#000000", 0.04) : alpha("#ffffff", 0.07),
+                        color: isLight ? "#1e40af" : "#dbeafe",
+                        border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.12)}`,
                         "& .MuiChip-label": {
                           px: 1,
                           fontSize: "0.72rem",
@@ -142,11 +145,11 @@ export function CustomerBarberList({ items, discounts, onSelect }: CustomerBarbe
 
                   {nearestDiscount ? (
                     <Stack direction="row" spacing={0.55} alignItems="center" sx={{ mt: 0.65 }}>
-                      <LocalOfferRoundedIcon sx={{ fontSize: "0.95rem", color: "#2d8b58" }} />
-                      <Typography variant="body2" sx={{ color: "#86efac", fontWeight: 700 }}>
+                      <LocalOfferRoundedIcon sx={{ fontSize: "0.95rem", color: isLight ? "#059669" : "#2d8b58" }} />
+                      <Typography variant="body2" sx={{ color: isLight ? "#047857" : "#86efac", fontWeight: 700 }}>
                         {nearestDiscount.percent}% skidka
                       </Typography>
-                      <Typography variant="body2" sx={{ color: "#8d96ad", fontSize: "0.82rem" }}>
+                      <Typography variant="body2" sx={{ color: isLight ? "#64748b" : "#8d96ad", fontSize: "0.82rem" }}>
                         {nearestDiscount.startTime} - {nearestDiscount.endTime}
                       </Typography>
                     </Stack>
@@ -161,15 +164,15 @@ export function CustomerBarberList({ items, discounts, onSelect }: CustomerBarbe
                     </Stack>
 
                     <Stack direction="row" spacing={0.45} alignItems="center">
-                      <PersonOutlineRoundedIcon sx={{ fontSize: "0.95rem", color: "#8d96ad" }} />
-                      <Typography variant="subtitle2" sx={{ fontSize: "0.9rem", color: "#aab2c8" }}>
+                      <PersonOutlineRoundedIcon sx={{ fontSize: "0.95rem", color: isLight ? "#64748b" : "#8d96ad" }} />
+                      <Typography variant="subtitle2" sx={{ fontSize: "0.9rem", color: isLight ? "#475569" : "#aab2c8" }}>
                         {barber.experience.replace("tajriba", "").trim()}
                       </Typography>
                     </Stack>
 
                     <Stack direction="row" spacing={0.45} alignItems="center">
-                      <AccessTimeRoundedIcon sx={{ fontSize: "0.95rem", color: "#8d96ad" }} />
-                      <Typography variant="subtitle2" sx={{ fontSize: "0.86rem", color: "#aab2c8" }}>
+                      <AccessTimeRoundedIcon sx={{ fontSize: "0.95rem", color: isLight ? "#64748b" : "#8d96ad" }} />
+                      <Typography variant="subtitle2" sx={{ fontSize: "0.86rem", color: isLight ? "#475569" : "#aab2c8" }}>
                         {barber.workStartTime} - {barber.workEndTime}
                       </Typography>
                     </Stack>
@@ -181,8 +184,8 @@ export function CustomerBarberList({ items, discounts, onSelect }: CustomerBarbe
                         mt: 1.15,
                         borderRadius: "16px",
                         overflow: "hidden",
-                        border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
-                        backgroundColor: alpha("#ffffff", 0.05),
+                        border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.12)}`,
+                        backgroundColor: isLight ? alpha("#000000", 0.03) : alpha("#ffffff", 0.05),
                       }}
                     >
                       {isVideoUrl(barber.mediaUrl) ? (

@@ -28,6 +28,7 @@ import { useTheme } from "@mui/material/styles";
 import { ChangeEvent, FormEvent, ReactNode, useEffect, useMemo, useState } from "react";
 import { getSafeImageUrl, normalizeImageUrlInput } from "../../lib/media";
 import { BarberFormPayload, BarberProfile } from "../../types";
+import { BarberLocationPickerMap } from "../maps/BarberLocationPickerMap";
 
 interface BarberFormDialogProps {
   open: boolean;
@@ -172,10 +173,10 @@ function Field({
           "& .MuiOutlinedInput-root": {
             minHeight: props.multiline ? "unset" : 50,
             borderRadius: "16px",
-            backgroundColor: alpha("#ffffff", 0.06),
+            backgroundColor: (theme) => theme.palette.mode === "light" ? alpha("#000000", 0.03) : alpha("#ffffff", 0.06),
           },
           "& .MuiOutlinedInput-notchedOutline": {
-            borderColor: alpha("#c4b5fd", 0.16),
+            borderColor: (theme) => theme.palette.mode === "light" ? alpha("#000000", 0.1) : alpha("#c4b5fd", 0.16),
           },
           "& .MuiInputBase-input": {
             py: 1.6,
@@ -426,9 +427,10 @@ export function BarberFormDialog({
           borderRadius: isMobile ? 0 : "28px",
           overflow: "hidden",
           maxHeight: isMobile ? "100dvh" : "calc(100dvh - 24px)",
-          background:
-            "linear-gradient(180deg, rgba(18,18,31,0.96) 0%, rgba(9,10,20,0.94) 100%)",
-          border: isMobile ? "none" : `1px solid ${alpha("#c4b5fd", 0.16)}`,
+          background: theme.palette.mode === "light"
+            ? "#ffffff"
+            : "linear-gradient(180deg, rgba(18,18,31,0.96) 0%, rgba(9,10,20,0.94) 100%)",
+          border: isMobile ? "none" : `1px solid ${theme.palette.mode === "light" ? alpha("#000000", 0.08) : alpha("#c4b5fd", 0.16)}`,
         },
       }}
     >
@@ -468,9 +470,10 @@ export function BarberFormDialog({
               flexShrink: 0,
               p: { xs: 2.25, md: 2.5 },
               borderRadius: "24px",
-              background:
-                "linear-gradient(160deg, rgba(17,17,17,1) 0%, rgba(42,42,42,1) 58%, rgba(213,165,70,0.92) 100%)",
-              color: "#fff",
+              background: theme.palette.mode === "light"
+                ? "linear-gradient(160deg, #fdfdfd 0%, #f4f4f5 58%, rgba(213,165,70,0.15) 100%)"
+                : "linear-gradient(160deg, rgba(17,17,17,1) 0%, rgba(42,42,42,1) 58%, rgba(213,165,70,0.92) 100%)",
+              color: theme.palette.mode === "light" ? "#111827" : "#fff",
               display: "flex",
               flexDirection: "column",
               minHeight: 0,
@@ -479,7 +482,7 @@ export function BarberFormDialog({
             <Stack spacing={2}>
               <Stack direction="row" spacing={1} alignItems="center">
                 <AutoAwesomeRoundedIcon sx={{ fontSize: "1rem", color: "#f8d06c" }} />
-                <Typography variant="subtitle2" sx={{ color: alpha("#fff", 0.82) }}>
+                <Typography variant="subtitle2" sx={{ color: theme.palette.mode === "light" ? alpha("#111827", 0.82) : alpha("#fff", 0.82) }}>
                   Jonli ko'rinish
                 </Typography>
               </Stack>
@@ -489,8 +492,8 @@ export function BarberFormDialog({
                 sx={{
                   p: 2,
                   borderRadius: "22px",
-                        backgroundColor: alpha("#fff", 0.08),
-                        border: `1px solid ${alpha("#fff", 0.08)}`,
+                        backgroundColor: theme.palette.mode === "light" ? alpha("#000", 0.03) : alpha("#fff", 0.08),
+                        border: `1px solid ${theme.palette.mode === "light" ? alpha("#000", 0.05) : alpha("#fff", 0.08)}`,
                         backdropFilter: "blur(16px)",
                 }}
               >
@@ -502,20 +505,21 @@ export function BarberFormDialog({
                       width: 68,
                       height: 68,
                       borderRadius: "20px",
-                      bgcolor: "#1d1d1d",
-                      border: `1px solid ${alpha("#fff", 0.12)}`,
+                      bgcolor: theme.palette.mode === "light" ? "#e5e7eb" : "#1d1d1d",
+                      border: `1px solid ${theme.palette.mode === "light" ? alpha("#000", 0.08) : alpha("#fff", 0.12)}`,
                       fontWeight: 800,
+                      color: theme.palette.mode === "light" ? "#111827" : "#fff",
                     }}
                   >
                     {preview.initials}
                   </Avatar>
                   <Box sx={{ minWidth: 0 }}>
-                    <Typography variant="h6" sx={{ color: "#fff", mb: 0.5 }}>
+                    <Typography variant="h6" sx={{ color: theme.palette.mode === "light" ? "#111827" : "#fff", mb: 0.5 }}>
                       {preview.name}
                     </Typography>
                     <Stack direction="row" spacing={0.5} alignItems="center">
                       <StarRoundedIcon sx={{ color: "#f8d06c", fontSize: "1rem" }} />
-                      <Typography variant="body2" sx={{ color: alpha("#fff", 0.84) }}>
+                      <Typography variant="body2" sx={{ color: theme.palette.mode === "light" ? alpha("#111827", 0.84) : alpha("#fff", 0.84) }}>
                         {preview.rating} reyting
                       </Typography>
                     </Stack>
@@ -525,18 +529,18 @@ export function BarberFormDialog({
                 <Box>
                   <Typography
                     variant="body1"
-                    sx={{ color: alpha("#fff", 0.88), mb: 0.45 }}
+                    sx={{ color: theme.palette.mode === "light" ? alpha("#111827", 0.88) : alpha("#fff", 0.88), mb: 0.45 }}
                   >
                     {preview.specialty}
                   </Typography>
-                  <Typography variant="body2" sx={{ color: alpha("#fff", 0.68) }}>
+                  <Typography variant="body2" sx={{ color: theme.palette.mode === "light" ? alpha("#111827", 0.68) : alpha("#fff", 0.68) }}>
                     {preview.experience} / {preview.handle}
                   </Typography>
                 </Box>
               </Stack>
 
               <Box sx={{ mt: 1 }}>
-                <Typography variant="body2" sx={{ color: alpha("#fff", 0.72), lineHeight: 1.6 }}>
+                <Typography variant="body2" sx={{ color: theme.palette.mode === "light" ? alpha("#111827", 0.72) : alpha("#fff", 0.72), lineHeight: 1.6 }}>
                   Telegram ulash barber saqlangandan keyin o&apos;z kartasida alohida chiqadi.
                 </Typography>
               </Box>
@@ -745,6 +749,26 @@ export function BarberFormDialog({
                       type="number"
                     />
                   </Box>
+                  <Box sx={{ mt: 1 }}>
+                    <BarberLocationPickerMap
+                      value={
+                        formValues.latitude && formValues.longitude && !isNaN(Number(formValues.latitude)) && !isNaN(Number(formValues.longitude))
+                          ? {
+                              latitude: Number(formValues.latitude),
+                              longitude: Number(formValues.longitude),
+                            }
+                          : null
+                      }
+                      address={formValues.address}
+                      onChange={(coords) => {
+                        setFormValues((prev) => ({
+                          ...prev,
+                          latitude: coords.latitude.toString(),
+                          longitude: coords.longitude.toString(),
+                        }));
+                      }}
+                    />
+                  </Box>
                 </Stack>
               </Box>
 
@@ -789,7 +813,7 @@ export function BarberFormDialog({
                   minHeight: 50,
                   borderRadius: "18px",
                   textTransform: "none",
-                  borderColor: alpha("#c4b5fd", 0.18),
+                  borderColor: theme.palette.mode === "light" ? alpha("#000000", 0.12) : alpha("#c4b5fd", 0.18),
                   color: "text.secondary",
                 }}
               >

@@ -16,6 +16,7 @@ import {
   IconButton,
   Stack,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { ReactNode } from "react";
 import { BookingItem } from "../../types";
@@ -50,6 +51,8 @@ function InfoRow({
   label: string;
   value: string;
 }) {
+  const theme = useTheme();
+  const isLight = theme.palette.mode === "light";
   return (
     <Stack
       direction="row"
@@ -58,8 +61,8 @@ function InfoRow({
       sx={{
         p: 1,
         borderRadius: "16px",
-        backgroundColor: alpha("#ffffff", 0.06),
-        border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
+        backgroundColor: isLight ? alpha("#000000", 0.04) : alpha("#ffffff", 0.06),
+        border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.12)}`,
       }}
     >
       <Box
@@ -69,8 +72,8 @@ function InfoRow({
           borderRadius: "12px",
           display: "grid",
           placeItems: "center",
-          backgroundColor: alpha("#22d3ee", 0.12),
-          color: "#67e8f9",
+          backgroundColor: isLight ? alpha("#0ea5e9", 0.1) : alpha("#22d3ee", 0.12),
+          color: isLight ? "#0369a1" : "#67e8f9",
           flexShrink: 0,
         }}
       >
@@ -93,6 +96,9 @@ export function BookedSlotDetailsDialog({
   booking,
   onClose,
 }: BookedSlotDetailsDialogProps) {
+  const theme = useTheme();
+  const isLight = theme.palette.mode === "light";
+
   if (!booking) {
     return null;
   }
@@ -107,9 +113,10 @@ export function BookedSlotDetailsDialog({
         sx: {
           borderRadius: "28px",
           overflow: "hidden",
-          background:
-            "linear-gradient(180deg, rgba(18,18,31,0.96) 0%, rgba(9,10,20,0.94) 100%)",
-          border: `1px solid ${alpha("#c4b5fd", 0.16)}`,
+          background: isLight
+            ? "linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(248,250,252,1) 100%)"
+            : "linear-gradient(180deg, rgba(18,18,31,0.96) 0%, rgba(9,10,20,0.94) 100%)",
+          border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.16)}`,
         },
       }}
     >
@@ -133,9 +140,10 @@ export function BookedSlotDetailsDialog({
             sx={{
               p: 1.25,
               borderRadius: "20px",
-              background:
-                "linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.04) 100%)",
-              border: `1px solid ${alpha("#c4b5fd", 0.14)}`,
+              background: isLight
+                ? "linear-gradient(180deg, rgba(0,0,0,0.03) 0%, rgba(0,0,0,0.01) 100%)"
+                : "linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.04) 100%)",
+              border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.14)}`,
             }}
           >
             <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={1}>
@@ -148,8 +156,8 @@ export function BookedSlotDetailsDialog({
               <Chip
                 label={booking.status}
                 sx={{
-                  backgroundColor: alpha("#f6c85f", 0.14),
-                  color: "#fde68a",
+                  backgroundColor: isLight ? alpha("#f59e0b", 0.1) : alpha("#f6c85f", 0.14),
+                  color: isLight ? "#d97706" : "#fde68a",
                   fontWeight: 700,
                 }}
               />
@@ -200,8 +208,8 @@ export function BookedSlotDetailsDialog({
               px: 1.2,
               py: 0.95,
               borderRadius: "16px",
-              backgroundColor: alpha("#ffffff", 0.05),
-              border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
+              backgroundColor: isLight ? alpha("#000000", 0.03) : alpha("#ffffff", 0.05),
+              border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.12)}`,
             }}
           >
             <Stack direction="row" spacing={0.8} alignItems="center">
@@ -218,11 +226,11 @@ export function BookedSlotDetailsDialog({
                 px: 1.2,
                 py: 0.95,
                 borderRadius: "16px",
-                backgroundColor: alpha("#34d399", 0.1),
-                border: `1px solid ${alpha("#34d399", 0.16)}`,
+                backgroundColor: isLight ? alpha("#10b981", 0.1) : alpha("#34d399", 0.1),
+                border: isLight ? `1px solid ${alpha("#10b981", 0.16)}` : `1px solid ${alpha("#34d399", 0.16)}`,
               }}
             >
-              <Typography variant="body2" sx={{ color: "#86efac", fontWeight: 700 }}>
+              <Typography variant="body2" sx={{ color: isLight ? "#047857" : "#86efac", fontWeight: 700 }}>
                 Ushbu bron uchun {booking.appliedDiscountPercent}% skidka qo'llangan.
               </Typography>
             </Box>

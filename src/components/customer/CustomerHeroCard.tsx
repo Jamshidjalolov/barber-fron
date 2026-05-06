@@ -3,7 +3,7 @@ import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import NearMeRoundedIcon from "@mui/icons-material/NearMeRounded";
 import RadioButtonCheckedRoundedIcon from "@mui/icons-material/RadioButtonCheckedRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
-import { alpha, Avatar, Box, Button, Chip, IconButton, Stack, Typography } from "@mui/material";
+import { alpha, Avatar, Box, Button, Chip, IconButton, Stack, Typography, useTheme } from "@mui/material";
 import { motion } from "framer-motion";
 import { BrandLogo } from "../common/BrandLogo";
 
@@ -34,6 +34,8 @@ export function CustomerHeroCard({
   onOpenSettings,
   onLogout,
 }: CustomerHeroCardProps) {
+  const theme = useTheme();
+  const isLight = theme.palette.mode === "light";
   return (
     <Box
       component={motion.div}
@@ -43,10 +45,11 @@ export function CustomerHeroCard({
       sx={{
         p: { xs: 1.25, sm: 1.55, md: 1.8 },
         borderRadius: "28px",
-        background:
-          "linear-gradient(135deg, rgba(22,22,39,0.9) 0%, rgba(10,11,22,0.82) 54%, rgba(7,19,31,0.82) 100%)",
-        border: `1px solid ${alpha("#c4b5fd", 0.15)}`,
-        boxShadow: "0 24px 70px rgba(0,0,0,0.36), inset 0 1px 0 rgba(255,255,255,0.06)",
+        background: isLight
+          ? "linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(249,250,251,0.9) 54%, rgba(243,244,246,0.9) 100%)"
+          : "linear-gradient(135deg, rgba(22,22,39,0.9) 0%, rgba(10,11,22,0.82) 54%, rgba(7,19,31,0.82) 100%)",
+        border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.15)}`,
+        boxShadow: isLight ? "0 12px 30px rgba(0,0,0,0.04)" : "0 24px 70px rgba(0,0,0,0.36), inset 0 1px 0 rgba(255,255,255,0.06)",
         backdropFilter: "blur(22px)",
         position: "relative",
         overflow: "hidden",
@@ -59,9 +62,10 @@ export function CustomerHeroCard({
           height: 180,
           borderRadius: "42px",
           transform: "rotate(18deg)",
-          background:
-            "linear-gradient(135deg, rgba(139,92,246,0.26) 0%, rgba(34,211,238,0.12) 100%)",
-          border: `1px solid ${alpha("#ffffff", 0.08)}`,
+          background: isLight
+            ? "linear-gradient(135deg, rgba(251,189,5,0.12) 0%, rgba(34,211,238,0.06) 100%)"
+            : "linear-gradient(135deg, rgba(139,92,246,0.26) 0%, rgba(34,211,238,0.12) 100%)",
+          border: isLight ? `1px solid ${alpha("#000000", 0.04)}` : `1px solid ${alpha("#ffffff", 0.08)}`,
         },
         "& > *": {
           position: "relative",
@@ -76,12 +80,12 @@ export function CustomerHeroCard({
               px: 0.75,
               py: 0.55,
               borderRadius: "16px",
-              backgroundColor: alpha("#ffffff", 0.07),
-              border: `1px solid ${alpha("#ffffff", 0.12)}`,
+              backgroundColor: isLight ? alpha("#000000", 0.03) : alpha("#ffffff", 0.07),
+              border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#ffffff", 0.12)}`,
               backdropFilter: "blur(12px)",
             }}
           >
-            <BrandLogo badgeSize={40} tone="light" />
+            <BrandLogo badgeSize={40} tone={isLight ? "dark" : "light"} />
           </Box>
 
           <Stack direction="row" spacing={0.5} flexWrap="wrap" useFlexGap justifyContent="flex-end">
@@ -109,8 +113,8 @@ export function CustomerHeroCard({
                   px: 0.7,
                   py: 0.4,
                   borderRadius: "999px",
-                  backgroundColor: alpha("#ffffff", 0.08),
-                  border: `1px solid ${alpha("#ffffff", 0.12)}`,
+                  backgroundColor: isLight ? alpha("#000000", 0.04) : alpha("#ffffff", 0.08),
+                  border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#ffffff", 0.12)}`,
                 }}
               >
                 <Avatar
@@ -136,12 +140,12 @@ export function CustomerHeroCard({
                 sx={{
                   width: 34,
                   height: 34,
-                  color: "#f8fafc",
-                  backgroundColor: alpha("#ffffff", 0.08),
-                  border: `1px solid ${alpha("#ffffff", 0.12)}`,
+                  color: isLight ? "#0f172a" : "#f8fafc",
+                  backgroundColor: isLight ? alpha("#000000", 0.04) : alpha("#ffffff", 0.08),
+                  border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#ffffff", 0.12)}`,
                   "&:hover": {
-                    backgroundColor: alpha("#8b5cf6", 0.22),
-                    borderColor: alpha("#c4b5fd", 0.26),
+                    backgroundColor: isLight ? alpha("#fbbd05", 0.12) : alpha("#8b5cf6", 0.22),
+                    borderColor: isLight ? alpha("#fbbd05", 0.26) : alpha("#c4b5fd", 0.26),
                   },
                 }}
               >
@@ -155,11 +159,11 @@ export function CustomerHeroCard({
                 sx={{
                   width: 34,
                   height: 34,
-                  color: "#f8fafc",
-                  backgroundColor: alpha("#ffffff", 0.08),
-                  border: `1px solid ${alpha("#ffffff", 0.12)}`,
+                  color: isLight ? "#0f172a" : "#f8fafc",
+                  backgroundColor: isLight ? alpha("#000000", 0.04) : alpha("#ffffff", 0.08),
+                  border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#ffffff", 0.12)}`,
                   "&:hover": {
-                    backgroundColor: alpha("#ffffff", 0.14),
+                    backgroundColor: isLight ? alpha("#000000", 0.08) : alpha("#ffffff", 0.14),
                   },
                 }}
               >
@@ -204,8 +208,8 @@ export function CustomerHeroCard({
               sx={{
                 height: 34,
                 borderRadius: "999px",
-                backgroundColor: alpha("#ffffff", 0.08),
-                border: `1px solid ${alpha("#ffffff", 0.12)}`,
+                backgroundColor: isLight ? alpha("#000000", 0.04) : alpha("#ffffff", 0.08),
+                border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#ffffff", 0.12)}`,
                 "& .MuiChip-label": { px: 1.1, fontWeight: 700 },
               }}
             />

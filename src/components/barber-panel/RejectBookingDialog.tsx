@@ -9,6 +9,7 @@ import {
   Stack,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { BookingItem } from "../../types";
@@ -32,6 +33,8 @@ export function RejectBookingDialog({
   onClose,
   onConfirm,
 }: RejectBookingDialogProps) {
+  const theme = useTheme();
+  const isLight = theme.palette.mode === "light";
   const [reason, setReason] = useState("");
 
   useEffect(() => {
@@ -50,9 +53,10 @@ export function RejectBookingDialog({
         sx: {
           borderRadius: "28px",
           p: 0.3,
-          background:
-            "linear-gradient(180deg, rgba(18,18,31,0.96) 0%, rgba(9,10,20,0.94) 100%)",
-          border: (theme) => `1px solid ${alpha("#c4b5fd", 0.16)}`,
+          background: isLight
+            ? "linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(249,250,251,0.9) 100%)"
+            : "linear-gradient(180deg, rgba(18,18,31,0.96) 0%, rgba(9,10,20,0.94) 100%)",
+          border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.16)}`,
         },
       }}
     >
@@ -65,9 +69,9 @@ export function RejectBookingDialog({
               borderRadius: "14px",
               display: "grid",
               placeItems: "center",
-              color: "#fecdd3",
-              bgcolor: alpha("#fb7185", 0.12),
-              border: `1px solid ${alpha("#fb7185", 0.18)}`,
+              color: isLight ? "#b91c1c" : "#fecdd3",
+              bgcolor: isLight ? alpha("#ef4444", 0.12) : alpha("#fb7185", 0.12),
+              border: isLight ? `1px solid ${alpha("#ef4444", 0.18)}` : `1px solid ${alpha("#fb7185", 0.18)}`,
             }}
           >
             <ReportProblemRoundedIcon />
@@ -94,7 +98,8 @@ export function RejectBookingDialog({
                   minHeight: 36,
                   px: 1.25,
                   borderRadius: "999px",
-                  borderColor: alpha("#c4b5fd", 0.16),
+                  borderColor: isLight ? alpha("#000000", 0.16) : alpha("#c4b5fd", 0.16),
+                  color: isLight ? "#0f172a" : undefined,
                 }}
               >
                 {item}

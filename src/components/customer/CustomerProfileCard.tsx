@@ -13,6 +13,7 @@ import {
   Stack,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { motion } from "framer-motion";
 import { ReactNode } from "react";
@@ -47,6 +48,8 @@ export function CustomerProfileCard({
   onChange,
   onSubmit,
 }: CustomerProfileCardProps) {
+  const theme = useTheme();
+  const isLight = theme.palette.mode === "light";
   return (
     <Stack
       component={motion.div}
@@ -56,7 +59,7 @@ export function CustomerProfileCard({
       spacing={{ xs: 2.2, md: 2.5 }}
     >
       <Stack direction="row" spacing={0.7} alignItems="flex-start">
-        <IconButtonEdge onClick={onBack} />
+        <IconButtonEdge onClick={onBack} isLight={isLight} />
         <Box>
           <Typography variant="h5" sx={{ fontSize: { xs: "1.25rem", sm: "1.4rem" } }}>
             Ma&apos;lumotlaringiz
@@ -79,10 +82,11 @@ export function CustomerProfileCard({
           sx={{
             p: 1.35,
             borderRadius: "22px",
-            background:
-              "linear-gradient(180deg, rgba(19,20,34,0.86) 0%, rgba(10,11,22,0.72) 100%)",
-            border: `1px solid ${alpha("#c4b5fd", 0.14)}`,
-            boxShadow: "0 18px 42px rgba(0,0,0,0.22)",
+            background: isLight
+              ? "linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(249,250,251,0.95) 100%)"
+              : "linear-gradient(180deg, rgba(19,20,34,0.86) 0%, rgba(10,11,22,0.72) 100%)",
+            border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.14)}`,
+            boxShadow: isLight ? "0 12px 30px rgba(0,0,0,0.04)" : "0 18px 42px rgba(0,0,0,0.22)",
             backdropFilter: "blur(18px)",
           }}
         >
@@ -123,12 +127,12 @@ export function CustomerProfileCard({
             </Box>
           </Stack>
 
-          <Box sx={{ height: 1, bgcolor: alpha("#c4b5fd", 0.12), mb: 1.05 }} />
+          <Box sx={{ height: 1, bgcolor: isLight ? alpha("#000000", 0.08) : alpha("#c4b5fd", 0.12), mb: 1.05 }} />
 
           <Stack spacing={0.9}>
-            <SummaryRow icon={<CalendarTodayRoundedIcon />} label={dateLabel} />
-            <SummaryRow icon={<ScheduleRoundedIcon />} label={timeLabel} />
-            <SummaryRow icon={<ScheduleRoundedIcon />} label={`Ish vaqti: ${workHoursLabel}`} />
+            <SummaryRow icon={<CalendarTodayRoundedIcon />} label={dateLabel} isLight={isLight} />
+            <SummaryRow icon={<ScheduleRoundedIcon />} label={timeLabel} isLight={isLight} />
+            <SummaryRow icon={<ScheduleRoundedIcon />} label={`Ish vaqti: ${workHoursLabel}`} isLight={isLight} />
           </Stack>
 
           <Box
@@ -136,8 +140,8 @@ export function CustomerProfileCard({
               mt: 1.1,
               p: 1,
               borderRadius: "18px",
-              backgroundColor: alpha("#f6c85f", 0.1),
-              border: `1px solid ${alpha("#f6c85f", 0.16)}`,
+              backgroundColor: isLight ? alpha("#f59e0b", 0.08) : alpha("#f6c85f", 0.1),
+              border: isLight ? `1px solid ${alpha("#f59e0b", 0.16)}` : `1px solid ${alpha("#f6c85f", 0.16)}`,
             }}
           >
             <Stack direction="row" justifyContent="space-between" spacing={1}>
@@ -149,10 +153,10 @@ export function CustomerProfileCard({
 
             {discountPercent ? (
               <Stack direction="row" justifyContent="space-between" spacing={1} sx={{ mt: 0.55 }}>
-                  <Typography variant="body2" sx={{ color: "#86efac", fontWeight: 700 }}>
+                  <Typography variant="body2" sx={{ color: isLight ? "#059669" : "#86efac", fontWeight: 700 }}>
                   Skidka
                 </Typography>
-                <Typography variant="subtitle2" sx={{ color: "#86efac" }}>
+                <Typography variant="subtitle2" sx={{ color: isLight ? "#059669" : "#86efac" }}>
                   -{discountPercent}%
                 </Typography>
               </Stack>
@@ -173,8 +177,8 @@ export function CustomerProfileCard({
           sx={{
             p: { xs: 0, md: 1.35 },
             borderRadius: { xs: 0, md: "22px" },
-            backgroundColor: { xs: "transparent", md: alpha("#ffffff", 0.05) },
-            border: { xs: "none", md: `1px solid ${alpha("#c4b5fd", 0.12)}` },
+            backgroundColor: { xs: "transparent", md: isLight ? alpha("#000000", 0.03) : alpha("#ffffff", 0.05) },
+            border: { xs: "none", md: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.12)}` },
           }}
         >
           <Stack spacing={1.2}>
@@ -280,7 +284,7 @@ export function CustomerProfileCard({
   );
 }
 
-function IconButtonEdge({ onClick }: { onClick: () => void }) {
+function IconButtonEdge({ onClick, isLight }: { onClick: () => void; isLight: boolean }) {
   return (
     <Button
       onClick={onClick}
@@ -290,9 +294,9 @@ function IconButtonEdge({ onClick }: { onClick: () => void }) {
         height: 34,
         borderRadius: "50%",
         p: 0,
-        color: "#f8fafc",
-        backgroundColor: alpha("#ffffff", 0.06),
-        border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
+        color: isLight ? "#0f172a" : "#f8fafc",
+        backgroundColor: isLight ? alpha("#000000", 0.04) : alpha("#ffffff", 0.06),
+        border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.12)}`,
         mt: -0.15,
       }}
     >
@@ -304,14 +308,16 @@ function IconButtonEdge({ onClick }: { onClick: () => void }) {
 function SummaryRow({
   icon,
   label,
+  isLight,
 }: {
   icon: ReactNode;
   label: string;
+  isLight: boolean;
 }) {
   return (
     <Stack direction="row" spacing={0.8} alignItems="center">
-      <Box sx={{ color: "#8d96ad", display: "grid", placeItems: "center" }}>{icon}</Box>
-      <Typography variant="body2" sx={{ fontSize: "1rem", color: "#f8fafc" }}>
+      <Box sx={{ color: isLight ? "#64748b" : "#8d96ad", display: "grid", placeItems: "center" }}>{icon}</Box>
+      <Typography variant="body2" sx={{ fontSize: "1rem", color: isLight ? "#0f172a" : "#f8fafc" }}>
         {label}
       </Typography>
     </Stack>

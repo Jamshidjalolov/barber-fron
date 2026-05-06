@@ -13,14 +13,19 @@ interface PageHeaderProps {
   eyebrow?: string;
 }
 
+import { usePreferences } from "../../lib/preferences";
+
 export function PageHeader({
   title,
   subtitle,
   action,
   meta,
   icon,
-  eyebrow = "Admin paneli",
+  eyebrow,
 }: PageHeaderProps) {
+  const { t } = usePreferences();
+  const safeEyebrow = eyebrow ?? t("Admin paneli");
+
   return (
     <Box
       component={motion.div}
@@ -30,19 +35,21 @@ export function PageHeader({
       sx={{
         p: { xs: 1.3, md: 1.6 },
         borderRadius: "26px",
-        background:
-          "linear-gradient(135deg, rgba(22,22,39,0.88) 0%, rgba(10,11,22,0.72) 58%, rgba(7,19,31,0.78) 100%)",
-        border: `1px solid ${alpha("#c4b5fd", 0.14)}`,
-        boxShadow: "0 24px 70px rgba(0,0,0,0.34), inset 0 1px 0 rgba(255,255,255,0.06)",
-        backdropFilter: "blur(22px)",
+        background: (theme) => theme.palette.mode === "light"
+          ? "linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(248,250,252,0.8) 100%)"
+          : "linear-gradient(135deg, rgba(22,22,39,0.88) 0%, rgba(10,11,22,0.72) 58%, rgba(7,19,31,0.78) 100%)",
+        border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#e5e7eb", 1)}` : `1px solid ${alpha("#c4b5fd", 0.14)}`,
+        boxShadow: (theme) => theme.palette.mode === "light" ? "0 8px 30px rgba(0,0,0,0.04)" : "0 24px 70px rgba(0,0,0,0.34), inset 0 1px 0 rgba(255,255,255,0.06)",
+        backdropFilter: (theme) => theme.palette.mode === "light" ? "none" : "blur(22px)",
         position: "relative",
         overflow: "hidden",
         "&::after": {
           content: '""',
           position: "absolute",
           inset: 0,
-          background:
-            "linear-gradient(120deg, rgba(139,92,246,0.14), transparent 34%, rgba(34,211,238,0.1))",
+          background: (theme) => theme.palette.mode === "light"
+            ? "linear-gradient(120deg, rgba(251,189,5,0.08), transparent 34%, rgba(34,211,238,0.04))"
+            : "linear-gradient(120deg, rgba(139,92,246,0.14), transparent 34%, rgba(34,211,238,0.1))",
           pointerEvents: "none",
         },
         "& > *": {
@@ -78,10 +85,11 @@ export function PageHeader({
                   borderRadius: "16px",
                   display: "grid",
                   placeItems: "center",
-                  background:
-                    "linear-gradient(135deg, rgba(139,92,246,1) 0%, rgba(34,211,238,0.88) 100%)",
+                  background: (theme) => theme.palette.mode === "light"
+                    ? "linear-gradient(135deg, #fbbd05 0%, #f2a900 100%)"
+                    : "linear-gradient(135deg, rgba(139,92,246,1) 0%, rgba(34,211,238,0.88) 100%)",
                   color: "#fff",
-                  boxShadow: `0 16px 30px ${alpha("#8b5cf6", 0.28)}`,
+                  boxShadow: (theme) => theme.palette.mode === "light" ? `0 12px 24px ${alpha("#fbbd05", 0.35)}` : `0 16px 30px ${alpha("#8b5cf6", 0.28)}`,
                   flexShrink: 0,
                 }}
               >
@@ -90,7 +98,7 @@ export function PageHeader({
 
               <Box sx={{ minWidth: 0 }}>
                 <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.84rem" }}>
-                  {eyebrow}
+                  {safeEyebrow}
                 </Typography>
                 <Typography
                   variant="h4"

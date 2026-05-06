@@ -61,6 +61,54 @@ import {
 } from "./src/types";
 import { buildIsoFromLocal, buildTimeSlots, formatDateLabel, formatTime, getLocalDateInput } from "./src/utils/date";
 
+let MapView: any = null;
+let Marker: any = null;
+if (Platform.OS !== "web") {
+  const Maps = require("react-native-maps");
+  MapView = Maps.default;
+  Marker = Maps.Marker;
+}
+
+function LocationPickerMap({ latitude, longitude, onChange }: { latitude?: number | null, longitude?: number | null, onChange: (lat: number, lng: number) => void }) {
+  if (Platform.OS === "web") {
+    return <Text style={{ color: colors.muted, marginVertical: 10 }}>Xarita faqat mobil ilovada ishlaydi.</Text>;
+  }
+  const initialRegion = {
+    latitude: latitude || 41.2995,
+    longitude: longitude || 69.2401,
+    latitudeDelta: 0.05,
+    longitudeDelta: 0.05,
+  };
+  return (
+    <View style={{ height: 200, borderRadius: 12, overflow: "hidden", marginVertical: 10, borderColor: colors.line, borderWidth: 1 }}>
+      <MapView
+        style={{ flex: 1 }}
+        initialRegion={initialRegion}
+        onPress={(e: any) => onChange(e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude)}
+      >
+        {latitude && longitude ? (
+          <Marker coordinate={{ latitude, longitude }} pinColor={colors.goldDark} />
+        ) : null}
+      </MapView>
+    </View>
+  );
+}
+
+
+export const PreferencesContext = React.createContext<{
+  locale: "uz" | "ru";
+  t: (value: string) => string;
+  themeMode: "dark" | "light";
+}>({
+  locale: "uz",
+  t: (value) => value,
+  themeMode: "dark",
+});
+
+export function usePreferences() {
+  return React.useContext(PreferencesContext);
+}
+
 type AuthMode = "login" | "register";
 type TabKey = "home" | "book" | "barbers" | "bookings" | "discounts" | "profile";
 type AppLocale = "uz" | "ru";
@@ -122,6 +170,40 @@ const ruText: Record<string, string> = {
   "Skidka yaratish": "Создать скидку",
   "Skidkalar": "Скидки",
   "Hozircha bildirishnoma yo'q.": "Пока нет уведомлений.",
+
+  // Kengaytirilgan
+  "Kirish": "Войти",
+  "Ro'yxatdan o'tish": "Регистрация",
+  "Ism": "Имя",
+  "Telefon raqam": "Номер телефона",
+  "Username": "Имя пользователя",
+  "Parol": "Пароль",
+  "Hisob yaratish": "Создать аккаунт",
+  "Hisobingiz yo'qmi? ": "Нет аккаунта? ",
+  "Hisobingiz bormi? ": "Есть аккаунт? ",
+  "Tasdiqlandi": "Подтверждено",
+  "Jarayonda": "В процессе",
+  "Tugallandi": "Завершено",
+  "Rad etildi": "Отклонено",
+  "Kutilmoqda": "Ожидается",
+  "Qabul qilish": "Принять",
+  "Tugatish": "Завершить",
+  "Kirishda xato yuz berdi.": "Ошибка при входе.",
+  "Xato": "Ошибка",
+  "Malumot yuklanmadi.": "Данные не загружены.",
+  "Manzil": "Адрес",
+  "Izoh": "Примечание",
+  "Jami": "Итого",
+  "Tayyor": "Готово",
+  "Saqlandi": "Сохранено",
+  "Mijoz ma'lumoti": "Данные клиента",
+  "Sana tanlang": "Выберите дату",
+  "Vaqt tanlang": "Выберите время",
+  "Xizmatni tanlang": "Выберите услугу",
+  "Bron yaratish": "Создать бронь",
+  "Bronni tasdiqlash": "Подтвердить бронь",
+  "So'm": "сум",
+  "Narx bor": "Есть цена",
 };
 
 function translate(locale: AppLocale, value: string) {
@@ -424,6 +506,7 @@ async function sendBookingSms(booking: ApiBooking) {
 }
 
 function AuthScreen({ onAuthenticated }: { onAuthenticated: (session: AuthSession) => void }) {
+  const { t } = usePreferences();
   const [role, setRole] = useState<ApiRole>("customer");
   const [mode, setMode] = useState<AuthMode>("login");
   const [fullName, setFullName] = useState("");
@@ -434,7 +517,7 @@ function AuthScreen({ onAuthenticated }: { onAuthenticated: (session: AuthSessio
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   const canRegister = role === "customer";
-  const identityLabel = role === "customer" ? "Telefon raqam" : "Username";
+  const identityLabel = role === "customer" ? t("Telefon raqam") : t("Username");
   const accent = roleAccent(role);
   const roleName = role === "customer" ? "BARBERSHOP" : role.toUpperCase();
 
@@ -474,7 +557,7 @@ function AuthScreen({ onAuthenticated }: { onAuthenticated: (session: AuthSessio
                   pressed && styles.pressed,
                 ]}
               >
-                <Text style={[styles.authRoleText, role === item && { color: roleAccent(item) }]}>{roleLabels[item]}</Text>
+                <Text style={[styles.authRoleText, role === item && { color: roleAccent(item) }]}>{t(roleLabels[item])}</Text>
               </Pressable>
             ))}
           </View>
@@ -492,8 +575,8 @@ function AuthScreen({ onAuthenticated }: { onAuthenticated: (session: AuthSessio
                 <Text style={styles.authHeroCopy}>Professional soch turmaklash xizmatlari bir joyda</Text>
               </View>
               <View style={styles.authHeroActions}>
-                <PrimaryButton label="Kirish" onPress={() => setMode("login")} tone="gold" />
-                <PrimaryButton label="Ro'yxatdan o'tish" onPress={() => setMode("register")} tone="ghost" />
+                <PrimaryButton label={t("Kirish")} onPress={() => setMode("login")} tone="gold" />
+                <PrimaryButton label={t("Ro'yxatdan o'tish")} onPress={() => setMode("register")} tone="ghost" />
               </View>
             </ImageBackground>
           ) : (
@@ -502,12 +585,12 @@ function AuthScreen({ onAuthenticated }: { onAuthenticated: (session: AuthSessio
                 <MaterialCommunityIcons name={role === "customer" ? "content-cut" : role === "barber" ? "razor-double-edge" : "shield-crown-outline"} size={34} color={accent} />
               </View>
               <Text style={[styles.appName, { color: accent }]}>{roleName}</Text>
-              <Text style={styles.appSub}>{mode === "register" ? "Ro'yxatdan o'tish" : "Kirish"}</Text>
+              <Text style={styles.appSub}>{mode === "register" ? t("Ro'yxatdan o'tish") : t("Kirish")}</Text>
             </View>
           )}
 
           <View style={[styles.authCard, { borderColor: `${accent}33` }]}>
-            <Text style={styles.authTitle}>{mode === "register" ? "Ro'yxatdan o'tish" : "Kirish"}</Text>
+            <Text style={styles.authTitle}>{mode === "register" ? t("Ro'yxatdan o'tish") : t("Kirish")}</Text>
             {canRegister ? (
               <View style={styles.segment}>
                 {(["login", "register"] as AuthMode[]).map((item) => (
@@ -517,7 +600,7 @@ function AuthScreen({ onAuthenticated }: { onAuthenticated: (session: AuthSessio
                     style={[styles.segmentItem, mode === item && [styles.segmentItemActive, { backgroundColor: accent }]]}
                   >
                     <Text style={[styles.segmentText, mode === item && styles.segmentTextActive]}>
-                      {item === "login" ? "Kirish" : "Ro'yxatdan o'tish"}
+                      {item === "login" ? t("Kirish") : t("Ro'yxatdan o'tish")}
                     </Text>
                   </Pressable>
                 ))}
@@ -530,7 +613,7 @@ function AuthScreen({ onAuthenticated }: { onAuthenticated: (session: AuthSessio
                 <TextInput
                   value={fullName}
                   onChangeText={setFullName}
-                  placeholder="Ism"
+                  placeholder={t("Ism")}
                   placeholderTextColor="rgba(203,213,225,0.52)"
                   style={styles.authInput}
                   autoCapitalize="words"
@@ -554,7 +637,7 @@ function AuthScreen({ onAuthenticated }: { onAuthenticated: (session: AuthSessio
               <TextInput
                 value={password}
                 onChangeText={setPassword}
-                placeholder="Parol"
+                placeholder={t("Parol")}
                 placeholderTextColor="rgba(203,213,225,0.52)"
                 style={styles.authInput}
                 secureTextEntry={!passwordVisible}
@@ -567,7 +650,7 @@ function AuthScreen({ onAuthenticated }: { onAuthenticated: (session: AuthSessio
             {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
             <PrimaryButton
-              label={mode === "register" ? "Hisob yaratish" : "Kirish"}
+              label={mode === "register" ? t("Hisob yaratish") : t("Kirish")}
               onPress={submit}
               loading={loading}
               disabled={!identity || !password || (mode === "register" && !fullName)}
@@ -593,8 +676,8 @@ function AuthScreen({ onAuthenticated }: { onAuthenticated: (session: AuthSessio
                 style={styles.authSwitch}
               >
                 <Text style={styles.authSwitchText}>
-                  {mode === "login" ? "Hisobingiz yo'qmi? " : "Hisobingiz bormi? "}
-                  <Text style={{ color: accent }}>{mode === "login" ? "Ro'yxatdan o'tish" : "Kirish"}</Text>
+                  {mode === "login" ? t("Hisobingiz yo'qmi? ") : t("Hisobingiz bormi? ")}
+                  <Text style={{ color: accent }}>{mode === "login" ? t("Ro'yxatdan o'tish") : t("Kirish")}</Text>
                 </Text>
               </Pressable>
             ) : null}
@@ -1440,13 +1523,15 @@ export default function App() {
 
   if (!session) {
     return (
-      <AuthScreen
-        onAuthenticated={(nextSession) => {
-          loadedOnceRef.current = false;
-          setProfileForm(profileFormFromUser(nextSession.user));
-          setSession(nextSession);
-        }}
-      />
+      <PreferencesContext.Provider value={{ locale, t, themeMode }}>
+        <AuthScreen
+          onAuthenticated={(nextSession) => {
+            loadedOnceRef.current = false;
+            setProfileForm(profileFormFromUser(nextSession.user));
+            setSession(nextSession);
+          }}
+        />
+      </PreferencesContext.Provider>
     );
   }
 
@@ -2207,6 +2292,11 @@ export default function App() {
               keyboardType="decimal-pad"
             />
           </View>
+          <LocationPickerMap
+            latitude={barberForm.latitude}
+            longitude={barberForm.longitude}
+            onChange={(lat, lng) => setBarberForm((current) => ({ ...current, latitude: lat, longitude: lng }))}
+          />
           <View style={styles.priceGrid}>
             {([
               ["priceHaircut", "Soch"],
@@ -2288,9 +2378,10 @@ export default function App() {
             : renderProfile();
 
   return (
-    <SafeAreaView style={styles.safe}>
-      <StatusBar barStyle={themeMode === "light" ? "dark-content" : "light-content"} backgroundColor={colors.paper} translucent={false} />
-      <View style={styles.topBar}>
+    <PreferencesContext.Provider value={{ locale, t, themeMode }}>
+      <SafeAreaView style={styles.safe}>
+        <StatusBar barStyle={themeMode === "light" ? "dark-content" : "light-content"} backgroundColor={colors.paper} translucent={false} />
+        <View style={styles.topBar}>
         {tab === "book" || bookingSuccess || showNotifications ? (
           <HeaderIcon
             name="chevron-back"
@@ -2382,6 +2473,11 @@ export default function App() {
               <Field label="Latitude" value={barberForm.latitude == null ? "" : String(barberForm.latitude)} onChangeText={(value) => setBarberForm((current) => ({ ...current, latitude: value ? Number(value) : null }))} keyboardType="decimal-pad" />
               <Field label="Longitude" value={barberForm.longitude == null ? "" : String(barberForm.longitude)} onChangeText={(value) => setBarberForm((current) => ({ ...current, longitude: value ? Number(value) : null }))} keyboardType="decimal-pad" />
             </View>
+            <LocationPickerMap
+              latitude={barberForm.latitude}
+              longitude={barberForm.longitude}
+              onChange={(lat, lng) => setBarberForm((current) => ({ ...current, latitude: lat, longitude: lng }))}
+            />
             <View style={styles.twoColumn}>
               <Field label="Ish boshlanishi" value={barberForm.workStartTime} onChangeText={(value) => setBarberForm((current) => ({ ...current, workStartTime: value }))} placeholder="09:00" />
               <Field label="Ish tugashi" value={barberForm.workEndTime} onChangeText={(value) => setBarberForm((current) => ({ ...current, workEndTime: value }))} placeholder="18:30" />
@@ -2446,6 +2542,7 @@ export default function App() {
         ))}
       </View> : null}
     </SafeAreaView>
+    </PreferencesContext.Provider>
   );
 }
 
@@ -2480,7 +2577,7 @@ function createAppStyles() {
   },
   authRolePill: {
     alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.04)",
+    backgroundColor: colors.glass,
     borderColor: colors.line,
     borderRadius: 9,
     borderWidth: 1,
@@ -2525,7 +2622,7 @@ function createAppStyles() {
     marginTop: 5,
   },
   authCard: {
-    backgroundColor: "rgba(16,19,24,0.94)",
+    backgroundColor: colors.surface,
     borderRadius: 12,
     borderWidth: 1,
     gap: 14,
@@ -2594,7 +2691,7 @@ function createAppStyles() {
   },
   authField: {
     alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.055)",
+    backgroundColor: colors.glass,
     borderColor: colors.line,
     borderRadius: 8,
     borderWidth: 1,
@@ -2635,7 +2732,7 @@ function createAppStyles() {
   },
   socialButton: {
     alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.045)",
+    backgroundColor: colors.glass,
     borderColor: colors.lineStrong,
     borderRadius: 999,
     borderWidth: 1,
@@ -2660,7 +2757,7 @@ function createAppStyles() {
     padding: 14,
   },
   modalCard: {
-    backgroundColor: "rgba(16,19,24,0.98)",
+    backgroundColor: colors.surface,
     borderColor: colors.lineStrong,
     borderRadius: 18,
     borderWidth: 1,
@@ -2683,7 +2780,7 @@ function createAppStyles() {
   },
   modalClose: {
     alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: colors.glass,
     borderColor: colors.line,
     borderRadius: 999,
     borderWidth: 1,
@@ -2725,8 +2822,8 @@ function createAppStyles() {
   },
   telegramQrPanel: {
     alignItems: "center",
-    backgroundColor: "rgba(2,6,23,0.44)",
-    borderColor: "rgba(255,255,255,0.08)",
+    backgroundColor: colors.surfaceStrong,
+    borderColor: colors.line,
     borderRadius: 18,
     borderWidth: 1,
     flexDirection: "row",
@@ -2766,7 +2863,7 @@ function createAppStyles() {
     minWidth: 0,
   },
   segment: {
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: colors.surfaceStrong,
     borderColor: colors.line,
     borderWidth: 1,
     borderRadius: 18,
@@ -3018,7 +3115,7 @@ function createAppStyles() {
     fontWeight: "800",
   },
   bookingPanel: {
-    backgroundColor: "rgba(15,18,22,0.96)",
+    backgroundColor: colors.surface,
     borderColor: colors.lineStrong,
     gap: 13,
   },

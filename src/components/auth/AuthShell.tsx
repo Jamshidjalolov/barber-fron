@@ -41,8 +41,9 @@ export function AuthShell({
         py: { xs: 1.15, sm: 1.8 },
         display: "grid",
         placeItems: "center",
-        background:
-          "radial-gradient(circle at 14% 8%, rgba(139,92,246,0.32), transparent 28%), radial-gradient(circle at 94% 6%, rgba(34,211,238,0.18), transparent 26%), linear-gradient(135deg, #05050a 0%, #10071d 50%, #06111e 100%)",
+        background: (theme) => theme.palette.mode === "light"
+          ? "radial-gradient(circle at 14% 8%, rgba(251,189,5,0.12), transparent 28%), radial-gradient(circle at 94% 6%, rgba(34,211,238,0.08), transparent 26%), #f4f6f8"
+          : "radial-gradient(circle at 14% 8%, rgba(139,92,246,0.32), transparent 28%), radial-gradient(circle at 94% 6%, rgba(34,211,238,0.18), transparent 26%), linear-gradient(135deg, #05050a 0%, #10071d 50%, #06111e 100%)",
       }}
     >
       <Box
@@ -54,11 +55,12 @@ export function AuthShell({
           width: "min(720px, 100%)",
           p: { xs: 0.85, sm: 1 },
           borderRadius: { xs: "28px", sm: "34px" },
-          background:
-            "linear-gradient(180deg, rgba(17,17,30,0.76) 0%, rgba(9,10,20,0.7) 100%)",
-          border: `1px solid ${alpha("#c4b5fd", 0.14)}`,
-          boxShadow: "0 34px 90px rgba(0,0,0,0.44), inset 0 1px 0 rgba(255,255,255,0.06)",
-          backdropFilter: "blur(24px)",
+          background: (theme) => theme.palette.mode === "light"
+            ? "linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(248,250,252,0.9) 100%)"
+            : "linear-gradient(180deg, rgba(17,17,30,0.76) 0%, rgba(9,10,20,0.7) 100%)",
+          border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#e5e7eb", 1)}` : `1px solid ${alpha("#c4b5fd", 0.14)}`,
+          boxShadow: (theme) => theme.palette.mode === "light" ? "0 18px 50px rgba(15,23,42,0.08)" : "0 34px 90px rgba(0,0,0,0.44), inset 0 1px 0 rgba(255,255,255,0.06)",
+          backdropFilter: (theme) => theme.palette.mode === "light" ? "none" : "blur(24px)",
         }}
       >
         <Box
@@ -68,20 +70,22 @@ export function AuthShell({
           sx={{
             p: { xs: 1.15, sm: 1.35 },
             borderRadius: { xs: "24px", sm: "28px" },
-            color: "#fff",
-            background:
-              "linear-gradient(135deg, rgba(139,92,246,0.42) 0%, rgba(11,12,24,0.92) 36%, rgba(6,17,30,0.95) 70%, rgba(34,211,238,0.22) 100%)",
+            color: (theme) => theme.palette.mode === "light" ? "#111827" : "#fff",
+            background: (theme) => theme.palette.mode === "light"
+              ? "linear-gradient(135deg, rgba(251,189,5,0.12) 0%, rgba(255,255,255,0.92) 36%, rgba(248,250,252,0.95) 70%, rgba(34,211,238,0.08) 100%)"
+              : "linear-gradient(135deg, rgba(139,92,246,0.42) 0%, rgba(11,12,24,0.92) 36%, rgba(6,17,30,0.95) 70%, rgba(34,211,238,0.22) 100%)",
             backgroundSize: "180% 180%",
-            boxShadow: "0 22px 54px rgba(0,0,0,0.36)",
+            boxShadow: (theme) => theme.palette.mode === "light" ? "0 8px 24px rgba(0,0,0,0.04)" : "0 22px 54px rgba(0,0,0,0.36)",
             position: "relative",
             overflow: "hidden",
-            border: `1px solid ${alpha("#ffffff", 0.1)}`,
+            border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#e5e7eb", 1)}` : `1px solid ${alpha("#ffffff", 0.1)}`,
             "&::before": {
               content: '""',
               position: "absolute",
               inset: 0,
-              background:
-                "linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)",
+              background: (theme) => theme.palette.mode === "light"
+                ? "linear-gradient(90deg, transparent, rgba(0,0,0,0.02), transparent)"
+                : "linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)",
               transform: "translateX(-72%) rotate(8deg)",
               animation: "authShine 5.5s ease-in-out infinite",
             },
@@ -120,9 +124,9 @@ export function AuthShell({
                 px: 0.8,
                 py: 0.6,
                 borderRadius: "16px",
-                backgroundColor: alpha("#ffffff", 0.07),
-                border: `1px solid ${alpha("#ffffff", 0.12)}`,
-                backdropFilter: "blur(10px)",
+                backgroundColor: (theme) => theme.palette.mode === "light" ? alpha("#000000", 0.04) : alpha("#ffffff", 0.07),
+                border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#ffffff", 0.12)}`,
+                backdropFilter: (theme) => theme.palette.mode === "light" ? "none" : "blur(10px)",
               }}
             >
               <BrandLogo badgeSize={42} tone="light" />
@@ -154,9 +158,9 @@ export function AuthShell({
                 alignSelf: "flex-start",
                 height: 29,
                 borderRadius: "999px",
-                color: "#ecfeff",
-                backgroundColor: alpha("#22d3ee", 0.14),
-                border: `1px solid ${alpha("#67e8f9", 0.22)}`,
+                color: (theme) => theme.palette.mode === "light" ? "#0369a1" : "#ecfeff",
+                backgroundColor: (theme) => theme.palette.mode === "light" ? alpha("#0284c7", 0.08) : alpha("#22d3ee", 0.14),
+                border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#0284c7", 0.2)}` : `1px solid ${alpha("#67e8f9", 0.22)}`,
                 "& .MuiChip-label": {
                   px: 1.2,
                   fontWeight: 700,
@@ -182,7 +186,7 @@ export function AuthShell({
               <Typography
                 variant="body1"
                 sx={{
-                  color: alpha("#ffffff", 0.72),
+                  color: (theme) => theme.palette.mode === "light" ? alpha("#111827", 0.72) : alpha("#ffffff", 0.72),
                   fontSize: { xs: "0.88rem", sm: "0.94rem" },
                   lineHeight: 1.55,
                   maxWidth: 420,

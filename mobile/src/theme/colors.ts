@@ -21,23 +21,23 @@ const darkColors = {
 };
 
 const lightColors = {
-  ink: "#f8fafc",
-  text: "#101827",
-  muted: "#64748b",
-  paper: "#f7f8fb",
+  ink: "#f4f6f8",
+  text: "#111827",
+  muted: "#6b7280",
+  paper: "#ffffff",
   surface: "#ffffff",
   surfaceStrong: "#f1f5f9",
   glass: "#ffffff",
   line: "rgba(15,23,42,0.08)",
   lineStrong: "rgba(15,23,42,0.14)",
-  gold: "#f8b400",
-  goldDark: "#d89200",
-  purple: "#7c3aed",
+  gold: "#fbbd05",
+  goldDark: "#d9a100",
+  purple: "#8b5cf6",
   purpleDark: "#5b21b6",
-  cyan: "#0284c7",
-  green: "#16a34a",
-  red: "#dc2626",
-  blue: "#2563eb",
+  cyan: "#0ea5e9",
+  green: "#10b981",
+  red: "#ef4444",
+  blue: "#3b82f6",
   haze: "#e2e8f0",
   darkPanel: "#ffffff",
 };
@@ -45,13 +45,14 @@ const lightColors = {
 export type MobileThemeMode = "dark" | "light";
 export const colors = { ...darkColors };
 
-export function applyMobileTheme(mode: MobileThemeMode) {
-  Object.assign(colors, mode === "light" ? lightColors : darkColors);
-}
-
 export const shadows = {
   soft: {
     boxShadow: "0px 18px 34px rgba(0, 0, 0, 0.34)",
     elevation: 8,
   },
 };
+
+export function applyMobileTheme(mode: MobileThemeMode) {
+  Object.assign(colors, mode === "light" ? lightColors : darkColors);
+  shadows.soft.boxShadow = mode === "light" ? "0px 8px 24px rgba(0, 0, 0, 0.08)" : "0px 18px 34px rgba(0, 0, 0, 0.34)";
+}

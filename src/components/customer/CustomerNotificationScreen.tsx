@@ -9,7 +9,7 @@ import PaymentsRoundedIcon from "@mui/icons-material/PaymentsRounded";
 import RadioButtonCheckedRoundedIcon from "@mui/icons-material/RadioButtonCheckedRounded";
 import ReportProblemRoundedIcon from "@mui/icons-material/ReportProblemRounded";
 import ScheduleRoundedIcon from "@mui/icons-material/ScheduleRounded";
-import { alpha, Avatar, Box, Button, Chip, IconButton, Stack, Typography } from "@mui/material";
+import { alpha, Avatar, Box, Button, Chip, IconButton, Stack, Typography, useTheme } from "@mui/material";
 import { motion } from "framer-motion";
 import { ReactNode } from "react";
 import { BarberProfile, BookingItem, BookingStatus } from "../../types";
@@ -43,6 +43,9 @@ export function CustomerNotificationScreen({
   const originalPriceLabel = formatMoney(booking.originalPrice ?? booking.finalPrice ?? 0);
   const finalPriceLabel = formatMoney(booking.finalPrice ?? booking.originalPrice ?? 0);
 
+  const theme = useTheme();
+  const isLight = theme.palette.mode === "light";
+
   return (
     <Stack
       component={motion.div}
@@ -55,10 +58,11 @@ export function CustomerNotificationScreen({
         sx={{
           p: { xs: 1.2, sm: 1.45 },
           borderRadius: "26px",
-          background:
-            "linear-gradient(135deg, rgba(22,22,39,0.9) 0%, rgba(10,11,22,0.82) 56%, rgba(7,19,31,0.82) 100%)",
-          border: `1px solid ${alpha("#c4b5fd", 0.15)}`,
-          boxShadow: "0 24px 70px rgba(0,0,0,0.34), inset 0 1px 0 rgba(255,255,255,0.06)",
+          background: isLight
+            ? "linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.85) 56%, rgba(241,245,249,0.85) 100%)"
+            : "linear-gradient(135deg, rgba(22,22,39,0.9) 0%, rgba(10,11,22,0.82) 56%, rgba(7,19,31,0.82) 100%)",
+          border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.15)}`,
+          boxShadow: isLight ? "0 12px 30px rgba(0,0,0,0.04)" : "0 24px 70px rgba(0,0,0,0.34), inset 0 1px 0 rgba(255,255,255,0.06)",
           backdropFilter: "blur(22px)",
         }}
       >
@@ -69,11 +73,11 @@ export function CustomerNotificationScreen({
                 px: 0.75,
                 py: 0.55,
                 borderRadius: "16px",
-                backgroundColor: alpha("#ffffff", 0.07),
-                border: `1px solid ${alpha("#ffffff", 0.12)}`,
+                backgroundColor: isLight ? alpha("#000000", 0.04) : alpha("#ffffff", 0.07),
+                border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#ffffff", 0.12)}`,
               }}
             >
-              <BrandLogo badgeSize={40} tone="light" />
+              <BrandLogo badgeSize={40} tone={isLight ? "dark" : "light"} />
             </Box>
 
             <Stack direction="row" spacing={0.6}>
@@ -83,9 +87,10 @@ export function CustomerNotificationScreen({
                   sx={{
                     width: 36,
                     height: 36,
-                    backgroundColor: alpha("#ffffff", 0.08),
-                    border: `1px solid ${alpha("#ffffff", 0.12)}`,
-                    "&:hover": { backgroundColor: alpha("#ffffff", 0.14) },
+                    backgroundColor: isLight ? alpha("#000000", 0.04) : alpha("#ffffff", 0.08),
+                    border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#ffffff", 0.12)}`,
+                    "&:hover": { backgroundColor: isLight ? alpha("#000000", 0.08) : alpha("#ffffff", 0.14) },
+                    color: isLight ? "#0f172a" : "inherit"
                   }}
                 >
                   <HomeRoundedIcon sx={{ fontSize: "1.05rem" }} />
@@ -97,9 +102,10 @@ export function CustomerNotificationScreen({
                 sx={{
                   width: 36,
                   height: 36,
-                  backgroundColor: alpha("#ffffff", 0.08),
-                  border: `1px solid ${alpha("#ffffff", 0.12)}`,
-                  "&:hover": { backgroundColor: alpha("#ffffff", 0.14) },
+                  backgroundColor: isLight ? alpha("#000000", 0.04) : alpha("#ffffff", 0.08),
+                  border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#ffffff", 0.12)}`,
+                  "&:hover": { backgroundColor: isLight ? alpha("#000000", 0.08) : alpha("#ffffff", 0.14) },
+                  color: isLight ? "#0f172a" : "inherit"
                 }}
               >
                 <IosShareRoundedIcon sx={{ fontSize: "1rem" }} />
@@ -170,10 +176,11 @@ export function CustomerNotificationScreen({
           sx={{
             p: { xs: 1.25, sm: 1.45 },
             borderRadius: "24px",
-            background:
-              "linear-gradient(180deg, rgba(19,20,34,0.86) 0%, rgba(10,11,22,0.72) 100%)",
-            border: `1px solid ${alpha("#c4b5fd", 0.14)}`,
-            boxShadow: "0 18px 42px rgba(0,0,0,0.22)",
+            background: isLight
+              ? "linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(248,250,252,0.95) 100%)"
+              : "linear-gradient(180deg, rgba(19,20,34,0.86) 0%, rgba(10,11,22,0.72) 100%)",
+            border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.14)}`,
+            boxShadow: isLight ? "0 12px 30px rgba(0,0,0,0.04)" : "0 18px 42px rgba(0,0,0,0.22)",
             backdropFilter: "blur(18px)",
           }}
         >
@@ -210,8 +217,8 @@ export function CustomerNotificationScreen({
               sx={{
                 p: 1,
                 borderRadius: "18px",
-                backgroundColor: alpha("#ffffff", 0.06),
-                border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
+                backgroundColor: isLight ? alpha("#000000", 0.03) : alpha("#ffffff", 0.06),
+                border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.12)}`,
               }}
             >
               <Avatar
@@ -248,8 +255,8 @@ export function CustomerNotificationScreen({
                 sx={{
                   p: 1,
                   borderRadius: "18px",
-                  backgroundColor: alpha("#f6c85f", 0.1),
-                  border: `1px solid ${alpha("#f6c85f", 0.16)}`,
+                  backgroundColor: isLight ? alpha("#f59e0b", 0.08) : alpha("#f6c85f", 0.1),
+                  border: isLight ? `1px solid ${alpha("#f59e0b", 0.16)}` : `1px solid ${alpha("#f6c85f", 0.16)}`,
                 }}
               >
                 <Stack direction="row" justifyContent="space-between" spacing={1}>
@@ -261,10 +268,10 @@ export function CustomerNotificationScreen({
 
                 {booking.appliedDiscountPercent ? (
                   <Stack direction="row" justifyContent="space-between" spacing={1} sx={{ mt: 0.5 }}>
-                    <Typography variant="body2" sx={{ color: "#86efac", fontWeight: 700 }}>
+                    <Typography variant="body2" sx={{ color: isLight ? "#059669" : "#86efac", fontWeight: 700 }}>
                       Skidka
                     </Typography>
-                    <Typography variant="subtitle2" sx={{ color: "#86efac" }}>
+                    <Typography variant="subtitle2" sx={{ color: isLight ? "#059669" : "#86efac" }}>
                       -{booking.appliedDiscountPercent}%
                     </Typography>
                   </Stack>
@@ -297,7 +304,7 @@ export function CustomerNotificationScreen({
                     borderRadius: "12px",
                     display: "grid",
                     placeItems: "center",
-                    backgroundColor: alpha("#ffffff", 0.08),
+                    backgroundColor: isLight ? alpha("#000000", 0.04) : alpha("#ffffff", 0.08),
                     color: view.badgeColor,
                     flexShrink: 0,
                   }}
@@ -315,8 +322,8 @@ export function CustomerNotificationScreen({
                 sx={{
                   p: 1,
                   borderRadius: "18px",
-                  backgroundColor: alpha("#d96868", 0.08),
-                  border: `1px solid ${alpha("#d96868", 0.14)}`,
+                  backgroundColor: isLight ? alpha("#ef4444", 0.1) : alpha("#d96868", 0.08),
+                  border: isLight ? `1px solid ${alpha("#ef4444", 0.18)}` : `1px solid ${alpha("#d96868", 0.14)}`,
                 }}
               >
                 <Typography variant="subtitle2" sx={{ color: "#a23c3c", mb: 0.3 }}>
@@ -334,8 +341,8 @@ export function CustomerNotificationScreen({
           sx={{
             p: 1.2,
             borderRadius: "24px",
-            backgroundColor: alpha("#ffffff", 0.05),
-            border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
+            backgroundColor: isLight ? alpha("#000000", 0.02) : alpha("#ffffff", 0.05),
+            border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.12)}`,
             backdropFilter: "blur(18px)",
           }}
         >
@@ -353,7 +360,7 @@ export function CustomerNotificationScreen({
                 sx={{
                   p: 0.85,
                   borderRadius: "16px",
-                  backgroundColor: item.active ? alpha(item.color, 0.12) : alpha("#ffffff", 0.04),
+                  backgroundColor: item.active ? alpha(item.color, 0.12) : isLight ? alpha("#000000", 0.03) : alpha("#ffffff", 0.04),
                 }}
               >
                 <RadioButtonCheckedRoundedIcon
@@ -367,7 +374,7 @@ export function CustomerNotificationScreen({
                 <Box>
                   <Typography
                     variant="subtitle2"
-                    sx={{ color: item.active ? "#f8fafc" : "#8890a4" }}
+                    sx={{ color: item.active ? (isLight ? "#0f172a" : "#f8fafc") : (isLight ? "#64748b" : "#8890a4") }}
                   >
                     {item.title}
                   </Typography>
@@ -436,6 +443,8 @@ function InfoPill({
   icon: ReactNode;
   label: string;
 }) {
+  const theme = useTheme();
+  const isLight = theme.palette.mode === "light";
   return (
     <Stack
       direction="row"
@@ -445,12 +454,12 @@ function InfoPill({
         px: 1,
         py: 0.9,
         borderRadius: "16px",
-        backgroundColor: alpha("#ffffff", 0.06),
-        border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
+        backgroundColor: isLight ? alpha("#000000", 0.04) : alpha("#ffffff", 0.06),
+        border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.12)}`,
       }}
     >
-      <Box sx={{ color: "#8d96ad", display: "grid", placeItems: "center" }}>{icon}</Box>
-      <Typography variant="body2" sx={{ fontSize: "0.94rem", color: "#f8fafc" }}>
+      <Box sx={{ color: isLight ? "#64748b" : "#8d96ad", display: "grid", placeItems: "center" }}>{icon}</Box>
+      <Typography variant="body2" sx={{ fontSize: "0.94rem", color: isLight ? "#0f172a" : "#f8fafc" }}>
         {label}
       </Typography>
     </Stack>

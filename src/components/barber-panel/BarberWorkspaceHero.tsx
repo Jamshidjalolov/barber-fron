@@ -39,10 +39,11 @@ export function BarberWorkspaceHero({
       sx={{
         p: { xs: 1.45, md: 1.8, xl: 2.1 },
         borderRadius: "28px",
-        background:
-          "linear-gradient(135deg, rgba(22,22,39,0.9) 0%, rgba(10,11,22,0.82) 54%, rgba(7,19,31,0.82) 100%)",
-        border: `1px solid ${alpha("#c4b5fd", 0.15)}`,
-        boxShadow: "0 24px 70px rgba(0,0,0,0.34), inset 0 1px 0 rgba(255,255,255,0.06)",
+        background: (theme) => theme.palette.mode === "light"
+          ? "linear-gradient(135deg, rgba(255,255,255,1) 0%, rgba(249,250,251,0.9) 54%, rgba(243,244,246,0.9) 100%)"
+          : "linear-gradient(135deg, rgba(22,22,39,0.9) 0%, rgba(10,11,22,0.82) 54%, rgba(7,19,31,0.82) 100%)",
+        border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.15)}`,
+        boxShadow: (theme) => theme.palette.mode === "light" ? "0 12px 30px rgba(0,0,0,0.04)" : "0 24px 70px rgba(0,0,0,0.34), inset 0 1px 0 rgba(255,255,255,0.06)",
         backdropFilter: "blur(22px)",
         position: "relative",
         overflow: "hidden",
@@ -137,11 +138,11 @@ export function BarberWorkspaceHero({
                   width: 40,
                   height: 40,
                   borderRadius: "14px",
-                  color: "#f8fafc",
-                  backgroundColor: alpha("#ffffff", 0.08),
-                  border: `1px solid ${alpha("#ffffff", 0.12)}`,
+                  color: (theme) => theme.palette.mode === "light" ? "#0f172a" : "#f8fafc",
+                  backgroundColor: (theme) => theme.palette.mode === "light" ? alpha("#000000", 0.04) : alpha("#ffffff", 0.08),
+                  border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#ffffff", 0.12)}`,
                   "&:hover": {
-                    backgroundColor: alpha("#ffffff", 0.14),
+                    backgroundColor: (theme) => theme.palette.mode === "light" ? alpha("#000000", 0.08) : alpha("#ffffff", 0.14),
                   },
                 }}
               >
@@ -168,11 +169,11 @@ export function BarberWorkspaceHero({
                   width: 40,
                   height: 40,
                   borderRadius: "14px",
-                  color: "#f8fafc",
-                  backgroundColor: alpha("#ffffff", 0.08),
-                  border: `1px solid ${alpha("#ffffff", 0.12)}`,
+                  color: (theme) => theme.palette.mode === "light" ? "#0f172a" : "#f8fafc",
+                  backgroundColor: (theme) => theme.palette.mode === "light" ? alpha("#000000", 0.04) : alpha("#ffffff", 0.08),
+                  border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#ffffff", 0.12)}`,
                   "&:hover": {
-                    backgroundColor: alpha("#ffffff", 0.14),
+                    backgroundColor: (theme) => theme.palette.mode === "light" ? alpha("#000000", 0.08) : alpha("#ffffff", 0.14),
                   },
                 }}
               >
@@ -211,9 +212,9 @@ export function BarberWorkspaceHero({
                     borderRadius: "14px",
                     display: "grid",
                     placeItems: "center",
-                    bgcolor: alpha("#ffffff", 0.08),
-                    color: "#f8fafc",
-                    border: `1px solid ${alpha("#ffffff", 0.1)}`,
+                    bgcolor: (theme) => theme.palette.mode === "light" ? alpha("#000000", 0.04) : alpha("#ffffff", 0.08),
+                    color: (theme) => theme.palette.mode === "light" ? "#0f172a" : "#f8fafc",
+                    border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#ffffff", 0.1)}`,
                   }}
                 >
                   <NotificationsRoundedIcon sx={{ fontSize: "1.1rem" }} />
@@ -230,8 +231,8 @@ export function BarberWorkspaceHero({
           sx={{
             p: 1.5,
             borderRadius: "24px",
-            backgroundColor: alpha("#ffffff", 0.06),
-            border: `1px solid ${alpha("#ffffff", 0.11)}`,
+            backgroundColor: (theme) => theme.palette.mode === "light" ? alpha("#000000", 0.02) : alpha("#ffffff", 0.06),
+            border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#ffffff", 0.11)}`,
             backdropFilter: "blur(18px)",
           }}
         >
@@ -246,8 +247,8 @@ export function BarberWorkspaceHero({
                 sx={{
                   height: 28,
                   borderRadius: "999px",
-                  backgroundColor: alpha("#ffffff", 0.08),
-                  border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
+                  backgroundColor: (theme) => theme.palette.mode === "light" ? alpha("#000000", 0.04) : alpha("#ffffff", 0.08),
+                  border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.12)}`,
                   "& .MuiChip-label": { px: 1, fontWeight: 700 },
                 }}
               />

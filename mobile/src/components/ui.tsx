@@ -166,7 +166,7 @@ export function Stat({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "rgba(20,24,29,0.94)",
+    backgroundColor: colors.surface,
     borderColor: colors.line,
     borderRadius: 12,
     borderWidth: 1,
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
   },
   pill: {
     alignItems: "center",
-    backgroundColor: "rgba(255,255,255,0.045)",
+    backgroundColor: colors.glass,
     borderColor: colors.line,
     borderRadius: 10,
     borderWidth: 1,
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     borderColor: colors.gold,
   },
   pillDark: {
-    backgroundColor: "rgba(255,255,255,0.07)",
+    backgroundColor: colors.surfaceStrong,
     borderColor: colors.lineStrong,
   },
   pillGreen: {
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
     color: colors.goldDark,
   },
   pillTextDark: {
-    color: "#fff",
+    color: colors.text,
   },
   pillTextGreen: {
     color: colors.green,
@@ -239,7 +239,6 @@ const styles = StyleSheet.create({
     minHeight: 54,
     justifyContent: "center",
     paddingHorizontal: 18,
-    boxShadow: "0px 12px 24px rgba(215, 170, 85, 0.25)",
     elevation: 6,
   },
   buttonGold: {
@@ -247,14 +246,13 @@ const styles = StyleSheet.create({
     borderColor: "rgba(246,200,95,0.32)",
   },
   buttonGhost: {
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: colors.glass,
     borderColor: colors.line,
     borderWidth: 1,
-    boxShadow: "none",
     elevation: 0,
   },
   buttonText: {
-    color: "#090b0d",
+    color: colors.ink,
     fontSize: 15,
     fontWeight: "900",
   },
@@ -277,7 +275,7 @@ const styles = StyleSheet.create({
     fontWeight: "800",
   },
   input: {
-    backgroundColor: "rgba(255,255,255,0.045)",
+    backgroundColor: colors.glass,
     borderColor: colors.line,
     borderRadius: 10,
     borderWidth: 1,
@@ -287,7 +285,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
   },
   stat: {
-    backgroundColor: "rgba(255,255,255,0.055)",
+    backgroundColor: colors.glass,
     borderColor: colors.line,
     borderWidth: 1,
     borderRadius: 12,
@@ -310,7 +308,7 @@ const styles = StyleSheet.create({
     fontWeight: "900",
   },
   statLabel: {
-    color: "rgba(255,255,255,0.82)",
+    color: colors.muted,
     fontSize: 12,
     fontWeight: "700",
     marginTop: 3,

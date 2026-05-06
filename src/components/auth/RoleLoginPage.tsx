@@ -89,11 +89,12 @@ export function RoleLoginPage({
         sx={{
           p: { xs: 1.25, md: 1.5 },
           borderRadius: "22px",
-          background:
-            "linear-gradient(180deg, rgba(18,18,31,0.86) 0%, rgba(10,11,22,0.78) 100%)",
-          border: `1px solid ${alpha("#c4b5fd", 0.14)}`,
-          boxShadow: "0 18px 44px rgba(0,0,0,0.28)",
-          backdropFilter: "blur(18px)",
+          background: (theme) => theme.palette.mode === "light"
+            ? "#ffffff"
+            : "linear-gradient(180deg, rgba(18,18,31,0.86) 0%, rgba(10,11,22,0.78) 100%)",
+          border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#e5e7eb", 1)}` : `1px solid ${alpha("#c4b5fd", 0.14)}`,
+          boxShadow: (theme) => theme.palette.mode === "light" ? "0px 8px 24px rgba(0, 0, 0, 0.06)" : "0 18px 44px rgba(0,0,0,0.28)",
+          backdropFilter: (theme) => theme.palette.mode === "light" ? "none" : "blur(18px)",
         }}
       >
         <Stack spacing={1}>
@@ -144,11 +145,11 @@ export function RoleLoginPage({
                   "& .MuiOutlinedInput-root": {
                     minHeight: 54,
                     borderRadius: "17px",
-                    backgroundColor: alpha("#101224", 0.92),
-                    boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)",
+                    backgroundColor: (theme) => theme.palette.mode === "light" ? "#f9fafb" : alpha("#101224", 0.92),
+                    boxShadow: (theme) => theme.palette.mode === "light" ? "none" : "inset 0 1px 0 rgba(255,255,255,0.05)",
                   },
                   "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: alpha("#c4b5fd", 0.14),
+                    borderColor: (theme) => theme.palette.mode === "light" ? alpha("#e5e7eb", 1) : alpha("#c4b5fd", 0.14),
                   },
                   "& .MuiInputBase-input": {
                     py: 1.45,

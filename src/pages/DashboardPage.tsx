@@ -8,6 +8,7 @@ import { RecentBookingsCard } from "../components/dashboard/RecentBookingsCard";
 import { StatsOverview } from "../components/dashboard/StatsOverview";
 import { BarberBookingSummary, BookingItem, DiscountItem, PerformanceItem, StatMetric } from "../types";
 import { formatUzbekReadableDate } from "../utils/date";
+import { usePreferences } from "../lib/preferences";
 
 interface DashboardPageProps {
   metrics: StatMetric[]; 
@@ -25,18 +26,40 @@ export function DashboardPage({
   discounts,
 }: DashboardPageProps) {
   const activeDiscounts = discounts.filter((item) => item.isActive);
+  const { t, locale } = usePreferences();
+
+  // Metric larni tarjima qilish uchun ularni aylanib chiqamiz
+  const translateNote = (note: string) => {
+    if (note.includes("ta navbat bor")) return locale === "ru" ? `Сегодня ${note.replace(/\D/g, "")} записей` : note;
+    if (note.includes("tasi hozir band")) {
+      const nums = note.match(/\d+/g);
+      return locale === "ru" ? `Из ${nums?.[0]} барберов ${nums?.[1]} сейчас заняты` : note;
+    }
+    if (note.includes("ta xizmat tugadi")) return locale === "ru" ? `Сегодня завершено ${note.replace(/\D/g, "")} услуг` : note;
+    if (note.includes("Eng yaqin navbat")) {
+      const time = note.match(/\d{2}:\d{2}/);
+      return locale === "ru" ? `Ближайшая запись в ${time?.[0]}` : note;
+    }
+    return t(note);
+  };
+
+  const translatedMetrics = metrics.map(metric => ({
+    ...metric,
+    title: t(metric.title),
+    note: translateNote(metric.note)
+  }));
 
   return (
     <Stack spacing={1.7}>
       <PageHeader
-        title="Bosh sahifa"
-        subtitle="Bugungi ishlar qisqacha"
-        meta={formatUzbekReadableDate(new Date())}
+        title={t("Bosh sahifa")}
+        subtitle={t("Bugungi ishlar qisqacha")}
+        meta={locale === "ru" ? new Date().toLocaleDateString("ru-RU", { day: "numeric", month: "long", year: "numeric" }) : formatUzbekReadableDate(new Date())}
         icon={<DashboardRoundedIcon sx={{ fontSize: "1.2rem" }} />}
-        eyebrow="Admin paneli"
+        eyebrow={t("Admin paneli")}
       />
 
-      <StatsOverview items={metrics} />
+      <StatsOverview items={translatedMetrics} />
 
       {activeDiscounts.length ? (
         <Stack
@@ -47,14 +70,14 @@ export function DashboardPage({
             px: 1.35,
             py: 1.15,
             borderRadius: "20px",
-            border: `1px solid ${alpha("#34d399", 0.16)}`,
-            backgroundColor: alpha("#34d399", 0.08),
-            backdropFilter: "blur(14px)",
+            border: (theme) => theme.palette.mode === "light" ? `1px solid ${alpha("#10b981", 0.2)}` : `1px solid ${alpha("#34d399", 0.16)}`,
+            backgroundColor: (theme) => theme.palette.mode === "light" ? alpha("#10b981", 0.06) : alpha("#34d399", 0.08),
+            backdropFilter: (theme) => theme.palette.mode === "light" ? "none" : "blur(14px)",
           }}
         >
-          <LocalOfferRoundedIcon sx={{ color: "#86efac" }} />
-          <Typography variant="body2" sx={{ color: "#bbf7d0", fontWeight: 700 }}>
-            Hozir {activeDiscounts.length} ta faol skidka bor.
+          <LocalOfferRoundedIcon sx={{ color: (theme) => theme.palette.mode === "light" ? "#059669" : "#86efac" }} />
+          <Typography variant="body2" sx={{ color: (theme) => theme.palette.mode === "light" ? "#047857" : "#bbf7d0", fontWeight: 700 }}>
+            {locale === "ru" ? `Сейчас есть ${activeDiscounts.length} активных скидок.` : `Hozir ${activeDiscounts.length} ta faol skidka bor.`}
           </Typography>
         </Stack>
       ) : null}

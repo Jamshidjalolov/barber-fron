@@ -92,6 +92,7 @@ export function BarberSettingsDialog({
   reminderMinutes,
 }: BarberSettingsDialogProps) {
   const theme = useTheme();
+  const isLight = theme.palette.mode === "light";
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [formValues, setFormValues] = useState<FormValues>(() => toFormValues(barber));
   const [error, setError] = useState("");
@@ -255,9 +256,10 @@ export function BarberSettingsDialog({
         sx: {
           borderRadius: fullScreen ? 0 : "28px",
           overflow: "hidden",
-          background:
-            "linear-gradient(180deg, rgba(18,18,31,0.96) 0%, rgba(9,10,20,0.94) 100%)",
-          border: fullScreen ? "none" : `1px solid ${alpha("#c4b5fd", 0.16)}`,
+          background: isLight
+            ? "linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(249,250,251,0.9) 100%)"
+            : "linear-gradient(180deg, rgba(18,18,31,0.96) 0%, rgba(9,10,20,0.94) 100%)",
+          border: fullScreen ? "none" : (isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.16)}`),
         },
       }}
     >
@@ -476,13 +478,15 @@ function Panel({
   title: string;
   children: ReactNode;
 }) {
+  const theme = useTheme();
+  const isLight = theme.palette.mode === "light";
   return (
     <Box
       sx={{
         p: 1.35,
         borderRadius: "22px",
-        backgroundColor: alpha("#ffffff", 0.05),
-        border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
+        backgroundColor: isLight ? alpha("#000000", 0.03) : alpha("#ffffff", 0.05),
+        border: isLight ? `1px solid ${alpha("#000000", 0.08)}` : `1px solid ${alpha("#c4b5fd", 0.12)}`,
       }}
     >
       <Stack direction="row" spacing={0.75} alignItems="center" sx={{ mb: 1.2 }}>
@@ -493,8 +497,8 @@ function Panel({
             borderRadius: "12px",
             display: "grid",
             placeItems: "center",
-            backgroundColor: alpha("#22d3ee", 0.12),
-            color: "#67e8f9",
+            backgroundColor: isLight ? alpha("#0ea5e9", 0.1) : alpha("#22d3ee", 0.12),
+            color: isLight ? "#0284c7" : "#67e8f9",
           }}
         >
           {icon}
