@@ -128,6 +128,10 @@ type NotificationItem = {
   smsPhone?: string;
   smsBody?: string;
 };
+type GeoPoint = {
+  latitude: number;
+  longitude: number;
+};
 
 const roleLabels: Record<ApiRole, string> = {
   customer: "Mijoz",
@@ -307,6 +311,42 @@ function priceForService(barber: ApiBarber, service: string) {
   }
   if (lowered.includes("soqol") || lowered.includes("beard")) return barber.price_beard;
   return barber.price_haircut;
+}
+
+function hasBarberCoordinates(barber?: ApiBarber | null) {
+  return typeof barber?.latitude === "number" && typeof barber?.longitude === "number";
+}
+
+function distanceFromCustomerKm(customerCoords: GeoPoint | null, barber: ApiBarber) {
+  if (!customerCoords || !hasBarberCoordinates(barber)) {
+    return null;
+  }
+
+  const toRad = (value: number) => (value * Math.PI) / 180;
+  const earthRadiusKm = 6371;
+  const dLat = toRad((barber.latitude ?? 0) - customerCoords.latitude);
+  const dLng = toRad((barber.longitude ?? 0) - customerCoords.longitude);
+  const lat1 = toRad(customerCoords.latitude);
+  const lat2 = toRad(barber.latitude ?? 0);
+  const value = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
+
+  return earthRadiusKm * 2 * Math.atan2(Math.sqrt(value), Math.sqrt(1 - value));
+}
+
+function barberStudioTitle(barber: ApiBarber) {
+  const firstName = barber.full_name.trim().split(/\s+/)[0] || "Barber";
+  return `${firstName} Barber Studio`;
+}
+
+function barberDistanceLabel(customerCoords: GeoPoint | null, barber: ApiBarber) {
+  const distance = distanceFromCustomerKm(customerCoords, barber);
+  if (typeof distance === "number") {
+    return `${distance.toFixed(1)} km`;
+  }
+  if (hasBarberCoordinates(barber)) {
+    return "Xaritada";
+  }
+  return "Tanlash";
 }
 
 function defaultBarberForm(): BarberFormPayload {
@@ -744,11 +784,15 @@ function HeaderIcon({
   );
 }
 
-function SectionHeaderRow({ title, action }: { title: string; action?: string }) {
+function SectionHeaderRow({ title, action, onAction }: { title: string; action?: string; onAction?: () => void }) {
   return (
     <View style={styles.sectionRow}>
       <Text style={styles.panelSectionTitle}>{title}</Text>
-      {action ? <Text style={styles.sectionAction}>{action}</Text> : null}
+      {action ? (
+        <Pressable onPress={onAction} disabled={!onAction} hitSlop={8}>
+          <Text style={styles.sectionAction}>{action}</Text>
+        </Pressable>
+      ) : null}
     </View>
   );
 }
@@ -942,6 +986,7 @@ export default function App() {
   const [initialLoading, setInitialLoading] = useState(false);
   const [busy, setBusy] = useState(false);
   const [selectedBarberId, setSelectedBarberId] = useState("");
+  const [customerCoords, setCustomerCoords] = useState<GeoPoint | null>(null);
   const [selectedService, setSelectedService] = useState("Soch olish");
   const [bookingDate, setBookingDate] = useState(getLocalDateInput());
   const [bookingTime, setBookingTime] = useState("10:00");
@@ -977,6 +1022,23 @@ export default function App() {
   const visibleTabs = getTabs(role).map((item) => ({ ...item, label: t(item.label) }));
   const loadedOnceRef = useRef(false);
   const selectedBarber = barbers.find((item) => item.id === selectedBarberId) ?? barbers[0];
+  const salonBarbers = useMemo(() => {
+    const items = [...barbers].sort((left, right) => {
+      if (left.id === selectedBarberId) return -1;
+      if (right.id === selectedBarberId) return 1;
+
+      const leftDistance = distanceFromCustomerKm(customerCoords, left);
+      const rightDistance = distanceFromCustomerKm(customerCoords, right);
+      if (typeof leftDistance === "number" && typeof rightDistance === "number") {
+        return leftDistance - rightDistance;
+      }
+      if (typeof leftDistance === "number") return -1;
+      if (typeof rightDistance === "number") return 1;
+      return right.rating - left.rating;
+    });
+
+    return items.slice(0, 4);
+  }, [barbers, customerCoords, selectedBarberId]);
 
   useEffect(() => {
     applyMobileTheme(themeMode);
@@ -1205,7 +1267,7 @@ export default function App() {
         barberName: selectedBarber.full_name,
         serviceName: selectedService,
         scheduledFor,
-        salon: selectedBarber.address || "CHOP CHOP Barbershop, Toshkent",
+        salon: selectedBarber.address || barberStudioTitle(selectedBarber),
         price: priceForService(selectedBarber, selectedService),
       });
       setNote("");
@@ -1417,6 +1479,45 @@ export default function App() {
       Alert.alert("Lokatsiya olindi", `${coords.latitude}, ${coords.longitude}`);
     } catch (error) {
       Alert.alert("Lokatsiya olinmadi", error instanceof Error ? error.message : "Qayta urinib koring.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function fillCustomerLocation() {
+    if (busy) return;
+    const geo = (globalThis as unknown as {
+      navigator?: {
+        geolocation?: {
+          getCurrentPosition: (
+            success: (position: { coords: { latitude: number; longitude: number } }) => void,
+            error?: (error: { message?: string }) => void,
+            options?: { enableHighAccuracy?: boolean; timeout?: number; maximumAge?: number },
+          ) => void;
+        };
+      };
+    }).navigator?.geolocation;
+
+    if (!geo) {
+      Alert.alert("Lokatsiya yo'q", "Bu qurilmada masofani aniqlash uchun geolokatsiya ishlamadi.");
+      return;
+    }
+
+    setBusy(true);
+    try {
+      const coords = await new Promise<GeoPoint>((resolve, reject) => {
+        geo.getCurrentPosition(
+          (position) => resolve({
+            latitude: Number(position.coords.latitude.toFixed(6)),
+            longitude: Number(position.coords.longitude.toFixed(6)),
+          }),
+          (error) => reject(new Error(error.message || "Lokatsiya olinmadi.")),
+          { enableHighAccuracy: true, timeout: 12000, maximumAge: 30000 },
+        );
+      });
+      setCustomerCoords(coords);
+    } catch (error) {
+      Alert.alert("Masofa hisoblanmadi", error instanceof Error ? error.message : "Qayta urinib ko'ring.");
     } finally {
       setBusy(false);
     }
@@ -1648,7 +1749,7 @@ export default function App() {
       <Card style={styles.locationRow}>
         <View style={styles.grow}>
           <Text style={styles.panelCardTitle}>Manzil</Text>
-          <Text style={styles.muted}>{selectedBarber?.address || "CHOP CHOP Barbershop, Toshkent"}</Text>
+          <Text style={styles.muted}>{selectedBarber ? selectedBarber.address || barberStudioTitle(selectedBarber) : "Barber tanlang"}</Text>
         </View>
         <Ionicons name="chevron-forward" size={21} color={colors.muted} />
       </Card>
@@ -1800,16 +1901,50 @@ export default function App() {
         ))}
       </ScrollView>
 
-      <SectionHeaderRow title="Salonlar" />
-      <Card style={styles.salonCard}>
-        <Image source={{ uri: SALON_IMAGE_URL }} style={styles.salonImage} />
-        <View style={styles.grow}>
-          <Text style={styles.cardTitle}>CHOP CHOP Barbershop</Text>
-          <Text style={styles.muted}>{selectedBarber?.address || "Toshkent, Chilonzor 7-kvartal"}</Text>
-          <Text style={styles.miniBarberRating}>★ 4.8 (120)</Text>
+      <SectionHeaderRow
+        title="Salonlar"
+        action={customerCoords ? "Masofa aniq" : "Masofani aniqlash"}
+        onAction={fillCustomerLocation}
+      />
+      {salonBarbers.length ? (
+        <View style={styles.salonList}>
+          {salonBarbers.map((barber) => (
+            <Pressable
+              key={barber.id}
+              onPress={() => {
+                setSelectedBarberId(barber.id);
+                setTab("book");
+              }}
+              style={({ pressed }) => [
+                styles.salonPressable,
+                selectedBarberId === barber.id && styles.salonCardActive,
+                pressed && styles.pressed,
+              ]}
+            >
+              <Card style={styles.salonCard}>
+                <Image source={{ uri: barber.media_url || barber.photo_url || SALON_IMAGE_URL }} style={styles.salonImage} />
+                <View style={styles.grow}>
+                  <Text style={styles.cardTitle}>{barberStudioTitle(barber)}</Text>
+                  <Text style={styles.muted} numberOfLines={1}>{barber.address || barber.specialty}</Text>
+                  <Text style={styles.miniBarberRating}>★ {barber.rating.toFixed(1)} ({barber.total_bookings})</Text>
+                </View>
+                <View style={styles.salonMeta}>
+                  <Text style={styles.distanceText}>{barberDistanceLabel(customerCoords, barber)}</Text>
+                  <Ionicons name="chevron-forward" size={18} color={colors.muted} />
+                </View>
+              </Card>
+            </Pressable>
+          ))}
         </View>
-        <Text style={styles.distanceText}>1.2 km</Text>
-      </Card>
+      ) : (
+        <Card style={styles.salonCard}>
+          <Image source={{ uri: SALON_IMAGE_URL }} style={styles.salonImage} />
+          <View style={styles.grow}>
+            <Text style={styles.cardTitle}>Salonlar yuklanmoqda</Text>
+            <Text style={styles.muted}>Backenddan real barberlar kelganda shu yerda chiqadi.</Text>
+          </View>
+        </Card>
+      )}
 
       {upcomingBookings.length ? (
         <>
@@ -3063,11 +3198,26 @@ function createAppStyles() {
     flexDirection: "row",
     gap: 12,
   },
+  salonList: {
+    gap: 10,
+  },
+  salonPressable: {
+    borderRadius: 12,
+    padding: 2,
+  },
+  salonCardActive: {
+    backgroundColor: "rgba(215,170,85,0.22)",
+  },
   salonImage: {
     backgroundColor: colors.haze,
     borderRadius: 10,
     height: 70,
     width: 86,
+  },
+  salonMeta: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 2,
   },
   mediaImage: {
     backgroundColor: colors.haze,
