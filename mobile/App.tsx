@@ -118,22 +118,7 @@ function LocationPickerMap({ latitude, longitude, onChange }: { latitude?: numbe
 }
 
 
-export const PreferencesContext = React.createContext<{
-  locale: "uz" | "ru";
-  t: (value: string) => string;
-  themeMode: "dark" | "light";
-}>({
-  locale: "uz",
-  t: (value) => value,
-  themeMode: "light",
-});
-
-export function usePreferences() {
-  return React.useContext(PreferencesContext);
-}
-type AuthMode = "login" | "register";
-
-type AuthMode = "login" | "register";
+  type AuthMode = "login" | "register";
 type TabKey = "home" | "book" | "barbers" | "bookings" | "discounts" | "profile";
 type AppLocale = "uz" | "ru";
 type BookingSuccess = {
