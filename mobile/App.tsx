@@ -1092,6 +1092,7 @@ export default function App() {
   const [timeGridWidth, setTimeGridWidth] = useState<number>(windowWidth - horizontalPadding);
   const chipWidth = Math.floor((timeGridWidth - chipGap * (chipCols - 1)) / chipCols);
   const visibleTabs = getTabs(role).map((item) => ({ ...item, label: t(item.label) }));
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
   const loadedOnceRef = useRef(false);
   const selectedBarber = barbers.find((item) => item.id === selectedBarberId) ?? barbers[0];
   const salonBarbers = useMemo(() => {
@@ -1117,6 +1118,33 @@ export default function App() {
     rebuildMobileStyles();
     setThemeRevision((current) => current + 1);
   }, [themeMode]);
+
+  function handleTouchStart(e: any) {
+    try {
+      touchStartRef.current = { x: e.nativeEvent.pageX, y: e.nativeEvent.pageY };
+    } catch (err) {
+      touchStartRef.current = null;
+    }
+  }
+
+  function handleTouchEnd(e: any) {
+    const start = touchStartRef.current;
+    if (!start) return;
+    const endX = e.nativeEvent.pageX;
+    const endY = e.nativeEvent.pageY;
+    const dx = endX - start.x;
+    const dy = endY - start.y;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+      const order = visibleTabs.map((v) => v.key);
+      const idx = order.indexOf(tab);
+      if (dx < 0 && idx < order.length - 1) {
+        setTab(order[idx + 1]);
+      } else if (dx > 0 && idx > 0) {
+        setTab(order[idx - 1]);
+      }
+    }
+    touchStartRef.current = null;
+  }
 
   const upcomingBookings = useMemo(
     () => [...bookings].filter((item) => item.status !== "completed" && item.status !== "rejected"),
@@ -2692,6 +2720,8 @@ export default function App() {
       <ScrollView
         contentContainerStyle={styles.scroll}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={loadData} tintColor={colors.cyan} />}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
       >
         {busy ? <LoadingCard label="Amal bajarilmoqda..." /> : null}
         {content}
@@ -4115,7 +4145,7 @@ function createAppStyles() {
     fontWeight: "900",
   },
   navTextActive: {
-    color: "#fff",
+    color: colors.goldDark,
   },
   pressed: {
     opacity: 0.82,
