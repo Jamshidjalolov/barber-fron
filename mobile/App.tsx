@@ -2427,6 +2427,8 @@ export default function App() {
         reminderMinutes={reminderMinutes}
       />
 
+      {role === "customer" ? renderDiscounts() : null}
+
       <Card style={styles.formCard}>
         <Text style={styles.cardTitle}>{t("Sozlamalar")}</Text>
         <Field
