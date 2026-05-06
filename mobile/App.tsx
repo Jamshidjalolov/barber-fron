@@ -147,6 +147,7 @@ export const PreferencesContext = React.createContext<{
 export function usePreferences() {
   return React.useContext(PreferencesContext);
 }
+type AuthMode = "login" | "register";
 
 type AuthMode = "login" | "register";
 type TabKey = "home" | "book" | "barbers" | "bookings" | "discounts" | "profile";
