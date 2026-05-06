@@ -4,22 +4,6 @@ import * as ImagePicker from "expo-image-picker";
 import {
   Alert,
   Image,
-  ImageBackground,
-  KeyboardAvoidingView,
-  Linking,
-  Modal,
-  Platform,
-  Pressable,
-  RefreshControl,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  useWindowDimensions,
-  PanResponder,
 } from "react-native";
 import {
   createBarber,
