@@ -1092,6 +1092,10 @@ export default function App() {
   const [timeGridWidth, setTimeGridWidth] = useState<number>(windowWidth - horizontalPadding);
   const chipWidth = Math.floor((timeGridWidth - chipGap * (chipCols - 1)) / chipCols);
   const visibleTabs = getTabs(role).map((item) => ({ ...item, label: t(item.label) }));
+  const tabRef = useRef(tab);
+  useEffect(() => { tabRef.current = tab; }, [tab]);
+  const visibleTabsRef = useRef(visibleTabs);
+  useEffect(() => { visibleTabsRef.current = visibleTabs; }, [visibleTabs]);
   // PanResponder will handle horizontal swipe gestures
   const panResponder = useRef(
     PanResponder.create({
@@ -1100,8 +1104,8 @@ export default function App() {
       onPanResponderRelease: (_, gestureState) => {
         const dx = gestureState.dx;
         if (Math.abs(dx) > 50) {
-          const order = visibleTabs.map((v) => v.key);
-          const idx = order.indexOf(tab);
+          const order = visibleTabsRef.current.map((v) => v.key);
+          const idx = order.indexOf(tabRef.current);
           if (dx < 0 && idx < order.length - 1) setTab(order[idx + 1]);
           else if (dx > 0 && idx > 0) setTab(order[idx - 1]);
         }
