@@ -2,26 +2,26 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import {
-  Alert,
-  Image,
-  ImageBackground,
-  KeyboardAvoidingView,
-  Linking,
-  Modal,
-  Platform,
-  Pressable,
-  RefreshControl,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  useWindowDimensions,
-} from "react-native";
-
-import {
+  import {
+    Alert,
+    Image,
+    ImageBackground,
+    KeyboardAvoidingView,
+    Linking,
+    Modal,
+    Platform,
+    Pressable,
+    RefreshControl,
+    SafeAreaView,
+    ScrollView,
+    StatusBar,
+    StyleSheet,
+    Text,
+    TextInput,
+    View,
+    useWindowDimensions,
+    PanResponder,
+  } from "react-native";
   createBarber,
   createBooking,
   createDiscount,
@@ -1092,7 +1092,22 @@ export default function App() {
   const [timeGridWidth, setTimeGridWidth] = useState<number>(windowWidth - horizontalPadding);
   const chipWidth = Math.floor((timeGridWidth - chipGap * (chipCols - 1)) / chipCols);
   const visibleTabs = getTabs(role).map((item) => ({ ...item, label: t(item.label) }));
-  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+  // PanResponder will handle horizontal swipe gestures
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: (_, gestureState) => Math.abs(gestureState.dx) > 10,
+      onPanResponderRelease: (_, gestureState) => {
+        const dx = gestureState.dx;
+        if (Math.abs(dx) > 50) {
+          const order = visibleTabs.map((v) => v.key);
+          const idx = order.indexOf(tab);
+          if (dx < 0 && idx < order.length - 1) setTab(order[idx + 1]);
+          else if (dx > 0 && idx > 0) setTab(order[idx - 1]);
+        }
+      },
+    })
+  ).current;
   const loadedOnceRef = useRef(false);
   const selectedBarber = barbers.find((item) => item.id === selectedBarberId) ?? barbers[0];
   const salonBarbers = useMemo(() => {
@@ -1119,32 +1134,7 @@ export default function App() {
     setThemeRevision((current) => current + 1);
   }, [themeMode]);
 
-  function handleTouchStart(e: any) {
-    try {
-      touchStartRef.current = { x: e.nativeEvent.pageX, y: e.nativeEvent.pageY };
-    } catch (err) {
-      touchStartRef.current = null;
-    }
-  }
-
-  function handleTouchEnd(e: any) {
-    const start = touchStartRef.current;
-    if (!start) return;
-    const endX = e.nativeEvent.pageX;
-    const endY = e.nativeEvent.pageY;
-    const dx = endX - start.x;
-    const dy = endY - start.y;
-    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
-      const order = visibleTabs.map((v) => v.key);
-      const idx = order.indexOf(tab);
-      if (dx < 0 && idx < order.length - 1) {
-        setTab(order[idx + 1]);
-      } else if (dx > 0 && idx > 0) {
-        setTab(order[idx - 1]);
-      }
-    }
-    touchStartRef.current = null;
-  }
+  
 
   const upcomingBookings = useMemo(
     () => [...bookings].filter((item) => item.status !== "completed" && item.status !== "rejected"),
@@ -2717,11 +2707,10 @@ export default function App() {
           badgeCount={showNotifications ? 0 : unreadNotificationCount}
         />
       </View>
+      <View style={{ flex: 1 }} {...panResponder.panHandlers}>
       <ScrollView
         contentContainerStyle={styles.scroll}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={loadData} tintColor={colors.cyan} />}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
       >
         {busy ? <LoadingCard label="Amal bajarilmoqda..." /> : null}
         {content}
