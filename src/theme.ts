@@ -8,7 +8,7 @@ const panel = "#11111d";
 
 export function createAppTheme(mode: "dark" | "light" = "dark") {
   const isLight = mode === "light";
-  const backgroundDefault = isLight ? "#f4f6f8" : ink;
+  const backgroundDefault = isLight ? "#f7f8fb" : ink;
   const backgroundPaper = isLight ? "#ffffff" : alpha(panel, 0.82);
   const textPrimary = isLight ? "#111827" : "#f8fafc";
   const textSecondary = isLight ? "#6b7280" : "#aab2c8";
@@ -98,7 +98,7 @@ export function createAppTheme(mode: "dark" | "light" = "dark") {
         body: {
           backgroundColor: backgroundDefault,
           backgroundImage: isLight
-            ? "none"
+            ? "radial-gradient(circle at 8% -8%, rgba(251,189,5,0.18), transparent 32%), radial-gradient(circle at 92% 0%, rgba(14,165,233,0.13), transparent 30%), linear-gradient(135deg, #f8fafc 0%, #f4f6fb 48%, #eef6ff 100%)"
             : "radial-gradient(circle at 12% -8%, rgba(139,92,246,0.32), transparent 32%), radial-gradient(circle at 92% 6%, rgba(34,211,238,0.18), transparent 30%), radial-gradient(circle at 50% 112%, rgba(246,200,95,0.14), transparent 35%), linear-gradient(135deg, #05050a 0%, #0b0714 36%, #12091f 62%, #07111d 100%)",
           backgroundAttachment: "fixed",
           minHeight: "100vh",
@@ -219,23 +219,23 @@ export function createAppTheme(mode: "dark" | "light" = "dark") {
           backgroundColor: isLight ? alpha("#ffffff", 0.96) : alpha("#0f1020", 0.82),
           transition: "box-shadow 180ms ease, border-color 180ms ease, background-color 180ms ease",
           "& .MuiOutlinedInput-notchedOutline": {
-            borderColor: alpha("#c4b5fd", 0.16),
+            borderColor: isLight ? alpha("#94a3b8", 0.24) : alpha("#c4b5fd", 0.16),
           },
           "&:hover .MuiOutlinedInput-notchedOutline": {
             borderColor: alpha(neonCyan, 0.36),
           },
           "&.Mui-focused": {
-            boxShadow: `0 0 0 4px ${alpha(neonPurple, 0.18)}`,
-            backgroundColor: alpha("#111827", 0.92),
+            boxShadow: `0 0 0 4px ${alpha(isLight ? "#fbbd05" : neonPurple, 0.18)}`,
+            backgroundColor: isLight ? "#ffffff" : alpha("#111827", 0.92),
           },
           "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-            borderColor: alpha(neonPurple, 0.62),
+            borderColor: alpha(isLight ? "#fbbd05" : neonPurple, 0.62),
           },
         },
         input: {
           color: textPrimary,
           "&::placeholder": {
-            color: alpha("#cbd5e1", 0.62),
+            color: isLight ? alpha("#64748b", 0.62) : alpha("#cbd5e1", 0.62),
             opacity: 1,
           },
         },
@@ -345,10 +345,10 @@ export function createAppTheme(mode: "dark" | "light" = "dark") {
     MuiSnackbarContent: {
       styleOverrides: {
         root: {
-          backgroundColor: alpha("#10101c", 0.92),
-          border: `1px solid ${alpha("#c4b5fd", 0.16)}`,
-          color: "#f8fafc",
-          boxShadow: "0 20px 50px rgba(0,0,0,0.36)",
+          backgroundColor: isLight ? alpha("#ffffff", 0.98) : alpha("#10101c", 0.92),
+          border: `1px solid ${isLight ? alpha("#94a3b8", 0.22) : alpha("#c4b5fd", 0.16)}`,
+          color: isLight ? "#0f172a" : "#f8fafc",
+          boxShadow: isLight ? "0 20px 50px rgba(15,23,42,0.12)" : "0 20px 50px rgba(0,0,0,0.36)",
         },
       },
     },
@@ -356,4 +356,4 @@ export function createAppTheme(mode: "dark" | "light" = "dark") {
   });
 }
 
-export const theme = createAppTheme("dark");
+export const theme = createAppTheme("light");

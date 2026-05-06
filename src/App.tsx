@@ -148,8 +148,10 @@ function LoadingScreen({ label }: { label: string }) {
         minHeight: "100vh",
         display: "grid",
         placeItems: "center",
-        background:
-          "radial-gradient(circle at 18% 10%, rgba(139,92,246,0.28), transparent 32%), radial-gradient(circle at 84% 12%, rgba(34,211,238,0.16), transparent 28%), #05050a",
+        background: (theme) =>
+          theme.palette.mode === "light"
+            ? "radial-gradient(circle at 18% 10%, rgba(251,189,5,0.18), transparent 32%), radial-gradient(circle at 84% 12%, rgba(14,165,233,0.13), transparent 28%), linear-gradient(135deg, #f8fafc 0%, #f4f6fb 52%, #eef6ff 100%)"
+            : "radial-gradient(circle at 18% 10%, rgba(139,92,246,0.28), transparent 32%), radial-gradient(circle at 84% 12%, rgba(34,211,238,0.16), transparent 28%), #05050a",
         px: 2,
       }}
     >
@@ -159,11 +161,16 @@ function LoadingScreen({ label }: { label: string }) {
         sx={{
           p: 3,
           borderRadius: "28px",
-          background:
-            "linear-gradient(180deg, rgba(18,18,31,0.88) 0%, rgba(10,11,22,0.78) 100%)",
+          background: (theme) =>
+            theme.palette.mode === "light"
+              ? "linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.94) 100%)"
+              : "linear-gradient(180deg, rgba(18,18,31,0.88) 0%, rgba(10,11,22,0.78) 100%)",
           border: (theme) => `1px solid ${theme.palette.divider}`,
-          boxShadow: "0 24px 70px rgba(0,0,0,0.38)",
-          backdropFilter: "blur(18px)",
+          boxShadow: (theme) =>
+            theme.palette.mode === "light"
+              ? "0 18px 50px rgba(15,23,42,0.1)"
+              : "0 24px 70px rgba(0,0,0,0.38)",
+          backdropFilter: (theme) => theme.palette.mode === "light" ? "none" : "blur(18px)",
         }}
       >
         <CircularProgress />

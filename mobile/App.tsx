@@ -44,7 +44,7 @@ import {
   updateBookingStatus,
   updateMyBarberSettings,
 } from "./src/api/client";
-import { Card, Field, LoadingCard, Pill, PrimaryButton, SectionTitle, Stat } from "./src/components/ui";
+import { Card, Field, LoadingCard, Pill, PrimaryButton, SectionTitle, Stat, rebuildUiStyles } from "./src/components/ui";
 import { applyMobileTheme, colors, MobileThemeMode, shadows } from "./src/theme/colors";
 import {
   ApiAvailabilityBooking,
@@ -102,7 +102,7 @@ export const PreferencesContext = React.createContext<{
 }>({
   locale: "uz",
   t: (value) => value,
-  themeMode: "dark",
+  themeMode: "light",
 });
 
 export function usePreferences() {
@@ -966,7 +966,7 @@ export default function App() {
   const [logoutModalOpen, setLogoutModalOpen] = useState(false);
   const [barberModalOpen, setBarberModalOpen] = useState(false);
   const [discountModalOpen, setDiscountModalOpen] = useState(false);
-  const [themeMode, setThemeMode] = useState<MobileThemeMode>("dark");
+  const [themeMode, setThemeMode] = useState<MobileThemeMode>("light");
   const [, setThemeRevision] = useState(0);
   const [locale, setLocale] = useState<AppLocale>("uz");
   const [telegramBotUsername, setTelegramBotUsername] = useState<string | null>(DEFAULT_TELEGRAM_BOT_USERNAME);
@@ -2549,6 +2549,7 @@ export default function App() {
 let styles = createAppStyles();
 
 function rebuildMobileStyles() {
+  rebuildUiStyles();
   styles = createAppStyles();
 }
 
@@ -2751,7 +2752,7 @@ function createAppStyles() {
     fontWeight: "800",
   },
   modalBackdrop: {
-    backgroundColor: "rgba(0,0,0,0.72)",
+    backgroundColor: colors.backdrop,
     flex: 1,
     justifyContent: "flex-end",
     padding: 14,
@@ -2972,7 +2973,7 @@ function createAppStyles() {
   },
   heroScrim: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.42)",
+    backgroundColor: colors.scrim,
   },
   customerHeroContent: {
     gap: 12,
@@ -3313,7 +3314,7 @@ function createAppStyles() {
     marginTop: 2,
   },
   profileHeroCard: {
-    backgroundColor: "rgba(14,18,22,0.96)",
+    backgroundColor: colors.darkPanel,
     borderColor: colors.lineStrong,
     gap: 14,
   },
@@ -3337,7 +3338,7 @@ function createAppStyles() {
     fontWeight: "900",
   },
   panelCard: {
-    backgroundColor: "rgba(20,24,29,0.96)",
+    backgroundColor: colors.surface,
     borderColor: colors.lineStrong,
     gap: 13,
   },
@@ -3420,7 +3421,7 @@ function createAppStyles() {
     marginTop: 10,
   },
   revenueCard: {
-    backgroundColor: "rgba(20,24,29,0.96)",
+    backgroundColor: colors.surface,
     borderColor: colors.lineStrong,
     gap: 10,
   },
@@ -3446,7 +3447,7 @@ function createAppStyles() {
   },
   quickAction: {
     alignItems: "center",
-    backgroundColor: "rgba(20,24,29,0.96)",
+    backgroundColor: colors.surface,
     borderColor: colors.line,
     borderRadius: 10,
     borderWidth: 1,
@@ -3464,7 +3465,7 @@ function createAppStyles() {
   },
   notificationCard: {
     alignItems: "center",
-    backgroundColor: "rgba(20,24,29,0.96)",
+    backgroundColor: colors.surface,
     borderColor: colors.line,
     borderRadius: 10,
     borderWidth: 1,
@@ -3779,7 +3780,7 @@ function createAppStyles() {
     justifyContent: "space-between",
   },
   progressTrack: {
-    backgroundColor: "rgba(255,255,255,0.07)",
+    backgroundColor: colors.progressTrack,
     borderRadius: 999,
     height: 9,
     overflow: "hidden",
@@ -3794,7 +3795,7 @@ function createAppStyles() {
     fontWeight: "900",
   },
   bottomNav: {
-    backgroundColor: "rgba(5,7,9,0.98)",
+    backgroundColor: colors.nav,
     borderColor: colors.line,
     borderTopWidth: 1,
     bottom: 0,

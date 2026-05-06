@@ -24,6 +24,7 @@ interface PreferencesValue {
 }
 
 const STORAGE_KEY = "barbershop-preferences";
+const PREFERENCES_VERSION = 2;
 
 const ruDictionary: Record<string, string> = {
   "Sozlamalar": "Настройки",
@@ -141,21 +142,22 @@ const ruDictionary: Record<string, string> = {
 
 function readStoredPreferences(): Pick<PreferencesValue, "themeMode" | "locale"> {
   if (typeof window === "undefined") {
-    return { themeMode: "dark", locale: "uz" };
+    return { themeMode: "light", locale: "uz" };
   }
 
   try {
     const parsed = JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "{}") as Partial<{
+      version: number;
       themeMode: AppThemeMode;
       locale: AppLocale;
     }>;
 
     return {
-      themeMode: parsed.themeMode === "light" ? "light" : "dark",
+      themeMode: parsed.version === PREFERENCES_VERSION && parsed.themeMode === "dark" ? "dark" : "light",
       locale: parsed.locale === "ru" ? "ru" : "uz",
     };
   } catch {
-    return { themeMode: "dark", locale: "uz" };
+    return { themeMode: "light", locale: "uz" };
   }
 }
 
@@ -171,7 +173,7 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ themeMode, locale }));
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ version: PREFERENCES_VERSION, themeMode, locale }));
     document.documentElement.dataset.theme = themeMode;
     document.documentElement.lang = locale === "ru" ? "ru" : "uz";
   }, [themeMode, locale]);

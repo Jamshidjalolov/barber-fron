@@ -36,9 +36,12 @@ export function BookingSuccessDialog({
         sx: {
           borderRadius: "28px",
           overflow: "hidden",
-          background:
-            "linear-gradient(180deg, rgba(18,18,31,0.96) 0%, rgba(9,10,20,0.94) 100%)",
-          border: `1px solid ${alpha("#c4b5fd", 0.16)}`,
+          background: (theme) =>
+            theme.palette.mode === "light"
+              ? "linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.96) 100%)"
+              : "linear-gradient(180deg, rgba(18,18,31,0.96) 0%, rgba(9,10,20,0.94) 100%)",
+          border: (theme) =>
+            `1px solid ${theme.palette.mode === "light" ? alpha("#94a3b8", 0.2) : alpha("#c4b5fd", 0.16)}`,
         },
       }}
     >
@@ -69,8 +72,9 @@ export function BookingSuccessDialog({
             sx={{
               p: 1.3,
               borderRadius: "18px",
-              backgroundColor: alpha("#ffffff", 0.06),
-              border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
+              backgroundColor: (theme) => theme.palette.mode === "light" ? alpha("#0f172a", 0.035) : alpha("#ffffff", 0.06),
+              border: (theme) =>
+                `1px solid ${theme.palette.mode === "light" ? alpha("#94a3b8", 0.16) : alpha("#c4b5fd", 0.12)}`,
             }}
           >
             <Stack spacing={0.45}>

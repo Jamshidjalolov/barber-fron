@@ -1,5 +1,5 @@
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
-import { alpha, AppBar, Box, Drawer, IconButton, Toolbar } from "@mui/material";
+import { alpha, AppBar, Box, Drawer, IconButton, Toolbar, useTheme } from "@mui/material";
 import { AnimatePresence, motion } from "framer-motion";
 import { ReactNode, useState } from "react";
 import { BrandLogo } from "../components/common/BrandLogo";
@@ -25,6 +25,8 @@ export function AdminLayout({
   children,
 }: AdminLayoutProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const theme = useTheme();
+  const isLight = theme.palette.mode === "light";
 
   const sidebarContent = (
     <Sidebar
@@ -61,14 +63,14 @@ export function AdminLayout({
         }}
       >
         <Toolbar sx={{ justifyContent: "space-between", px: 1.5 }}>
-          <BrandLogo badgeSize={42} tone="light" />
+          <BrandLogo badgeSize={42} tone={isLight ? "dark" : "light"} />
           <IconButton
             onClick={() => setMobileOpen(true)}
             sx={{
               width: 42,
               height: 42,
-              backgroundColor: alpha("#ffffff", 0.07),
-              border: `1px solid ${alpha("#c4b5fd", 0.14)}`,
+              backgroundColor: isLight ? alpha("#0f172a", 0.04) : alpha("#ffffff", 0.07),
+              border: `1px solid ${isLight ? alpha("#94a3b8", 0.16) : alpha("#c4b5fd", 0.14)}`,
             }}
           >
             <MenuRoundedIcon />

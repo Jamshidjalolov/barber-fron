@@ -129,8 +129,10 @@ export function CustomerSettingsPage({
         minHeight: "100vh",
         px: { xs: 1.5, sm: 2.5, lg: 3 },
         py: { xs: 1.8, sm: 2.5, lg: 3 },
-        background:
-          "radial-gradient(circle at 18% 4%, rgba(139,92,246,0.3), transparent 30%), radial-gradient(circle at 88% 10%, rgba(34,211,238,0.14), transparent 30%), linear-gradient(135deg, #05050a 0%, #10071d 54%, #06111e 100%)",
+        background: (theme) =>
+          theme.palette.mode === "light"
+            ? "radial-gradient(circle at 18% 4%, rgba(251,189,5,0.16), transparent 30%), radial-gradient(circle at 88% 10%, rgba(14,165,233,0.12), transparent 30%), linear-gradient(135deg, #f8fafc 0%, #f4f6fb 54%, #eef6ff 100%)"
+            : "radial-gradient(circle at 18% 4%, rgba(139,92,246,0.3), transparent 30%), radial-gradient(circle at 88% 10%, rgba(34,211,238,0.14), transparent 30%), linear-gradient(135deg, #05050a 0%, #10071d 54%, #06111e 100%)",
       }}
     >
       <Stack spacing={2.4} sx={{ width: "min(1080px, 100%)", mx: "auto" }}>
@@ -170,7 +172,7 @@ export function CustomerSettingsPage({
             sx={{
               borderRadius: "18px",
               bgcolor: error ? alpha("#ef4444", 0.12) : alpha("#34d399", 0.12),
-              color: "#f8fafc",
+              color: (theme) => theme.palette.mode === "light" ? "#0f172a" : "#f8fafc",
               border: `1px solid ${alpha(error ? "#ef4444" : "#34d399", 0.22)}`,
             }}
           >
@@ -242,7 +244,11 @@ export function CustomerSettingsPage({
                         variant="text"
                         disabled={uploading || saving}
                         onClick={() => setPhotoUrl("")}
-                        sx={{ borderRadius: "14px", textTransform: "none", color: "#c4b5fd" }}
+                        sx={{
+                          borderRadius: "14px",
+                          textTransform: "none",
+                          color: (theme) => theme.palette.mode === "light" ? "#7c3aed" : "#c4b5fd",
+                        }}
                       >
                         {t("Rasmni olib tashlash")}
                       </Button>
@@ -251,7 +257,7 @@ export function CustomerSettingsPage({
                 </Stack>
               </Stack>
 
-              <Box sx={{ height: 1, bgcolor: alpha("#c4b5fd", 0.12) }} />
+              <Box sx={{ height: 1, bgcolor: (theme) => theme.palette.mode === "light" ? alpha("#94a3b8", 0.18) : alpha("#c4b5fd", 0.12) }} />
 
               <Box
                 sx={{

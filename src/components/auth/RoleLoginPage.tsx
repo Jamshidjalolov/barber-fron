@@ -65,10 +65,10 @@ export function RoleLoginPage({
 
   const autofillSx = {
     "& input:-webkit-autofill, & input:-webkit-autofill:hover, & input:-webkit-autofill:focus": {
-      WebkitTextFillColor: "#f8fafc",
-      WebkitBoxShadow: "0 0 0 100px #121326 inset",
+      WebkitTextFillColor: (theme: any) => theme.palette.mode === "light" ? "#111827" : "#f8fafc",
+      WebkitBoxShadow: (theme: any) => theme.palette.mode === "light" ? "0 0 0 100px #f9fafb inset" : "0 0 0 100px #121326 inset",
       transition: "background-color 9999s ease-out 0s",
-      caretColor: "#f8fafc",
+      caretColor: (theme: any) => theme.palette.mode === "light" ? "#111827" : "#f8fafc",
       borderRadius: "14px",
     },
   };
@@ -183,9 +183,10 @@ export function RoleLoginPage({
                   size="small"
                   sx={{
                     borderRadius: "999px",
-                    backgroundColor: alpha("#ffffff", 0.06),
-                    color: "#cbd5e1",
-                    border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
+                    backgroundColor: (theme) => theme.palette.mode === "light" ? alpha("#0f172a", 0.04) : alpha("#ffffff", 0.06),
+                    color: (theme) => theme.palette.mode === "light" ? "#475569" : "#cbd5e1",
+                    border: (theme) =>
+                      `1px solid ${theme.palette.mode === "light" ? alpha("#94a3b8", 0.16) : alpha("#c4b5fd", 0.12)}`,
                     "& .MuiChip-label": {
                       px: 1,
                       fontWeight: 600,

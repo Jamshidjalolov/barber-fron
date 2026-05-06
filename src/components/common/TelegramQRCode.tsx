@@ -84,10 +84,12 @@ export function TelegramQRCode({
       sx={{
         p: compact ? 1.35 : 2,
         textAlign: compact ? "left" : "center",
-        bgcolor: "#f8fbff",
+        bgcolor: (theme) => theme.palette.mode === "light" ? "#f8fbff" : alpha("#0f172a", 0.72),
         borderRadius: compact ? "20px" : "24px",
-        border: `1px solid ${alpha("#111111", 0.06)}`,
-        boxShadow: "0 16px 36px rgba(17,17,17,0.05)",
+        border: (theme) =>
+          `1px solid ${theme.palette.mode === "light" ? alpha("#111111", 0.06) : alpha("#c4b5fd", 0.14)}`,
+        boxShadow: (theme) =>
+          theme.palette.mode === "light" ? "0 16px 36px rgba(17,17,17,0.05)" : "0 20px 48px rgba(0,0,0,0.24)",
       }}
     >
       <Stack spacing={compact ? 1 : 1.25} alignItems={compact ? "stretch" : "center"}>
@@ -114,7 +116,8 @@ export function TelegramQRCode({
               p: compact ? 0.85 : 1.4,
               bgcolor: "#ffffff",
               borderRadius: compact ? "16px" : "20px",
-              border: `1px solid ${alpha("#111111", 0.06)}`,
+              border: (theme) =>
+                `1px solid ${theme.palette.mode === "light" ? alpha("#111111", 0.06) : alpha("#c4b5fd", 0.14)}`,
               flexShrink: 0,
             }}
           >
@@ -175,8 +178,8 @@ export function TelegramQRCode({
               px: 1.1,
               py: 0.8,
               borderRadius: "14px",
-              backgroundColor: alpha("#111111", 0.04),
-              color: "#576074",
+              backgroundColor: (theme) => theme.palette.mode === "light" ? alpha("#111111", 0.04) : alpha("#ffffff", 0.06),
+              color: (theme) => theme.palette.mode === "light" ? "#576074" : "#cbd5e1",
             }}
           >
             <QrCode2RoundedIcon sx={{ fontSize: "1rem" }} />

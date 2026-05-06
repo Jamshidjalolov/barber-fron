@@ -138,7 +138,7 @@ export function Field({ label, ...props }: TextInputProps & { label: string }) {
     <View style={styles.fieldWrap}>
       <Text style={styles.fieldLabel}>{label}</Text>
       <TextInput
-        placeholderTextColor="rgba(203,213,225,0.55)"
+        placeholderTextColor={colors.muted}
         style={styles.input}
         autoCapitalize="none"
         {...props}
@@ -164,7 +164,14 @@ export function Stat({
   );
 }
 
-const styles = StyleSheet.create({
+let styles = createUiStyles();
+
+export function rebuildUiStyles() {
+  styles = createUiStyles();
+}
+
+function createUiStyles() {
+  return StyleSheet.create({
   card: {
     backgroundColor: colors.surface,
     borderColor: colors.line,
@@ -325,4 +332,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "800",
   },
-});
+  });
+}

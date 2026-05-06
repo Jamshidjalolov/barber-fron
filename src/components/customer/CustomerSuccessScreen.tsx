@@ -83,10 +83,16 @@ export function CustomerSuccessScreen({
         sx={{
           p: { xs: 1.3, md: 1.55 },
           borderRadius: "24px",
-          background:
-            "linear-gradient(180deg, rgba(19,20,34,0.86) 0%, rgba(10,11,22,0.72) 100%)",
-          border: `1px solid ${alpha("#c4b5fd", 0.14)}`,
-          boxShadow: "0 20px 50px rgba(0,0,0,0.24)",
+          background: (theme) =>
+            theme.palette.mode === "light"
+              ? "linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.9) 100%)"
+              : "linear-gradient(180deg, rgba(19,20,34,0.86) 0%, rgba(10,11,22,0.72) 100%)",
+          border: (theme) =>
+            `1px solid ${theme.palette.mode === "light" ? alpha("#94a3b8", 0.18) : alpha("#c4b5fd", 0.14)}`,
+          boxShadow: (theme) =>
+            theme.palette.mode === "light"
+              ? "0 18px 50px rgba(15,23,42,0.08)"
+              : "0 20px 50px rgba(0,0,0,0.24)",
         }}
       >
         <Box
@@ -103,7 +109,7 @@ export function CustomerSuccessScreen({
                 <Typography
                   variant="caption"
                   sx={{
-                    color: "#8d96ad",
+                    color: "text.secondary",
                     textTransform: "uppercase",
                     letterSpacing: 0,
                     fontWeight: 700,
@@ -122,14 +128,14 @@ export function CustomerSuccessScreen({
                 sx={{
                   height: 32,
                   borderRadius: "999px",
-                  backgroundColor: alpha("#34d399", 0.16),
-                  color: "#86efac",
+                  backgroundColor: (theme) => theme.palette.mode === "light" ? alpha("#10b981", 0.12) : alpha("#34d399", 0.16),
+                  color: (theme) => theme.palette.mode === "light" ? "#047857" : "#86efac",
                   "& .MuiChip-label": { px: 1.2, fontWeight: 700 },
                 }}
               />
             </Stack>
 
-            <Box sx={{ height: 1, bgcolor: alpha("#c4b5fd", 0.12) }} />
+            <Box sx={{ height: 1, bgcolor: (theme) => theme.palette.mode === "light" ? alpha("#94a3b8", 0.18) : alpha("#c4b5fd", 0.12) }} />
 
             <Stack direction="row" spacing={0.9} alignItems="center">
               <Avatar
@@ -162,11 +168,12 @@ export function CustomerSuccessScreen({
                 px: 1.05,
                 py: 0.95,
                 borderRadius: "16px",
-                backgroundColor: alpha("#ffffff", 0.06),
-                border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
+                backgroundColor: (theme) => theme.palette.mode === "light" ? alpha("#0f172a", 0.035) : alpha("#ffffff", 0.06),
+                border: (theme) =>
+                  `1px solid ${theme.palette.mode === "light" ? alpha("#94a3b8", 0.16) : alpha("#c4b5fd", 0.12)}`,
               }}
             >
-              <Typography variant="caption" sx={{ color: "#8d96ad" }}>
+              <Typography variant="caption" color="text.secondary">
                 Mijoz
               </Typography>
               <Typography variant="subtitle1" sx={{ mt: 0.18 }}>
@@ -220,12 +227,13 @@ function InfoPill({
         px: 1.05,
         py: 0.95,
         borderRadius: "16px",
-        backgroundColor: alpha("#ffffff", 0.06),
-        border: `1px solid ${alpha("#c4b5fd", 0.12)}`,
+        backgroundColor: (theme) => theme.palette.mode === "light" ? alpha("#0f172a", 0.035) : alpha("#ffffff", 0.06),
+        border: (theme) =>
+          `1px solid ${theme.palette.mode === "light" ? alpha("#94a3b8", 0.16) : alpha("#c4b5fd", 0.12)}`,
       }}
     >
-      <Box sx={{ color: "#8d96ad", display: "grid", placeItems: "center" }}>{icon}</Box>
-      <Typography variant="body2" sx={{ fontSize: "0.98rem", color: "#f8fafc" }}>
+      <Box sx={{ color: "text.secondary", display: "grid", placeItems: "center" }}>{icon}</Box>
+      <Typography variant="body2" sx={{ fontSize: "0.98rem", color: "text.primary" }}>
         {label}
       </Typography>
     </Stack>

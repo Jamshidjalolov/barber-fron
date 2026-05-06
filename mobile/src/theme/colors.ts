@@ -18,13 +18,17 @@ const darkColors = {
   blue: "#93c5fd",
   haze: "#1b2026",
   darkPanel: "#0b0e11",
+  backdrop: "rgba(0,0,0,0.72)",
+  scrim: "rgba(0,0,0,0.42)",
+  nav: "rgba(5,7,9,0.98)",
+  progressTrack: "rgba(255,255,255,0.07)",
 };
 
 const lightColors = {
-  ink: "#f4f6f8",
+  ink: "#f7f8fb",
   text: "#111827",
   muted: "#6b7280",
-  paper: "#ffffff",
+  paper: "#f7f8fb",
   surface: "#ffffff",
   surfaceStrong: "#f1f5f9",
   glass: "#ffffff",
@@ -40,14 +44,18 @@ const lightColors = {
   blue: "#3b82f6",
   haze: "#e2e8f0",
   darkPanel: "#ffffff",
+  backdrop: "rgba(15,23,42,0.28)",
+  scrim: "rgba(15,23,42,0.28)",
+  nav: "rgba(255,255,255,0.98)",
+  progressTrack: "rgba(15,23,42,0.08)",
 };
 
 export type MobileThemeMode = "dark" | "light";
-export const colors = { ...darkColors };
+export const colors = { ...lightColors };
 
 export const shadows = {
   soft: {
-    boxShadow: "0px 18px 34px rgba(0, 0, 0, 0.34)",
+    boxShadow: "0px 8px 24px rgba(15, 23, 42, 0.08)",
     elevation: 8,
   },
 };

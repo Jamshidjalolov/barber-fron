@@ -35,10 +35,16 @@ export function DeleteBookingDialog({
         sx: {
           borderRadius: "28px",
           width: "min(520px, calc(100% - 24px))",
-          background:
-            "linear-gradient(180deg, rgba(18,18,31,0.96) 0%, rgba(9,10,20,0.94) 100%)",
-          border: `1px solid ${alpha("#c4b5fd", 0.16)}`,
-          boxShadow: "0 34px 100px rgba(0,0,0,0.58)",
+          background: (theme) =>
+            theme.palette.mode === "light"
+              ? "linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.96) 100%)"
+              : "linear-gradient(180deg, rgba(18,18,31,0.96) 0%, rgba(9,10,20,0.94) 100%)",
+          border: (theme) =>
+            `1px solid ${theme.palette.mode === "light" ? alpha("#94a3b8", 0.2) : alpha("#c4b5fd", 0.16)}`,
+          boxShadow: (theme) =>
+            theme.palette.mode === "light"
+              ? "0 34px 100px rgba(15,23,42,0.14)"
+              : "0 34px 100px rgba(0,0,0,0.58)",
         },
       }}
     >
@@ -76,8 +82,10 @@ export function DeleteBookingDialog({
                 width: 42,
                 height: 42,
                 borderRadius: "14px",
-                border: `1px solid ${alpha("#c4b5fd", 0.14)}`,
-                backgroundColor: alpha("#ffffff", 0.06),
+                border: (theme) =>
+                  `1px solid ${theme.palette.mode === "light" ? alpha("#94a3b8", 0.2) : alpha("#c4b5fd", 0.14)}`,
+                backgroundColor: (theme) =>
+                  theme.palette.mode === "light" ? alpha("#0f172a", 0.04) : alpha("#ffffff", 0.06),
               }}
             >
               <CloseRoundedIcon fontSize="small" />
@@ -89,9 +97,12 @@ export function DeleteBookingDialog({
               sx={{
                 p: 2,
                 borderRadius: "20px",
-                background:
-                  "linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.04) 100%)",
-                border: `1px solid ${alpha("#c4b5fd", 0.14)}`,
+                background: (theme) =>
+                  theme.palette.mode === "light"
+                    ? "linear-gradient(180deg, rgba(248,250,252,0.98) 0%, rgba(241,245,249,0.88) 100%)"
+                    : "linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.04) 100%)",
+                border: (theme) =>
+                  `1px solid ${theme.palette.mode === "light" ? alpha("#94a3b8", 0.18) : alpha("#c4b5fd", 0.14)}`,
               }}
             >
               <Typography variant="subtitle1">{booking.customer}</Typography>
@@ -115,7 +126,7 @@ export function DeleteBookingDialog({
                 minHeight: 50,
                 borderRadius: "18px",
                 textTransform: "none",
-                borderColor: alpha("#c4b5fd", 0.18),
+                borderColor: (theme) => theme.palette.mode === "light" ? alpha("#94a3b8", 0.28) : alpha("#c4b5fd", 0.18),
                 color: "text.secondary",
               }}
             >

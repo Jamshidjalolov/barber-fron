@@ -42,8 +42,13 @@ export function AdminSettingsPage({
             theme.palette.mode === "dark"
               ? "linear-gradient(135deg, rgba(18,18,31,0.9) 0%, rgba(8,10,20,0.76) 100%)"
               : "linear-gradient(135deg, rgba(255,255,255,0.96) 0%, rgba(248,250,252,0.9) 100%)",
-          border: `1px solid ${alpha("#22d3ee", 0.16)}`,
-          boxShadow: "0 24px 70px rgba(0,0,0,0.26)",
+          border: (theme) =>
+            `1px solid ${theme.palette.mode === "light" ? alpha("#0ea5e9", 0.16) : alpha("#22d3ee", 0.16)}`,
+          boxShadow: (theme) =>
+            theme.palette.mode === "light"
+              ? "0 18px 50px rgba(15,23,42,0.08)"
+              : "0 24px 70px rgba(0,0,0,0.26)",
+          backdropFilter: (theme) => theme.palette.mode === "light" ? "none" : "blur(20px)",
         }}
       >
         <Stack spacing={1.35}>

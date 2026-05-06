@@ -415,12 +415,12 @@ export function CustomerNotificationScreen({
             minHeight: 54,
             borderRadius: "18px",
             fontSize: "1rem",
-            color: "#fff",
+            color: (theme) => theme.palette.mode === "light" ? "#475569" : "#fff",
             opacity: 1,
-            backgroundColor: "#0f0f0f",
+            backgroundColor: (theme) => theme.palette.mode === "light" ? alpha("#94a3b8", 0.18) : "#0f0f0f",
             "&.Mui-disabled": {
-              color: "#fff",
-              backgroundColor: "#0f0f0f",
+              color: (theme) => theme.palette.mode === "light" ? "#475569" : "#fff",
+              backgroundColor: (theme) => theme.palette.mode === "light" ? alpha("#94a3b8", 0.18) : "#0f0f0f",
               opacity: 0.92,
             },
           }}
