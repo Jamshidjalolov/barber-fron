@@ -1072,8 +1072,9 @@ export default function App() {
   const { width: windowWidth } = useWindowDimensions();
   const chipCols = 4;
   const chipGap = 10; // matches styles.timeGrid gap
-  const horizontalPadding = 24; // approximate container horizontal padding
-  const chipWidth = Math.floor((windowWidth - horizontalPadding - chipGap * (chipCols - 1)) / chipCols);
+  const horizontalPadding = 16 * 2; // contentContainerStyle paddingHorizontal * 2
+  const [timeGridWidth, setTimeGridWidth] = useState<number>(windowWidth - horizontalPadding);
+  const chipWidth = Math.floor((timeGridWidth - chipGap * (chipCols - 1)) / chipCols);
   const visibleTabs = getTabs(role).map((item) => ({ ...item, label: t(item.label) }));
   const loadedOnceRef = useRef(false);
   const selectedBarber = barbers.find((item) => item.id === selectedBarberId) ?? barbers[0];
@@ -1757,7 +1758,7 @@ export default function App() {
 
       <View style={styles.stack}>
         <Text style={styles.panelCardTitle}>Vaqt tanlang</Text>
-        <View style={styles.timeGrid}>
+        <View style={styles.timeGrid} onLayout={(e) => setTimeGridWidth(e.nativeEvent.layout.width)}>
           {buildTimeSlots(9, 16).map((slot) => {
             const booked = bookedSlots.has(slot);
             const expired = isPastLocalSlot(bookingDate, slot);
