@@ -404,7 +404,7 @@ function getTabs(role: ApiRole): Array<{ key: TabKey; label: string }> {
   return [
     { key: "home", label: "Bosh" },
     { key: "barbers", label: "Barber" },
-    { key: "bookings", label: "Navbat" },
+    // bookings removed from admin mobile panel per request
     { key: "profile", label: "Admin" },
   ];
 }
@@ -2729,35 +2729,7 @@ export default function App() {
         </Card>
       ) : null}
 
-      {role === "admin" ? (
-        <View style={styles.stack}>
-          <Card style={styles.analyticsCard}>
-            <Text style={styles.cardTitle}>Admin analytics</Text>
-            <View style={styles.statsRow}>
-              <Stat label="Barber" value={barbers.length} tone="gold" />
-              <Stat label="Mijoz" value={uniqueClients} tone="green" />
-              <Stat label="Bron" value={bookings.length} />
-            </View>
-            <View style={styles.progressList}>
-              {(["pending", "accepted", "in_service", "completed", "rejected"] as ApiBookingStatus[]).map((status) => {
-                const count = bookings.filter((booking) => booking.status === status).length;
-                const width = (bookings.length ? `${Math.max(8, Math.round((count / bookings.length) * 100))}%` : "8%") as `${number}%`;
-                return (
-                  <View key={status} style={styles.progressItem}>
-                    <View style={styles.rowBetween}>
-                      <Text style={styles.muted}>{statusLabel(status)}</Text>
-                      <Text style={styles.progressValue}>{count}</Text>
-                    </View>
-                    <View style={styles.progressTrack}>
-                      <View style={[styles.progressFill, { width, backgroundColor: statusTone(status) }]} />
-                    </View>
-                  </View>
-                );
-              })}
-            </View>
-          </Card>
-        </View>
-      ) : null}
+      {/* Admin bookings analytics removed per request */}
 
       <Card style={styles.profileCard}>
         <Text style={styles.cardTitle}>Hisob</Text>
