@@ -116,7 +116,6 @@ const ruDictionary: Record<string, string> = {
   "Barber": "Барбер",
   "Bronlar": "Записи",
   "Daromad": "Доход",
-  "Reyting": "Рейтинг",
   "Xizmat": "Услуга",
   "Vaqt": "Время",
   "Narx": "Цена",
