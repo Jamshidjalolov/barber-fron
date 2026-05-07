@@ -1,6 +1,7 @@
 import AddPhotoAlternateRoundedIcon from "@mui/icons-material/AddPhotoAlternateRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import FmdGoodRoundedIcon from "@mui/icons-material/FmdGoodRounded";
+import { PreferencesPanel, usePreferences } from "../../lib/preferences";
 import MyLocationRoundedIcon from "@mui/icons-material/MyLocationRounded";
 import OndemandVideoRoundedIcon from "@mui/icons-material/OndemandVideoRounded";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
@@ -23,7 +24,6 @@ import {
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { ChangeEvent, FormEvent, ReactNode, useEffect, useState } from "react";
-import { PreferencesPanel } from "../../lib/preferences";
 import { BarberProfile, BarberSettingsPayload } from "../../types";
 import { TelegramQRCode } from "../common/TelegramQRCode";
 import { BarberLocationPickerMap } from "../maps/BarberLocationPickerMap";
@@ -91,6 +91,7 @@ export function BarberSettingsDialog({
   telegramBotUsername,
   reminderMinutes,
 }: BarberSettingsDialogProps) {
+  const { t } = usePreferences();
   const theme = useTheme();
   const isLight = theme.palette.mode === "light";
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -266,9 +267,9 @@ export function BarberSettingsDialog({
       <DialogTitle sx={{ px: { xs: 2.2, md: 2.6 }, py: { xs: 1.8, md: 2.1 } }}>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
           <Box>
-            <Typography variant="h5">Ish sozlamalari</Typography>
+            <Typography variant="h5">{t("Ish sozlamalari")}</Typography>
             <Typography variant="body2" color="text.primary">
-              Ish vaqti, narxlar va lokatsiyani shu yerda boshqaring.
+              {t("Ish vaqti, narxlar va lokatsiyani shu yerda boshqaring.")}
             </Typography>
           </Box>
           <IconButton onClick={onClose}>
@@ -284,7 +285,7 @@ export function BarberSettingsDialog({
           {telegramBotUsername && barber.userId ? (
             <Panel
               icon={<ScheduleRoundedIcon sx={{ fontSize: "1rem" }} />}
-              title="Telegram bot"
+              title={t("Telegram bot")}
             >
               <TelegramQRCode
                 botUsername={telegramBotUsername}
@@ -294,11 +295,11 @@ export function BarberSettingsDialog({
                 compact
                 linked={Boolean(barber.telegramConnected)}
                 chatId={barber.telegramChatId}
-                title={barber.telegramConnected ? "Telegram sozlamalari" : "Telegram botni ulash"}
+                title={barber.telegramConnected ? t("Telegram sozlamalari") : t("Telegram botni ulash")}
                 description={
                   barber.telegramConnected
-                    ? "Yangi bronlar, qabul/rad/tugatish tugmalari va eslatmalar shu botga keladi."
-                    : `Start bosing. Navbatlar va ${reminderMinutes} daqiqa oldingi eslatmalar shu yerga keladi.`
+                    ? t("Yangi bronlar, qabul/rad/tugatish tugmalari va eslatmalar shu botga keladi.")
+                    : t(`Start bosing. Navbatlar va ${reminderMinutes} daqiqa oldingi eslatmalar shu yerga keladi.`)
                 }
               />
             </Panel>
@@ -306,7 +307,7 @@ export function BarberSettingsDialog({
 
           <Panel
             icon={<PersonRoundedIcon sx={{ fontSize: "1rem" }} />}
-            title="Profil ko'rinishi"
+            title={t("Profil ko'rinishi")}
           >
             <Stack spacing={1.2}>
               <Stack direction={{ xs: "column", sm: "row" }} spacing={1.2} alignItems={{ xs: "stretch", sm: "center" }}>
@@ -331,7 +332,7 @@ export function BarberSettingsDialog({
                     startIcon={<AddPhotoAlternateRoundedIcon />}
                     sx={{ minHeight: 46, borderRadius: "14px", textTransform: "none" }}
                   >
-                    {uploadingField === "photoUrl" ? "Rasm yuklanmoqda..." : formValues.photoUrl ? "Rasmni almashtirish" : "Rasm tanlash"}
+                    {uploadingField === "photoUrl" ? t("Rasm yuklanmoqda...") : formValues.photoUrl ? t("Rasmni almashtirish") : t("Rasm tanlash")}
                     <Box
                       component="input"
                       type="file"
@@ -347,7 +348,7 @@ export function BarberSettingsDialog({
                     startIcon={<OndemandVideoRoundedIcon />}
                     sx={{ minHeight: 46, borderRadius: "14px", textTransform: "none" }}
                   >
-                    {uploadingField === "mediaUrl" ? "Media yuklanmoqda..." : formValues.mediaUrl ? "Mediani almashtirish" : "Video/Rasm tanlash"}
+                    {uploadingField === "mediaUrl" ? t("Media yuklanmoqda...") : formValues.mediaUrl ? t("Mediani almashtirish") : t("Video/Rasm tanlash")}
                     <Box
                       component="input"
                       type="file"
@@ -359,16 +360,16 @@ export function BarberSettingsDialog({
                 </Stack>
               </Stack>
               <GridFields>
-                <Field label="Ism familya" value={formValues.fullName} onChange={(value) => setFormValues((current) => ({ ...current, fullName: value }))} placeholder="Ism familya" />
-                <Field label="Username" value={formValues.username} onChange={(value) => setFormValues((current) => ({ ...current, username: value }))} placeholder="username" />
-                <Field label="Mutaxassislik" value={formValues.specialty} onChange={(value) => setFormValues((current) => ({ ...current, specialty: value }))} placeholder="Fade master" />
-                <Field label="Reyting" type="number" value={formValues.rating} onChange={(value) => setFormValues((current) => ({ ...current, rating: value }))} placeholder="4.8" />
-                <Field label="Tajriba yili" type="number" value={formValues.yearsExp} onChange={(value) => setFormValues((current) => ({ ...current, yearsExp: value }))} placeholder="3" />
+                <Field label={t("Ism familya")} value={formValues.fullName} onChange={(value) => setFormValues((current) => ({ ...current, fullName: value }))} placeholder={t("Ism familya")} />
+                <Field label={t("Username")} value={formValues.username} onChange={(value) => setFormValues((current) => ({ ...current, username: value }))} placeholder={t("username")} />
+                <Field label={t("Mutaxassislik")} value={formValues.specialty} onChange={(value) => setFormValues((current) => ({ ...current, specialty: value }))} placeholder={t("Fade master")} />
+                <Field label={t("Reyting")} type="number" value={formValues.rating} onChange={(value) => setFormValues((current) => ({ ...current, rating: value }))} placeholder="4.8" />
+                <Field label={t("Tajriba yili")} type="number" value={formValues.yearsExp} onChange={(value) => setFormValues((current) => ({ ...current, yearsExp: value }))} placeholder="3" />
               </GridFields>
-              <Field label="Bio" value={formValues.bio} onChange={(value) => setFormValues((current) => ({ ...current, bio: value }))} placeholder="Mijozlar ko'radigan tavsif" />
+              <Field label={t("Bio")} value={formValues.bio} onChange={(value) => setFormValues((current) => ({ ...current, bio: value }))} placeholder={t("Mijozlar ko'radigan tavsif")} />
               {formValues.mediaUrl ? (
                 <Typography variant="caption" color="text.secondary">
-                  Media yuklandi va mijozlar barber kartasida ko'radi.
+                  {t("Media yuklandi va mijozlar barber kartasida ko'radi.")}
                 </Typography>
               ) : null}
             </Stack>
@@ -376,35 +377,35 @@ export function BarberSettingsDialog({
 
           <Panel
           icon={<ScheduleRoundedIcon sx={{ fontSize: "1rem" }} />}
-          title="Ish vaqti"
+            title={t("Ish vaqti")}
         >
             <GridFields>
-              <Field label="Boshlanish" type="time" value={formValues.workStartTime} onChange={(value) => setFormValues((current) => ({ ...current, workStartTime: value }))} />
-              <Field label="Tugash" type="time" value={formValues.workEndTime} onChange={(value) => setFormValues((current) => ({ ...current, workEndTime: value }))} />
+                <Field label={t("Boshlanish")} type="time" value={formValues.workStartTime} onChange={(value) => setFormValues((current) => ({ ...current, workStartTime: value }))} />
+                <Field label={t("Tugash")} type="time" value={formValues.workEndTime} onChange={(value) => setFormValues((current) => ({ ...current, workEndTime: value }))} />
             </GridFields>
           </Panel>
 
           <Panel
             icon={<SellRoundedIcon sx={{ fontSize: "1rem" }} />}
-            title="Xizmat narxlari"
+            title={t("Xizmat narxlari")}
           >
             <GridFields>
-              <Field label="Soch olish" type="number" value={formValues.priceHaircut} onChange={(value) => setFormValues((current) => ({ ...current, priceHaircut: value }))} />
-              <Field label="Fade qirqim" type="number" value={formValues.priceFade} onChange={(value) => setFormValues((current) => ({ ...current, priceFade: value }))} />
-              <Field label="Soch + soqol" type="number" value={formValues.priceHairBeard} onChange={(value) => setFormValues((current) => ({ ...current, priceHairBeard: value }))} />
-              <Field label="Premium paket" type="number" value={formValues.pricePremium} onChange={(value) => setFormValues((current) => ({ ...current, pricePremium: value }))} />
-              <Field label="Soqol dizayni" type="number" value={formValues.priceBeard} onChange={(value) => setFormValues((current) => ({ ...current, priceBeard: value }))} />
+              <Field label={t("Soch olish")} type="number" value={formValues.priceHaircut} onChange={(value) => setFormValues((current) => ({ ...current, priceHaircut: value }))} />
+              <Field label={t("Fade qirqim")} type="number" value={formValues.priceFade} onChange={(value) => setFormValues((current) => ({ ...current, priceFade: value }))} />
+              <Field label={t("Soch + soqol")} type="number" value={formValues.priceHairBeard} onChange={(value) => setFormValues((current) => ({ ...current, priceHairBeard: value }))} />
+              <Field label={t("Premium paket")} type="number" value={formValues.pricePremium} onChange={(value) => setFormValues((current) => ({ ...current, pricePremium: value }))} />
+              <Field label={t("Soqol dizayni")} type="number" value={formValues.priceBeard} onChange={(value) => setFormValues((current) => ({ ...current, priceBeard: value }))} />
             </GridFields>
           </Panel>
 
           <Panel
             icon={<FmdGoodRoundedIcon sx={{ fontSize: "1rem" }} />}
-            title="Lokatsiya"
+            title={t("Lokatsiya")}
           >
             <Stack spacing={1.2}>
               <Stack direction={{ xs: "column", sm: "row" }} spacing={1} justifyContent="space-between">
                 <Typography variant="body2" color="text.primary">
-                  Xarita ustidan nuqtani bosing yoki markerni suring.
+                  {t("Xarita ustidan nuqtani bosing yoki markerni suring.")}
                 </Typography>
                 <Button
                   variant="outlined"
@@ -413,7 +414,7 @@ export function BarberSettingsDialog({
                   startIcon={<MyLocationRoundedIcon />}
                   sx={{ alignSelf: { xs: "stretch", sm: "center" }, borderRadius: "14px", textTransform: "none" }}
                 >
-                  {locating ? "Joy olinmoqda..." : "Mening joyim"}
+                  {locating ? t("Joy olinmoqda...") : t("Mening joyim")}
                 </Button>
               </Stack>
 
@@ -432,17 +433,17 @@ export function BarberSettingsDialog({
 
               <GridFields columns={{ xs: "1fr", md: "repeat(3, minmax(0, 1fr))" }}>
               <Box sx={{ gridColumn: { md: "1 / -1" } }}>
-                <Field label="Manzil" value={formValues.address} onChange={(value) => setFormValues((current) => ({ ...current, address: value }))} placeholder="Masalan, Chilonzor 5-kvartal" />
+                <Field label={t("Manzil")} value={formValues.address} onChange={(value) => setFormValues((current) => ({ ...current, address: value }))} placeholder={t("Masalan, Chilonzor 5-kvartal")} />
               </Box>
-              <Field label="Latitude" type="number" value={formValues.latitude} onChange={(value) => setFormValues((current) => ({ ...current, latitude: value }))} placeholder="41.2995" />
-              <Field label="Longitude" type="number" value={formValues.longitude} onChange={(value) => setFormValues((current) => ({ ...current, longitude: value }))} placeholder="69.2401" />
+              <Field label={t("Latitude")} type="number" value={formValues.latitude} onChange={(value) => setFormValues((current) => ({ ...current, latitude: value }))} placeholder="41.2995" />
+              <Field label={t("Longitude")} type="number" value={formValues.longitude} onChange={(value) => setFormValues((current) => ({ ...current, longitude: value }))} placeholder="69.2401" />
               </GridFields>
             </Stack>
           </Panel>
 
           {error ? (
             <Alert severity="error" sx={{ borderRadius: "16px" }}>
-              {error}
+              {t(error) ?? error}
             </Alert>
           ) : null}
 
@@ -452,7 +453,7 @@ export function BarberSettingsDialog({
               onClick={onClose}
               sx={{ minWidth: 160, minHeight: 48, borderRadius: "16px", textTransform: "none" }}
             >
-              Bekor qilish
+              {t("Bekor qilish")}
             </Button>
             <Button
               type="submit"
@@ -460,7 +461,7 @@ export function BarberSettingsDialog({
               disabled={saving}
               sx={{ minWidth: 220, minHeight: 48, borderRadius: "16px", textTransform: "none", fontWeight: 700 }}
             >
-              {saving ? "Saqlanmoqda..." : "Saqlash"}
+              {saving ? t("Saqlanmoqda...") : t("Saqlash")}
             </Button>
           </Stack>
         </Stack>

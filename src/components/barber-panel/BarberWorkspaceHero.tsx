@@ -6,6 +6,7 @@ import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import RadioButtonCheckedRoundedIcon from "@mui/icons-material/RadioButtonCheckedRounded";
 import { alpha, Avatar, Badge, Box, Button, Chip, IconButton, Stack, Typography } from "@mui/material";
+import { usePreferences } from "../../lib/preferences";
 import { motion } from "framer-motion";
 import { BarberProfile, BookingItem } from "../../types";
 
@@ -30,6 +31,7 @@ export function BarberWorkspaceHero({
   onOpenSettings,
   onLogout,
 }: BarberWorkspaceHeroProps) {
+  const { t } = usePreferences();
   return (
     <Box
       component={motion.div}
@@ -93,7 +95,7 @@ export function BarberWorkspaceHero({
 
               <Box>
                 <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.84rem" }}>
-                  Ish paneli
+                  {t("Ish paneli")}
                 </Typography>
                 <Typography
                   variant="h3"
@@ -128,9 +130,7 @@ export function BarberWorkspaceHero({
                   },
                 }}
               >
-                {activeDiscountCount > 0
-                  ? `Skidka ${activeDiscountCount}`
-                  : "Skidka"}
+                {activeDiscountCount > 0 ? `${t("Skidka")} ${activeDiscountCount}` : t("Skidka")}
               </Button>
               <IconButton
                 onClick={onOpenSettings}
@@ -150,7 +150,7 @@ export function BarberWorkspaceHero({
               </IconButton>
               <Chip
                 icon={<RadioButtonCheckedRoundedIcon sx={{ fontSize: "0.8rem !important" }} />}
-                label="Realtime"
+                label={t("Realtime")}
                 size="small"
                 sx={{
                   height: 31,
@@ -221,7 +221,7 @@ export function BarberWorkspaceHero({
                 </Box>
               </Badge>
               <Typography variant="body2" color="text.secondary">
-                Kutilayotganlar
+                {t("Kutilayotganlar")}
               </Typography>
             </Stack>
           </Stack>
@@ -237,7 +237,7 @@ export function BarberWorkspaceHero({
           }}
         >
             <Typography variant="subtitle2" sx={{ color: "#8d95a8", mb: 0.65 }}>
-              Oxirgi bron
+              {t("Oxirgi bron")}
             </Typography>
 
             <Stack direction="row" spacing={0.7} alignItems="center" sx={{ mb: 1 }}>
@@ -290,12 +290,12 @@ export function BarberWorkspaceHero({
               </Stack>
 
               <Typography variant="body2" color="text.secondary">
-                Jadvalda ko'rinadi
+                {t("Jadvalda ko'rinadi")}
               </Typography>
             </Stack>
           ) : (
             <Typography variant="body2" color="text.secondary">
-              Hozircha yangi bron yo'q
+              {t("Hozircha yangi bron yo'q")}
             </Typography>
           )}
         </Box>

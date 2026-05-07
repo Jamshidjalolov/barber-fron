@@ -4,6 +4,26 @@ import * as ImagePicker from "expo-image-picker";
 import {
   Alert,
   Image,
+  Platform,
+  View,
+  Text,
+  Linking,
+  StatusBar,
+  TextInput,
+  SafeAreaView,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Modal,
+  Animated,
+  PanResponder,
+  Keyboard,
+  ScrollView,
+  Pressable,
+  ActivityIndicator,
+  RefreshControl,
+  FlatList,
+  ImageBackground,
+  useWindowDimensions,
 } from "react-native";
 import {
   createBarber,
@@ -263,6 +283,93 @@ const ruText: Record<string, string> = {
   "Skidka": "Скидки",
 };
 
+// Merge additional web translations to cover more UI strings (keeps mobile translations comprehensive)
+const extraRu: Record<string, string> = {
+  "Foydalanuvchi paneli": "Панель клиента",
+  "Admin paneli": "Панель администратора",
+  "Umumiy profil": "Общий профиль",
+  "Telegram bot": "Telegram бот",
+  "Bronlarga qaytish": "Вернуться к бронированиям",
+  "Saqlanmoqda...": "Сохраняется...",
+  "Rasm yuklash": "Загрузить фото",
+  "Rasmni olib tashlash": "Удалить фото",
+  "To'liq ism": "Полное имя",
+  "Telefon raqami": "Номер телефона",
+  "Yangi parol": "Новый пароль",
+  "Botni ulash": "Подключить бот",
+  "Telegram ulangan": "Telegram подключен",
+  "Bosh sahifa": "Главная",
+  "Barberlar": "Барберы",
+  "Navbatlar": "Записи",
+  "Online": "Онлайн",
+  "Kunduzgi": "Дневной",
+  "Tungi": "Ночной",
+  "Bugungi ishlar qisqacha": "Кратко о сегодняшних делах",
+  "Jami daromad": "Общий доход",
+  "Jami bronlar": "Всего записей",
+  "Jami mijozlar": "Всего клиентов",
+  "Jami barberlar": "Всего барберов",
+  "Daromad tahlili": "Обзор дохода",
+  "Ushbu oy": "Этот месяц",
+  "Yangi bronlar": "Новые записи",
+  "Barchasini ko'rish": "Смотреть все",
+  "Eng ko'p xizmatlar": "Популярные услуги",
+  "Barberlar natijasi": "Результаты барберов",
+  "Kelgusi bronlar": "Предстоящие записи",
+  "Bronlar": "Записи",
+  "Daromad": "Доход",
+  "Reyting": "Рейтинг",
+  "Xizmat": "Услуга",
+  "Vaqt": "Время",
+  "Narx": "Цена",
+  "Holat": "Статус",
+  "Harakat": "Действие",
+  "Hozircha ma'lumot yo'q": "Пока нет данных",
+  "Barberlar holati": "Статус барберов",
+  "Kim nechta mijozga xizmat qildi": "Кто скольким клиентам оказал услугу",
+  "oldinda": "впереди",
+  "Hozircha yo'q": "Пока нет",
+  "ta xizmat tugadi": "услуг завершено",
+  "ta tugagan": "завершено",
+  "ta jami": "всего",
+  "So'nggi navbatlar": "Последние записи",
+  "Bugungi eng yaqin 6 ta navbat": "Ближайшие 6 записей на сегодня",
+  "Barchasi": "Все",
+  "Bugungi navbatlar": "Сегодняшние записи",
+  "Har bir barberning bugungi navbatlari": "Сегодняшние записи каждого барбера",
+  "ta navbat": "записей",
+  "tugagan": "завершено",
+  "kutilmoqda": "ожидается",
+  "Tugagan navbatlar": "Завершенные записи",
+  "ta": "шт",
+  "Buyurtma": "Заказ",
+  "To'lov": "Оплата",
+  "Jami navbatlar": "Всего записей",
+  "Ishdagi barberlar": "Барберы на смене",
+  "Tugagan xizmatlar": "Завершенные услуги",
+  "Navbat kutayotganlar": "Ожидающие в очереди",
+  "Bugun navbat yo'q": "Сегодня нет записей",
+  "Hali xizmat tugamagan": "Услуги еще не завершены",
+  "Kutilayotgan navbat yo'q": "Очереди нет",
+  "Foydalanuvchi": "Пользователь",
+  "Rolni tanlang va kiriting.": "Выберите роль и войдите.",
+  "Email yoki login": "Эл. почта или логин",
+  "Parolni kiriting": "Введите пароль",
+  "Eslab qolish": "Запомнить меня",
+  "Kutib turing...": "Подождите...",
+  "Kirishda xato yuz berdi.": "Ошибка при входе.",
+  "Ism, telefon raqam va parolni kiriting.": "Введите имя, номер телефона и пароль.",
+  "Parol yarating": "Создайте пароль",
+  "Hisobim bor, kiraman": "У меня есть аккаунт, войти",
+  "Ro'yxatdan o'tishda xato yuz berdi.": "Ошибка при регистрации.",
+};
+
+for (const k of Object.keys(extraRu)) {
+  if (!(k in ruText)) {
+    // @ts-ignore
+    ruText[k] = extraRu[k];
+  }
+}
 function translate(locale: AppLocale, value: string) {
   return locale === "ru" ? ruText[value] ?? value : value;
 }
@@ -664,10 +771,7 @@ function AuthScreen({ onAuthenticated }: { onAuthenticated: (session: AuthSessio
                 <Text style={styles.authHeroTitle}>Stay Sharp,{`\n`}Look Sharp.</Text>
                 <Text style={styles.authHeroCopy}>Professional soch turmaklash xizmatlari bir joyda</Text>
               </View>
-              <View style={styles.authHeroActions}>
-                <PrimaryButton label={t("Kirish")} onPress={() => setMode("login")} tone="gold" />
-                <PrimaryButton label={t("Ro'yxatdan o'tish")} onPress={() => setMode("register")} tone="ghost" />
-              </View>
+              {/* Buttons removed as requested; hero content aligned lower instead */}
             </ImageBackground>
           ) : (
             <View style={styles.authBrand}>
@@ -1054,6 +1158,30 @@ export default function App() {
     photoUrl: "",
   });
   const [bookingFilter, setBookingFilter] = useState<ApiBookingStatus | "all">("all");
+
+  useEffect(() => {
+    if (!selectedBarberId) return;
+    const relatedIds = new Set<string>();
+    bookings.forEach((b) => {
+      // API booking objects use snake_case for barber id
+      // mark booking notifications for this barber as seen
+      if ((b as any).barber_id && String((b as any).barber_id) === String(selectedBarberId)) {
+        relatedIds.add(`booking-${(b as any).id}`);
+      }
+    });
+    discounts.forEach((d) => {
+      if ((d as any).barber_id && String((d as any).barber_id) === String(selectedBarberId)) {
+        relatedIds.add(`discount-${(d as any).id}`);
+      }
+    });
+    if (relatedIds.size > 0) {
+      setSeenNotificationIds((prev) => {
+        const next = new Set(prev);
+        relatedIds.forEach((id) => next.add(id));
+        return next;
+      });
+    }
+  }, [selectedBarberId, bookings, discounts]);
   const [searchText, setSearchText] = useState("");
   const [bookingSuccess, setBookingSuccess] = useState<BookingSuccess | null>(null);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -2929,10 +3057,11 @@ function createAppStyles() {
     borderRadius: 12,
     borderWidth: 1,
     height: 430,
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
     marginBottom: 14,
     overflow: "hidden",
     padding: 20,
+    paddingBottom: 36,
     ...shadows.soft,
   },
   authHeroImage: {
